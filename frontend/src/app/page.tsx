@@ -30,6 +30,8 @@ import {
 import { Locale, translations } from "@/i18n/translations";
 import LangSwitcher from "@/components/LangSwitcher";
 import VoiceInput from "@/components/VoiceInput";
+import VoiceOutput, { stopAllSpeech } from "@/components/VoiceOutput";
+import { buildAssistantSpeechText } from "@/lib/buildSpeechText";
 
 const MapEmbed = dynamic(() => import("@/components/MapEmbed"), { ssr: false });
 
@@ -126,6 +128,7 @@ export default function Home() {
       const question = text || input.trim();
       if (!question || loading) return;
 
+      stopAllSpeech();
       setInput("");
       setMessages((prev) => [...prev, { role: "user", content: question }]);
       setLoading(true);
@@ -197,7 +200,7 @@ export default function Home() {
                       <div className="chat-user">{msg.content}</div>
                     </div>
                   ) : (
-                    <AssistantMessage msg={msg} onFollowUp={send} t={t} />
+                    <AssistantMessage msg={msg} onFollowUp={send} locale={locale} t={t} />
                   )}
                 </div>
               ))}
@@ -240,8 +243,19 @@ export default function Home() {
 
 type T = (typeof translations)["pl"];
 
-function AssistantMessage({ msg, onFollowUp, t }: { msg: Message; onFollowUp: (t: string) => void; t: T }) {
+function AssistantMessage({
+  msg,
+  onFollowUp,
+  locale,
+  t,
+}: {
+  msg: Message;
+  onFollowUp: (t: string) => void;
+  locale: Locale;
+  t: T;
+}) {
   const s = msg.structured;
+  const speechText = buildAssistantSpeechText(msg.content, s, t);
 
   return (
     <div className="flex gap-3 justify-start items-start">
@@ -249,6 +263,7 @@ function AssistantMessage({ msg, onFollowUp, t }: { msg: Message; onFollowUp: (t
       <div className="flex-1 min-w-0 space-y-3">
         <div className="chat-ai">
           <p className="text-[15px] leading-[1.65] text-lublin-text/90">{msg.content}</p>
+          <VoiceOutput text={speechText} locale={locale} t={t.voice} />
         </div>
 
         {s && (

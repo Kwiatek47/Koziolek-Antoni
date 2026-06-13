@@ -59,6 +59,9 @@ interface Translations {
     listening: string;
     tapToSpeak: string;
     notSupported: string;
+    readAloud: string;
+    stopReading: string;
+    notSupportedTts: string;
   };
 }
 
@@ -117,6 +120,9 @@ const pl: Translations = {
     listening: "Słucham...",
     tapToSpeak: "Naciśnij aby mówić",
     notSupported: "Twoja przeglądarka nie obsługuje rozpoznawania mowy.",
+    readAloud: "Przeczytaj odpowiedź",
+    stopReading: "Zatrzymaj",
+    notSupportedTts: "Twoja przeglądarka nie obsługuje odczytu na głos.",
   },
 };
 
@@ -175,6 +181,9 @@ const en: Translations = {
     listening: "Listening...",
     tapToSpeak: "Tap to speak",
     notSupported: "Your browser does not support speech recognition.",
+    readAloud: "Read answer aloud",
+    stopReading: "Stop",
+    notSupportedTts: "Your browser does not support text-to-speech.",
   },
 };
 
@@ -233,6 +242,9 @@ const ua: Translations = {
     listening: "Слухаю...",
     tapToSpeak: "Натисніть, щоб говорити",
     notSupported: "Ваш браузер не підтримує розпізнавання мови.",
+    readAloud: "Прочитати відповідь",
+    stopReading: "Зупинити",
+    notSupportedTts: "Ваш браузер не підтримує озвучення тексту.",
   },
 };
 
