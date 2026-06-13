@@ -8,6 +8,7 @@ import os
 import re
 import time
 import hashlib
+import threading
 from collections import OrderedDict
 from typing import Optional
 
@@ -193,6 +194,9 @@ llm = Llama(
     n_threads=N_THREADS,
     verbose=False,
 )
+
+llm_lock = threading.Lock()
+LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "90"))
 
 
 # --- Pydantic models ---
@@ -887,158 +891,163 @@ def query(q: Query):
     if cached is not None:
         return {**cached, "cached": True}
 
-    top_k = q.top_k or TOP_K
-    intent = classify_intent(q.question)
-    documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
-
-    context_parts = []
-    for doc, meta in zip(documents, metadatas):
-        doc_type = meta.get("type", "unknown")
-        scope = meta.get("scope", "")
-        legal_ref = meta.get("legal_ref", "")
-        header = f"[{doc_type}"
-        if scope:
-            header += f", zasieg: {scope}"
-        if legal_ref:
-            header += f", {legal_ref}"
-        header += "]"
-        context_parts.append(f"{header}\n{doc}")
-    context = "\n\n---\n\n".join(context_parts)
-
-    if intent == "simple":
-        # Quick text answer - no full structured pipeline
-        answer = get_simple_response(q.question, context)
-        sources = []
-        seen_urls = set()
-        for meta in metadatas:
-            url = meta.get("source_url", "")
-            if url and url not in seen_urls:
-                seen_urls.add(url)
-                sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
-        suggestions = generate_suggestions(q.question, {}, metadatas)
-        result = {
-            "intent": "simple",
-            "summary": answer,
-            "sources": sources[:2],
-            "suggestions": suggestions,
+    # Prevent blocking: if LLM is busy, return immediately
+    acquired = llm_lock.acquire(timeout=2)
+    if not acquired:
+        return {
+            "intent": "busy",
+            "summary": "System jest zajęty przetwarzaniem innego pytania. Spróbuj ponownie za chwilę.",
+            "suggestions": [
+                "Jak wyrobić dowód osobisty?",
+                "Jak zarejestrować samochód?",
+                "Jak zameldować się w Lublinie?",
+            ],
         }
-        response_cache.put(q.question, result)
-        return result
 
-    if intent == "fill_document":
-        # Form-filling guidance pipeline
-        fill_data = get_fill_document_response(q.question, context)
-        sources = []
-        seen_urls = set()
-        for meta in metadatas:
-            url = meta.get("source_url", "")
-            if url and url not in seen_urls:
-                seen_urls.add(url)
-                sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
-        suggestions = [
-            f"Gdzie złożyć {fill_data.get('document_name', 'ten wniosek')}?",
-            f"Jakie dokumenty dołączyć do {fill_data.get('document_name', 'wniosku')}?",
-            f"Ile kosztuje złożenie {fill_data.get('document_name', 'wniosku')}?",
-        ]
-        result = {
-            "intent": "fill_document",
-            "summary": fill_data.get("summary", ""),
-            "document_name": fill_data.get("document_name", ""),
-            "fields": fill_data.get("fields", []),
-            "general_tips": fill_data.get("general_tips", []),
-            "common_mistakes": fill_data.get("common_mistakes", []),
-            "where_to_get": fill_data.get("where_to_get"),
-            "where_to_submit": fill_data.get("where_to_submit"),
-            "sources": sources[:3],
-            "suggestions": suggestions,
-        }
-        response_cache.put(q.question, result)
-        return result
+    try:
+        top_k = q.top_k or TOP_K
+        intent = classify_intent(q.question)
+        documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
+
+        context_parts = []
+        for doc, meta in zip(documents, metadatas):
+            doc_type = meta.get("type", "unknown")
+            scope = meta.get("scope", "")
+            legal_ref = meta.get("legal_ref", "")
+            header = f"[{doc_type}"
+            if scope:
+                header += f", zasieg: {scope}"
+            if legal_ref:
+                header += f", {legal_ref}"
+            header += "]"
+            context_parts.append(f"{header}\n{doc}")
+        context = "\n\n---\n\n".join(context_parts)
+
+        if intent == "simple":
+            answer = get_simple_response(q.question, context)
+            sources = []
+            seen_urls = set()
+            for meta in metadatas:
+                url = meta.get("source_url", "")
+                if url and url not in seen_urls:
+                    seen_urls.add(url)
+                    sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
+            suggestions = generate_suggestions(q.question, {}, metadatas)
+            result = {
+                "intent": "simple",
+                "summary": answer,
+                "sources": sources[:2],
+                "suggestions": suggestions,
+            }
+            response_cache.put(q.question, result)
+            return result
+
+        if intent == "fill_document":
+            fill_data = get_fill_document_response(q.question, context)
+            sources = []
+            seen_urls = set()
+            for meta in metadatas:
+                url = meta.get("source_url", "")
+                if url and url not in seen_urls:
+                    seen_urls.add(url)
+                    sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
+            suggestions = [
+                f"Gdzie złożyć {fill_data.get('document_name', 'ten wniosek')}?",
+                f"Jakie dokumenty dołączyć do {fill_data.get('document_name', 'wniosku')}?",
+                f"Ile kosztuje złożenie {fill_data.get('document_name', 'wniosku')}?",
+            ]
+            result = {
+                "intent": "fill_document",
+                "summary": fill_data.get("summary", ""),
+                "document_name": fill_data.get("document_name", ""),
+                "fields": fill_data.get("fields", []),
+                "general_tips": fill_data.get("general_tips", []),
+                "common_mistakes": fill_data.get("common_mistakes", []),
+                "where_to_get": fill_data.get("where_to_get"),
+                "where_to_submit": fill_data.get("where_to_submit"),
+                "sources": sources[:3],
+                "suggestions": suggestions,
+            }
+            response_cache.put(q.question, result)
+            return result
 
     # Full structured response for procedural questions
-    structured = get_structured_response(q.question, context)
+        structured = get_structured_response(q.question, context)
 
-    # Fallback: extract address from context if LLM missed it
-    where = structured.get("where")
-    if not where or not isinstance(where, dict):
-        structured["where"] = {}
-        where = structured["where"]
+        where = structured.get("where")
+        if not where or not isinstance(where, dict):
+            structured["where"] = {}
+            where = structured["where"]
 
-    if not where.get("address"):
-        # Try to find address in context chunks
-        for doc in documents[:3]:
-            addr_match = re.search(r"(?:ul\.|al\.|pl\.)\s*[\w\s]+\d+[\w]?(?:\s*,\s*\d{2}-\d{3})?\s*Lublin", doc)
-            if addr_match:
-                where["address"] = addr_match.group().strip()
-                break
+        if not where.get("address"):
+            for doc in documents[:3]:
+                addr_match = re.search(r"(?:ul\.|al\.|pl\.)\s*[\w\s]+\d+[\w]?(?:\s*,\s*\d{2}-\d{3})?\s*Lublin", doc)
+                if addr_match:
+                    where["address"] = addr_match.group().strip()
+                    break
 
-    if not where.get("department"):
-        # Extract department from first metadata
-        for meta in metadatas[:2]:
-            dept = meta.get("department", "")
-            if dept:
-                where["department"] = dept
-                break
+        if not where.get("department"):
+            for meta in metadatas[:2]:
+                dept = meta.get("department", "")
+                if dept:
+                    where["department"] = dept
+                    break
 
-    # Enrich with coordinates
-    if where and isinstance(where, dict):
-        address = where.get("address", "")
-        lat, lng = find_coordinates(address)
-        if lat:
-            where["lat"] = lat
-            where["lng"] = lng
+        if where and isinstance(where, dict):
+            address = where.get("address", "")
+            lat, lng = find_coordinates(address)
+            if lat:
+                where["lat"] = lat
+                where["lng"] = lng
 
-    # Determine gender for "who" avatar
-    who = structured.get("who")
-    if who and isinstance(who, dict) and not who.get("gender"):
-        name = who.get("name", "")
-        if name:
-            if name.split()[0][-1] == "a":
-                who["gender"] = "F"
+        who = structured.get("who")
+        if who and isinstance(who, dict) and not who.get("gender"):
+            name = who.get("name", "")
+            if name:
+                if name.split()[0][-1] == "a":
+                    who["gender"] = "F"
+                else:
+                    who["gender"] = "M"
+
+        if structured.get("booking") is None:
+            how = structured.get("how")
+            submission = ""
+            if how and isinstance(how, dict):
+                submission = (how.get("submission_method") or "").lower()
+            where_present = where and isinstance(where, dict) and where.get("address")
+            if where_present and ("osobiście" in submission or "osobist" in submission or not submission):
+                structured["booking"] = True
             else:
-                who["gender"] = "M"
+                structured["booking"] = False
 
-    # Infer booking if LLM didn't set it - show booking when in-person visit required
-    if structured.get("booking") is None:
-        how = structured.get("how")
-        submission = ""
-        if how and isinstance(how, dict):
-            submission = (how.get("submission_method") or "").lower()
-        where_present = where and isinstance(where, dict) and where.get("address")
-        if where_present and ("osobiście" in submission or "osobist" in submission or not submission):
-            structured["booking"] = True
-        else:
-            structured["booking"] = False
+        sources = []
+        seen_urls = set()
+        question_words = set(w for w in q.question.lower().split() if len(w) > 3)
+        for meta in metadatas:
+            url = meta.get("source_url", "")
+            title = meta.get("title", "").lower()
+            if not url or url in seen_urls:
+                continue
+            has_overlap = any(w in title for w in question_words)
+            if has_overlap or len(sources) == 0:
+                seen_urls.add(url)
+                sources.append({
+                    "url": url,
+                    "title": meta.get("title", ""),
+                    "department": meta.get("department", ""),
+                })
 
-    # Build sources - filter to only relevant ones
-    sources = []
-    seen_urls = set()
-    question_words = set(w for w in q.question.lower().split() if len(w) > 3)
-    for meta in metadatas:
-        url = meta.get("source_url", "")
-        title = meta.get("title", "").lower()
-        if not url or url in seen_urls:
-            continue
-        # Only include sources with title overlap to the question
-        has_overlap = any(w in title for w in question_words)
-        if has_overlap or len(sources) == 0:
-            seen_urls.add(url)
-            sources.append({
-                "url": url,
-                "title": meta.get("title", ""),
-                "department": meta.get("department", ""),
-            })
+        suggestions = generate_suggestions(q.question, structured, metadatas)
 
-    # Generate follow-up suggestions based on response context
-    suggestions = generate_suggestions(q.question, structured, metadatas)
-
-    result = {
-        **structured,
-        "sources": sources,
-        "suggestions": suggestions,
-    }
-    response_cache.put(q.question, result)
-    return result
+        result = {
+            **structured,
+            "sources": sources,
+            "suggestions": suggestions,
+        }
+        response_cache.put(q.question, result)
+        return result
+    finally:
+        llm_lock.release()
 
 
 @app.post("/search")
