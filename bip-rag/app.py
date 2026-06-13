@@ -175,7 +175,7 @@ def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
 
 
 # --- Structured extraction prompt ---
-EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiadaj JSON-em.
+EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Odpowiadaj JSON-em.
 
 Format:
 {"summary":"krótko o sprawie","where":{"address":"pełny adres z ulicą i nr","room":"pokój/piętro/stanowisko","phone":"numery tel","hours":"dokładne godziny dla każdego dnia","department":"wydział"},"how":{"steps":["konkretny krok 1","konkretny krok 2","konkretny krok 3"],"required_documents":["dokument1","dokument2"],"forms":["formularz"],"submission_method":"osobiście/online/ePUAP"},"how_much":{"cost":"kwota lub bezpłatne","time_estimate":"CZAS WYDANIA dokumentu (np. 30 dni), NIE czas wizyty","legal_basis":"pełna nazwa ustawy z Dz.U."},"who":null,"booking":true/false,"additional_info":"ważne uwagi, wyjątki"}
@@ -280,7 +280,7 @@ def classify_intent(question: str) -> str:
 
 
 # --- Simple response (for info questions) ---
-SIMPLE_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiedz krótko (2-4 zdania) na pytanie mieszkańca.
+SIMPLE_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Odpowiedz krótko (2-4 zdania) na pytanie mieszkańca.
 
 ZASADY:
 - Użyj WYŁĄCZNIE informacji z podanego kontekstu
