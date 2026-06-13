@@ -3,14 +3,13 @@
 @theme {
   --color-lublin-green: #006643;
   --color-lublin-green-light: #e8f5ef;
-  --color-lublin-red: #E30613;
-  --color-lublin-red-light: #fef1f2;
-  --color-lublin-red-dark: #b8050f;
-  --color-lublin-gold: #c9a227;
-  --color-lublin-surface: #f8faf9;
-  --color-lublin-text: #111412;
-  --color-lublin-border: #eff2f0;
-  --color-lublin-muted: #6b7770;
+  --color-lublin-red: #c62828;
+  --color-lublin-red-light: #fef2f2;
+  --color-lublin-red-dark: #991b1b;
+  --color-lublin-surface: #f9fafb;
+  --color-lublin-text: #111827;
+  --color-lublin-border: #e5e7eb;
+  --color-lublin-muted: #6b7280;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
@@ -20,60 +19,107 @@
     color: var(--color-lublin-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
   /* Chat bubbles */
   .chat-user {
-    background: linear-gradient(135deg, var(--color-lublin-red), var(--color-lublin-red-dark));
+    background: var(--color-lublin-text);
     color: white;
-    border-radius: 20px 20px 4px 20px;
+    border-radius: 20px 20px 6px 20px;
     padding: 12px 16px;
-    max-width: 80%;
-    margin-left: auto;
+    max-width: 75%;
     font-size: 15px;
-    line-height: 1.5;
-    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.15);
+    line-height: 1.55;
   }
+
   .chat-ai {
     background-color: white;
-    color: var(--color-lublin-text);
     border: 1px solid var(--color-lublin-border);
-    border-radius: 20px 20px 20px 4px;
+    border-radius: 18px 18px 18px 6px;
     padding: 14px 16px;
     font-size: 15px;
     line-height: 1.6;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
   }
 
   /* Structured cards */
   .card {
     background: white;
     border: 1px solid var(--color-lublin-border);
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
-  .card-header {
+
+  .card-label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--color-lublin-border);
-  }
-  .card-icon {
-    font-size: 16px;
-    line-height: 1;
-  }
-  .card-title {
-    font-size: 13px;
-    font-weight: 700;
+    gap: 6px;
+    padding: 10px 16px 0;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.05em;
+    color: var(--color-lublin-muted);
   }
-  .card-body {
-    padding: 14px;
+
+  /* Detail rows inside cards */
+  .detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--color-lublin-text);
+    opacity: 0.85;
+  }
+
+  /* Section labels inside cards */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-lublin-muted);
+    margin-bottom: 8px;
+  }
+
+  /* Step numbers */
+  .step-number {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-lublin-green);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Stat blocks (cost/time) */
+  .stat-block {
+    background: var(--color-lublin-surface);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  /* Booking card */
+  .booking-card {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--color-lublin-green) 20%, transparent);
+    background: color-mix(in srgb, var(--color-lublin-green) 3%, white);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .booking-card:hover {
+    border-color: color-mix(in srgb, var(--color-lublin-green) 35%, transparent);
+    background: color-mix(in srgb, var(--color-lublin-green) 5%, white);
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--color-lublin-green) 8%, transparent);
   }
 
   /* Source chips */
@@ -81,43 +127,51 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background-color: var(--color-lublin-red-light);
-    color: var(--color-lublin-red);
+    background-color: var(--color-lublin-surface);
+    border: 1px solid var(--color-lublin-border);
+    color: var(--color-lublin-muted);
     font-size: 11px;
     font-weight: 500;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-radius: 999px;
     text-decoration: none;
     transition: all 0.15s;
   }
   .source-chip:hover {
-    background-color: var(--color-lublin-red);
-    color: white;
+    border-color: var(--color-lublin-green);
+    color: var(--color-lublin-green);
+    background-color: var(--color-lublin-green-light);
   }
 
-  /* Suggestion buttons */
-  .suggestion-btn {
+  /* Welcome suggestion buttons */
+  .welcome-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 12px 14px;
-    border: 1.5px solid var(--color-lublin-border);
-    border-radius: 14px;
-    font-size: 14px;
+    border: 1px solid var(--color-lublin-border);
+    border-radius: 12px;
+    font-size: 13.5px;
     color: var(--color-lublin-text);
     background: white;
     transition: all 0.15s;
     text-align: left;
     width: 100%;
+    cursor: pointer;
   }
-  .suggestion-btn:hover, .suggestion-btn:active {
-    border-color: var(--color-lublin-red);
-    background-color: var(--color-lublin-red-light);
-    color: var(--color-lublin-red-dark);
+  .welcome-suggestion:hover {
+    border-color: var(--color-lublin-green);
+    background: color-mix(in srgb, var(--color-lublin-green) 3%, white);
+  }
+  .welcome-suggestion:active {
+    transform: scale(0.98);
   }
 
   /* Input */
   .input-bar {
     flex: 1;
-    padding: 14px 16px;
-    border-radius: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
     border: 1.5px solid var(--color-lublin-border);
     background: white;
     font-size: 15px;
@@ -126,57 +180,37 @@
   .input-bar:focus {
     outline: none;
     border-color: var(--color-lublin-green);
-    box-shadow: 0 0 0 3px rgba(0, 102, 67, 0.08);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-lublin-green) 8%, transparent);
+  }
+  .input-bar:disabled {
+    opacity: 0.6;
   }
 
   /* Send button */
   .send-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--color-lublin-red), var(--color-lublin-red-dark));
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--color-lublin-green);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     transition: all 0.15s;
-    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.2);
+  }
+  .send-btn:hover:not(:disabled) {
+    background: #005538;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--color-lublin-green) 25%, transparent);
   }
   .send-btn:disabled {
-    opacity: 0.35;
-    box-shadow: none;
+    opacity: 0.3;
   }
   .send-btn:active:not(:disabled) {
     transform: scale(0.92);
   }
 
-  /* Booking button */
-  .booking-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: var(--color-lublin-green);
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.15s;
-    box-shadow: 0 2px 8px rgba(0, 102, 67, 0.2);
-  }
-  .booking-btn:hover {
-    background: #005538;
-    box-shadow: 0 4px 12px rgba(0, 102, 67, 0.3);
-    transform: translateY(-1px);
-  }
-  .booking-btn:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  /* Follow-up suggestion buttons (Perplexity-style) */
+  /* Follow-up suggestion buttons */
   .suggestion-follow-up {
     display: flex;
     align-items: center;
@@ -194,7 +228,7 @@
   }
   .suggestion-follow-up:hover {
     border-color: var(--color-lublin-green);
-    background: var(--color-lublin-green-light);
+    background: color-mix(in srgb, var(--color-lublin-green) 3%, white);
     color: var(--color-lublin-green);
   }
   .suggestion-follow-up:active {
