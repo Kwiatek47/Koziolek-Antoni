@@ -1,84 +1,122 @@
 @import "tailwindcss";
 
 @theme {
-  --color-lublin-green: #006B3F;
-  --color-lublin-green-light: #e6f4ed;
-  --color-lublin-green-dark: #004d2d;
+  --color-lublin-green: #2d6a4f;
+  --color-lublin-green-light: #e8f5ef;
   --color-lublin-red: #CE1126;
-  --color-lublin-red-light: #fdf2f3;
-  --color-lublin-white: #FFFFFF;
-  --color-lublin-surface: #F8FAF9;
-  --color-lublin-text: #1a1f1c;
-  --color-lublin-border: #e8eeea;
-  --color-lublin-muted: #5f6d64;
+  --color-lublin-red-light: #fef1f2;
+  --color-lublin-red-dark: #a80d1e;
+  --color-lublin-gold: #c9a227;
+  --color-lublin-surface: #fafbfa;
+  --color-lublin-text: #1a1d1b;
+  --color-lublin-border: #e5e9e6;
+  --color-lublin-muted: #6b7770;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
   body {
-    background-color: var(--color-lublin-white);
+    background-color: white;
     color: var(--color-lublin-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
   .chat-user {
-    background-color: var(--color-lublin-green);
+    background: linear-gradient(135deg, var(--color-lublin-red), var(--color-lublin-red-dark));
     color: white;
     border-radius: 20px 20px 4px 20px;
     padding: 12px 16px;
-    max-width: 85%;
+    max-width: 82%;
     margin-left: auto;
     font-size: 15px;
     line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(206, 17, 38, 0.15);
   }
   .chat-ai {
-    background-color: var(--color-lublin-surface);
+    background-color: white;
     color: var(--color-lublin-text);
     border: 1px solid var(--color-lublin-border);
     border-radius: 20px 20px 20px 4px;
     padding: 14px 16px;
-    max-width: 85%;
+    max-width: 88%;
     font-size: 15px;
     line-height: 1.6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .source-chip {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background-color: var(--color-lublin-green-light);
-    color: var(--color-lublin-green);
-    font-size: 12px;
+    background-color: var(--color-lublin-red-light);
+    color: var(--color-lublin-red);
+    font-size: 11px;
+    font-weight: 500;
     padding: 4px 10px;
     border-radius: 999px;
     text-decoration: none;
-    transition: background-color 0.15s;
+    transition: all 0.15s;
   }
   .source-chip:hover {
-    background-color: var(--color-lublin-green);
+    background-color: var(--color-lublin-red);
     color: white;
   }
   .suggestion-btn {
-    display: inline-block;
-    padding: 10px 16px;
-    border: 1px solid var(--color-lublin-border);
-    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--color-lublin-border);
+    border-radius: 14px;
     font-size: 14px;
     color: var(--color-lublin-text);
     background: white;
     transition: all 0.15s;
     text-align: left;
+    width: 100%;
   }
-  .suggestion-btn:hover {
-    border-color: var(--color-lublin-green);
-    background-color: var(--color-lublin-green-light);
+  .suggestion-btn:hover, .suggestion-btn:active {
+    border-color: var(--color-lublin-red);
+    background-color: var(--color-lublin-red-light);
+    color: var(--color-lublin-red-dark);
   }
   .map-container {
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
     border: 1px solid var(--color-lublin-border);
+  }
+  .input-bar {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--color-lublin-border);
+    background: var(--color-lublin-surface);
+    font-size: 15px;
+    transition: all 0.15s;
+  }
+  .input-bar:focus {
+    outline: none;
+    border-color: var(--color-lublin-red);
+    box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.08);
+    background: white;
+  }
+  .send-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--color-lublin-red), var(--color-lublin-red-dark));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    box-shadow: 0 2px 8px rgba(206, 17, 38, 0.2);
+  }
+  .send-btn:disabled {
+    opacity: 0.35;
+    box-shadow: none;
+  }
+  .send-btn:active:not(:disabled) {
+    transform: scale(0.92);
   }
 }
