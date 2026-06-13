@@ -1,0 +1,219 @@
+{
+  "Wydanie dowodu osobistego": [
+    "dowód osobisty",
+    "wyrobić dowód",
+    "nowy dowód",
+    "wymiana dowodu",
+    "wniosek o dowód",
+    "dowód po terminie",
+    "dziecko dowód",
+    "zdjęcie do dowodu"
+  ],
+  "Zgłoszenie utraty lub uszkodzenia dowodu osobistego": [
+    "zgubiony dowód",
+    "skradziony dowód",
+    "zniszczony dowód",
+    "utrata dowodu",
+    "unieważnić dowód",
+    "co zrobić jak zgubiłem dowód"
+  ],
+  "Zastrzeżenie albo cofnięcie zastrzeżenia numeru PESEL w organie gminy": [
+    "zastrzec pesel",
+    "cofnąć zastrzeżenie pesel",
+    "blokada pesel",
+    "odblokować pesel",
+    "kradzież danych pesel"
+  ],
+  "Zameldowanie obywatela polskiego na pobyt stały": [
+    "meldunek stały",
+    "zameldować się na stałe",
+    "stały adres",
+    "meldunek w Lublinie",
+    "zmiana meldunku"
+  ],
+  "Zameldowanie obywatela polskiego na pobyt czasowy trwający ponad 3 miesiące": [
+    "meldunek czasowy",
+    "zameldować studenta",
+    "pobyt czasowy",
+    "czasowy adres",
+    "tymczasowy meldunek"
+  ],
+  "Wymeldowanie obywatela polskiego z pobytu stałego": [
+    "wymeldowanie",
+    "wypisać z meldunku",
+    "wymeldować z mieszkania",
+    "usunięcie meldunku"
+  ],
+  "Rejestracja działalności gospodarczej (wpis do CEIDG)": [
+    "założyć firmę",
+    "otworzyć działalność",
+    "jednoosobowa działalność",
+    "wpis CEIDG",
+    "firma online"
+  ],
+  "Zmiana wpisu do CEIDG": [
+    "zmiana danych firmy",
+    "zmiana adresu działalności",
+    "dopisać PKD",
+    "zmienić CEIDG"
+  ],
+  "Rejestracja pojazdu z zagranicy": [
+    "auto z zagranicy",
+    "samochód sprowadzony",
+    "rejestracja importowanego auta",
+    "tablice po imporcie",
+    "akcyza samochód"
+  ],
+  "Rejestracja pojazdu zarejestrowanego na terenie RP": [
+    "przerejestrowanie samochodu",
+    "kupiłem auto w Polsce",
+    "zmiana właściciela auta",
+    "rejestracja używanego samochodu"
+  ],
+  "Rejestracja nowego pojazdu": [
+    "nowy samochód z salonu",
+    "pierwsza rejestracja auta",
+    "rejestracja nowego auta",
+    "auto z salonu tablice"
+  ],
+  "Zgłoszenie zbycia pojazdu": [
+    "sprzedałem samochód",
+    "zgłosić sprzedaż auta",
+    "ile dni na zgłoszenie sprzedaży",
+    "zbycie pojazdu",
+    "umowa sprzedaży auta urząd"
+  ],
+  "Wyrejestrowanie pojazdu (kradzież, złomowanie, zniszczenie)": [
+    "wyrejestrować auto",
+    "złomowanie samochodu",
+    "kradzież samochodu",
+    "kasacja auta",
+    "pojazd zniszczony"
+  ],
+  "Wymiana prawa jazdy z powodu zmiany danych": [
+    "prawo jazdy po ślubie",
+    "zmiana nazwiska prawo jazdy",
+    "wymienić prawko",
+    "nowe dane w prawie jazdy"
+  ],
+  "Wymiana prawa jazdy z powodu upływu terminu ważności": [
+    "przedłużyć prawo jazdy",
+    "prawo jazdy traci ważność",
+    "badania do prawa jazdy",
+    "termin ważności prawka"
+  ],
+  "Profil kandydata na kierowcę": [
+    "PKK",
+    "kurs prawa jazdy",
+    "pierwsze prawo jazdy",
+    "numer PKK",
+    "zacząć kurs na prawko"
+  ],
+  "Wydanie wtórnika prawa jazdy": [
+    "zgubione prawo jazdy",
+    "duplikat prawa jazdy",
+    "skradzione prawko",
+    "wtórnik prawka"
+  ],
+  "Wydanie międzynarodowego prawa jazdy": [
+    "prawo jazdy za granicę",
+    "międzynarodowe prawko",
+    "jazda poza UE",
+    "international driving permit"
+  ],
+  "Odpis aktu urodzenia, małżeństwa, zgonu": [
+    "akt urodzenia",
+    "odpis aktu",
+    "akt małżeństwa",
+    "akt zgonu",
+    "duplikat aktu"
+  ],
+  "Rejestracja dziecka": [
+    "urodzenie dziecka",
+    "zarejestrować dziecko",
+    "akt urodzenia dziecka",
+    "zgłoszenie narodzin"
+  ],
+  "Rejestracja zgonu": [
+    "zgłosić zgon",
+    "akt zgonu",
+    "śmierć bliskiego",
+    "karta zgonu"
+  ],
+  "Zawarcie małżeństwa w USC - ślub cywilny": [
+    "ślub cywilny",
+    "termin ślubu",
+    "małżeństwo w USC",
+    "rezerwacja ślubu",
+    "opłata za ślub"
+  ],
+  "Dodatki mieszkaniowe": [
+    "dopłata do czynszu",
+    "dodatek do mieszkania",
+    "pomoc w opłatach za mieszkanie",
+    "dodatek mieszkaniowy"
+  ],
+  "Jednorazowa zapomoga z tytułu urodzenia się dziecka": [
+    "becikowe",
+    "1000 zł na dziecko",
+    "zapomoga po urodzeniu",
+    "świadczenie za urodzenie dziecka"
+  ],
+  "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrzennego lub Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego": [
+    "MPZP",
+    "plan zagospodarowania",
+    "wypis z planu",
+    "wyrys z planu",
+    "przeznaczenie działki"
+  ],
+  "Ustalenie warunków zabudowy": [
+    "warunki zabudowy",
+    "WZ",
+    "decyzja WZ",
+    "budować bez planu",
+    "zabudowa działki"
+  ],
+  "Pozwolenie na budowę": [
+    "pozwolenie budowlane",
+    "chcę budować dom",
+    "decyzja o pozwoleniu",
+    "projekt budowlany"
+  ],
+  "Zgłoszenie budowy lub wykonywania innych robót budowlanych": [
+    "zgłoszenie robót",
+    "remont bez pozwolenia",
+    "zgłosić budowę",
+    "roboty budowlane"
+  ],
+  "Złożenie informacji (korekty informacji) w sprawie podatku od nieruchomości przez osoby fizyczne": [
+    "podatek od nieruchomości",
+    "kupiłem mieszkanie podatek",
+    "IN-1",
+    "zgłosić mieszkanie do podatku"
+  ],
+  "Złożenie wniosku o wydanie zaświadczenia o niezaleganiu w podatkach lub stwierdzającego stan zaległości": [
+    "zaświadczenie o niezaleganiu",
+    "nie zalegam z podatkami",
+    "potwierdzenie podatków",
+    "zaświadczenie podatkowe"
+  ],
+  "Biuro Rzeczy Znalezionych": [
+    "zgubiony portfel",
+    "zgubione klucze",
+    "rzeczy znalezione",
+    "znaleziony telefon",
+    "biuro zgub"
+  ],
+  "Udostępnianie informacji publicznej na wniosek": [
+    "informacja publiczna",
+    "wniosek o informację",
+    "dostęp do dokumentów urzędu",
+    "jawność informacji"
+  ],
+  "Wydawanie karty parkingowej dla osoby niepełnosprawnej": [
+    "karta parkingowa",
+    "miejsce dla niepełnosprawnych",
+    "niebieska karta parkingowa",
+    "parking dla osoby niepełnosprawnej"
+  ]
+}

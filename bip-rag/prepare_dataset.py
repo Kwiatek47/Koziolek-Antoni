@@ -8,9 +8,13 @@ import os
 import re
 import subprocess
 import sys
+import unicodedata
+from collections import OrderedDict
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "dane_bip")
 OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "data", "documents.json")
+RAG_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+DEPARTMENTS_CONTACT_FILE = os.path.join(RAG_DATA_DIR, "departments_contact.json")
 
 def extract_pdf_text(pdf_path):
     """Extract text from PDF using pymupdf (best), pdftotext, or PyPDF2 fallback."""
@@ -102,12 +106,585 @@ SYNONYMS = {
 }
 
 
+def slugify(text):
+    """ASCII-safe slug for deterministic document ids."""
+    text = unicodedata.normalize("NFKD", text or "")
+    text = text.encode("ascii", "ignore").decode("ascii")
+    text = re.sub(r"[^\w\s-]", "", text.lower())
+    return re.sub(r"[-\s]+", "_", text).strip("_")
+
+
+def load_json_file(filename, default):
+    """Load curated JSON from dane_bip/ with a safe fallback."""
+    filepath = os.path.join(DATA_DIR, filename)
+    if not os.path.exists(filepath):
+        return default
+    with open(filepath, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def clean_lines(text):
+    return [re.sub(r"\s+", " ", line).strip() for line in (text or "").splitlines() if line.strip()]
+
+
+def load_service_synonyms():
+    """Load code + curated synonym mapping. Values are returned as comma-separated strings."""
+    merged = dict(SYNONYMS)
+    external = load_json_file("service_synonyms.json", {})
+    for title, aliases in external.items():
+        if isinstance(aliases, list):
+            external_value = ", ".join(a.strip() for a in aliases if a.strip())
+        else:
+            external_value = str(aliases).strip()
+        if not external_value:
+            continue
+        if title in merged and merged[title]:
+            merged[title] = f"{merged[title]}, {external_value}"
+        else:
+            merged[title] = external_value
+    return merged
+
+
 def get_synonyms_for_title(title: str) -> str:
     """Find matching synonyms for a service title."""
-    for key, synonyms in SYNONYMS.items():
+    for key, synonyms in load_service_synonyms().items():
         if key.lower() in title.lower() or title.lower() in key.lower():
             return synonyms
     return ""
+
+
+STREET_PATTERN = re.compile(
+    r"(?P<street>(?:ul\.|al\.|pl\.|plac)\s+[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż0-9 .'\-]+?\s+\d+[A-Za-z]?)"
+)
+POSTAL_PATTERN = re.compile(r"(?P<postal>\d{2}-\d{3}\s+Lublin)")
+PHONE_PATTERN = re.compile(r"(?:tel\.?|telefon(?:y)?|nr tel\.?)\s*[:.]?\s*(?P<phone>(?:\+48\s*)?81[\d\s-]{7,})", re.I)
+HOURS_PATTERN = re.compile(r"\d{1,2}[:.]\d{2}\s*(?:-|–|do)\s*\d{1,2}[:.]\d{2}")
+ROOM_PATTERN = re.compile(
+    r"\b(?:(?:pok[oó]j|sala)\s*(?:nr|numer)?\s*[\w/-]+(?:\s*\([^)]*\))?|stanowisk[oa]\s*(?:nr|numer)?\s*[\w/-]+)",
+    re.I,
+)
+
+
+def normalize_phone(phone):
+    return re.sub(r"\s+", " ", (phone or "").replace("-", " ")).strip()
+
+
+def normalize_hours(lines, start_index):
+    """Collect a compact hours sentence starting at or after a 'Godziny' line."""
+    collected = []
+    for line in lines[start_index:start_index + 5]:
+        if re.search(r"za pośrednictwem|elektronicznie|listownie|poczt", line, re.I) and collected:
+            break
+        if "godzin" in line.lower() or HOURS_PATTERN.search(line) or re.search(r"poniedzia|wtorek|środa|czwartek|piątek|sobota", line, re.I):
+            collected.append(line)
+    return " ".join(collected).strip()
+
+
+def extract_contact_from_text(text, department=""):
+    """Extract a factual contact record from a service-card free-text section."""
+    lines = clean_lines(text)
+    if not lines:
+        return {
+            "department": department,
+            "address": "",
+            "room": "",
+            "phone": "",
+            "hours": "",
+        }
+
+    address = ""
+    room = ""
+    phone = ""
+    hours = ""
+
+    for idx, line in enumerate(lines):
+        street_match = STREET_PATTERN.search(line)
+        if street_match and not address:
+            street = street_match.group("street").strip(" ,.;")
+            postal = ""
+            for next_line in lines[idx:idx + 3]:
+                postal_match = POSTAL_PATTERN.search(next_line)
+                if postal_match:
+                    postal = postal_match.group("postal")
+                    break
+            address = f"{street}, {postal}" if postal else street
+
+            suffix = line[street_match.end():].strip(" ,.;")
+            room_match = ROOM_PATTERN.search(suffix)
+            if room_match:
+                room = room_match.group(0).strip(" ,.;")
+
+        if not room:
+            room_match = ROOM_PATTERN.search(line)
+            if room_match:
+                room = room_match.group(0).strip(" ,.;")
+
+        if not phone:
+            phone_match = PHONE_PATTERN.search(line)
+            if phone_match:
+                phone = normalize_phone(phone_match.group("phone"))
+
+        if not hours and ("godzin" in line.lower() or HOURS_PATTERN.search(line)):
+            hours = normalize_hours(lines, idx)
+
+    if not phone:
+        phone_match = re.search(r"(?:\+48\s*)?81[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}", text or "")
+        if phone_match:
+            phone = normalize_phone(phone_match.group(0))
+
+    if not hours:
+        for idx, line in enumerate(lines):
+            if re.search(r"poniedzia|wtorek|środa|czwartek|piątek|sobota", line, re.I) and HOURS_PATTERN.search(line):
+                hours = normalize_hours(lines, idx)
+                break
+
+    return {
+        "department": department,
+        "address": address,
+        "room": room,
+        "phone": phone,
+        "hours": hours,
+    }
+
+
+def generate_department_contact_records():
+    """Parse contact details from service cards and save a structured contact lookup."""
+    filepath = os.path.join(DATA_DIR, "uslugi.json")
+    if not os.path.exists(filepath):
+        return []
+
+    with open(filepath, encoding="utf-8") as f:
+        services = json.load(f)
+
+    grouped = OrderedDict()
+    contact_sections = [
+        "Sposób i miejsce składania dokumentów",
+        "Sposób i miejsce odbioru dokumentów",
+    ]
+
+    for svc in services:
+        sections = svc.get("sections", {})
+        department = sections.get("Komórka organizacyjna załatwiająca sprawę", "")
+        if not department:
+            continue
+
+        for section_name in contact_sections:
+            contact = extract_contact_from_text(sections.get(section_name, ""), department=department)
+            if not any(contact.get(k) for k in ("address", "phone", "hours")):
+                continue
+            key = (
+                contact.get("department", ""),
+                contact.get("address", ""),
+                contact.get("room", ""),
+                contact.get("phone", ""),
+            )
+            if key not in grouped:
+                grouped[key] = {
+                    **contact,
+                    "source": "BIP karta usługi",
+                    "source_section": section_name,
+                    "services": [],
+                    "service_urls": [],
+                    "card_numbers": [],
+                }
+            record = grouped[key]
+            title = svc.get("title", "")
+            url = svc.get("url", "")
+            card_number = sections.get("Numer karty informacyjnej", "")
+            if title and title not in record["services"]:
+                record["services"].append(title)
+            if url and url not in record["service_urls"]:
+                record["service_urls"].append(url)
+            if card_number and card_number not in record["card_numbers"]:
+                record["card_numbers"].append(card_number)
+
+    records = list(grouped.values())
+    records.sort(key=lambda r: (r.get("department", ""), r.get("address", ""), r.get("room", "")))
+
+    os.makedirs(RAG_DATA_DIR, exist_ok=True)
+    with open(DEPARTMENTS_CONTACT_FILE, "w", encoding="utf-8") as f:
+        json.dump(records, f, ensure_ascii=False, indent=2)
+
+    return records
+
+
+def process_department_contacts():
+    """Create high-precision contact chunks from parsed service-card contact blocks."""
+    records = generate_department_contact_records()
+    docs = []
+
+    for idx, rec in enumerate(records):
+        department = rec.get("department", "")
+        services_preview = rec.get("services", [])[:12]
+        source_url = (rec.get("service_urls") or [""])[0]
+        lines = [
+            f"# Kontakt: {department}",
+            "Typ informacji: dane kontaktowe wydziału z kart usług BIP",
+            f"Wydział: {department}",
+        ]
+        if rec.get("address"):
+            lines.append(f"Adres: {rec['address']}")
+        if rec.get("room"):
+            lines.append(f"Pokój/stanowisko: {rec['room']}")
+        if rec.get("phone"):
+            lines.append(f"Telefon: {rec['phone']}")
+        if rec.get("hours"):
+            lines.append(f"Godziny przyjęć: {rec['hours']}")
+        if services_preview:
+            lines.append("")
+            lines.append("Sprawy obsługiwane w tym kontakcie:")
+            lines.extend(f"- {title}" for title in services_preview)
+
+        docs.append({
+            "id": f"department_contact_{slugify(department)}_{idx}",
+            "content": "\n".join(lines),
+            "metadata": {
+                "source_url": source_url,
+                "title": f"Kontakt: {department}",
+                "type": "department_contact",
+                "department": department,
+                "address": rec.get("address", ""),
+                "phone": rec.get("phone", ""),
+                "service_count": len(rec.get("services", [])),
+            },
+        })
+
+    return docs
+
+
+def load_services():
+    filepath = os.path.join(DATA_DIR, "uslugi.json")
+    if not os.path.exists(filepath):
+        return []
+    with open(filepath, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def find_service_by_title(services, title):
+    if not title:
+        return None
+    title_lower = title.lower()
+    for svc in services:
+        if svc.get("title", "").lower() == title_lower:
+            return svc
+    for svc in services:
+        svc_title = svc.get("title", "").lower()
+        if title_lower in svc_title or svc_title in title_lower:
+            return svc
+    return None
+
+
+def short_section(sections, name, max_chars=500):
+    value = re.sub(r"\s+", " ", sections.get(name, "") or "").strip()
+    if len(value) > max_chars:
+        return value[:max_chars].rsplit(" ", 1)[0] + "..."
+    return value
+
+
+def build_faq_answer(item, service):
+    if item.get("answer"):
+        return item["answer"]
+    if not service:
+        return "Sprawdź wskazane źródło BIP lub zadaj pytanie dokładniej, aby dopasować właściwą kartę usługi."
+
+    sections = service.get("sections", {})
+    parts = []
+    department = sections.get("Komórka organizacyjna załatwiająca sprawę", "")
+    if department:
+        parts.append(f"Sprawę prowadzi: {department}.")
+    cost = short_section(sections, "Wymagane opłaty", max_chars=220)
+    if cost:
+        parts.append(f"Opłaty: {cost}.")
+    deadline = short_section(sections, "Termin załatwienia sprawy", max_chars=220)
+    if deadline:
+        parts.append(f"Termin: {deadline}.")
+    documents = short_section(sections, "Wymagane załączniki", max_chars=260)
+    if documents and documents.lower() != "brak":
+        parts.append(f"Dokumenty: {documents}.")
+    where = short_section(sections, "Sposób i miejsce składania dokumentów", max_chars=320)
+    if where:
+        parts.append(f"Gdzie/jak złożyć: {where}.")
+    return " ".join(parts) if parts else "Szczegóły znajdują się w karcie usługi BIP."
+
+
+def process_faq():
+    """Create FAQ chunks mapping colloquial resident questions to formal BIP services."""
+    faq_items = load_json_file("faq.json", [])
+    services = load_services()
+    docs = []
+
+    for idx, item in enumerate(faq_items):
+        service = find_service_by_title(services, item.get("service_title", ""))
+        sections = service.get("sections", {}) if service else {}
+        title = item.get("question", "")
+        aliases = item.get("aliases", [])
+        answer = build_faq_answer(item, service)
+        source_url = item.get("source_url") or (service or {}).get("url", "")
+        department = item.get("department") or sections.get("Komórka organizacyjna załatwiająca sprawę", "")
+        service_title = item.get("service_title") or (service or {}).get("title", "")
+
+        lines = [
+            f"# FAQ: {title}",
+            "Typ informacji: najczęstsze pytanie mieszkańca",
+            f"Pytanie: {title}",
+        ]
+        if aliases:
+            lines.append("Pytania podobne: " + "; ".join(aliases))
+        if service_title:
+            lines.append(f"Formalna karta usługi: {service_title}")
+        if department:
+            lines.append(f"Wydział: {department}")
+        lines.extend(["", "Odpowiedź:", answer])
+
+        docs.append({
+            "id": f"faq_{item.get('id') or idx}",
+            "content": "\n".join(lines),
+            "metadata": {
+                "source_url": source_url,
+                "title": title,
+                "type": "faq",
+                "category": item.get("category", ""),
+                "department": department,
+                "service_title": service_title,
+            },
+        })
+
+    return docs
+
+
+def process_fee_tables():
+    """Create focused fee chunks from curated common fees and service-card fee sections."""
+    docs = []
+    fees = load_json_file("fees.json", {})
+    source_url = fees.get("source_url", "")
+
+    for idx, item in enumerate(fees.get("items", [])):
+        title = item.get("title", "")
+        lines = [
+            f"# Opłata skarbowa: {title}",
+            "Typ informacji: tabela opłat",
+            f"Czynność: {title}",
+            f"Kwota: {item.get('amount', '')}",
+        ]
+        if item.get("when"):
+            lines.append(f"Kiedy pobierana: {item['when']}")
+        if item.get("exemptions"):
+            lines.append(f"Zwolnienia/uwagi: {item['exemptions']}")
+        if item.get("legal_basis"):
+            lines.append(f"Podstawa: {item['legal_basis']}")
+
+        docs.append({
+            "id": f"fee_common_{item.get('id') or idx}",
+            "content": "\n".join(lines),
+            "metadata": {
+                "source_url": item.get("source_url") or source_url,
+                "title": title,
+                "type": "fee_table",
+                "category": "common_fee",
+                "amount": item.get("amount", ""),
+            },
+        })
+
+    for svc in load_services():
+        sections = svc.get("sections", {})
+        fee_text = sections.get("Wymagane opłaty", "")
+        if not fee_text or re.fullmatch(r"\s*Brak\s*", fee_text, re.I):
+            continue
+        if not re.search(r"zł|PLN|opłat|bezpłat|rachunek|konto|przelew", fee_text, re.I):
+            continue
+
+        title = svc.get("title", "")
+        department = sections.get("Komórka organizacyjna załatwiająca sprawę", "")
+        card_number = sections.get("Numer karty informacyjnej", "")
+        content = "\n".join([
+            f"# Opłaty w usłudze: {title}",
+            "Typ informacji: opłaty z karty usługi BIP",
+            f"Usługa: {title}",
+            f"Wydział: {department}",
+            f"Karta: {card_number}",
+            "",
+            short_section(sections, "Wymagane opłaty", max_chars=1200),
+        ])
+        docs.append({
+            "id": f"fee_service_{card_number or slugify(title)}",
+            "content": content,
+            "metadata": {
+                "source_url": svc.get("url", ""),
+                "title": title,
+                "type": "fee_table",
+                "category": "service_fee",
+                "department": department,
+                "card_number": card_number,
+            },
+        })
+
+    return docs
+
+
+def detect_online_channels(text):
+    channels = []
+    checks = [
+        ("ePUAP", r"epuap|/UMLublin/SkrytkaESP"),
+        ("pismo ogólne do podmiotu publicznego", r"pismo og[oó]lne"),
+        ("Profil Zaufany / podpis zaufany", r"profil zaufany|podpis zaufany"),
+        ("e-dowód", r"e-dow[oó]d"),
+        ("podpis kwalifikowany", r"podpis kwalifikowany"),
+        ("CEIDG online", r"ceidg"),
+        ("mObywatel", r"mobywatel"),
+        ("e-Doręczenia", r"e-?dor[eę]cze"),
+    ]
+    for label, pattern in checks:
+        if re.search(pattern, text or "", re.I):
+            channels.append(label)
+    if not channels and re.search(r"elektronicznie|internet|online", text or "", re.I):
+        channels.append("elektronicznie")
+    return channels
+
+
+def process_online_services():
+    """Create an online-services map from service-card submission instructions."""
+    docs = []
+    online_services = []
+
+    for svc in load_services():
+        sections = svc.get("sections", {})
+        submission = sections.get("Sposób i miejsce składania dokumentów", "")
+        channels = detect_online_channels(submission)
+        if not channels:
+            continue
+        title = svc.get("title", "")
+        department = sections.get("Komórka organizacyjna załatwiająca sprawę", "")
+        card_number = sections.get("Numer karty informacyjnej", "")
+        online_services.append(title)
+
+        lines = [
+            f"# Usługa online: {title}",
+            "Typ informacji: mapa usług online/ePUAP",
+            f"Usługa: {title}",
+            f"Wydział: {department}",
+            f"Karta: {card_number}",
+            "Kanały elektroniczne: " + ", ".join(channels),
+            "",
+            "Instrukcja z karty BIP:",
+            short_section(sections, "Sposób i miejsce składania dokumentów", max_chars=1000),
+        ]
+        docs.append({
+            "id": f"online_service_{card_number or slugify(title)}",
+            "content": "\n".join(lines),
+            "metadata": {
+                "source_url": svc.get("url", ""),
+                "title": title,
+                "type": "online_service",
+                "category": "service_online",
+                "department": department,
+                "channels": ", ".join(channels),
+            },
+        })
+
+    overview = [
+        "# Co można załatwić online w Urzędzie Miasta Lublin",
+        "Typ informacji: mapa usług online/ePUAP",
+        f"Liczba kart usług z kanałem elektronicznym: {len(online_services)}",
+        "Najczęstsze kanały: ePUAP, pismo ogólne do podmiotu publicznego, Profil Zaufany, e-dowód, podpis kwalifikowany, CEIDG, mObywatel.",
+        "",
+        "Przykładowe usługi online:",
+    ]
+    overview.extend(f"- {title}" for title in sorted(online_services)[:80])
+    docs.insert(0, {
+        "id": "online_service_overview",
+        "content": "\n".join(overview),
+        "metadata": {
+            "source_url": "https://bip.lublin.eu/e-urzad/opisy-uslug/",
+            "title": "Mapa usług online/ePUAP",
+            "type": "online_service",
+            "category": "overview",
+            "department": "",
+            "channels": "ePUAP, Profil Zaufany, CEIDG, mObywatel",
+        },
+    })
+
+    return docs
+
+
+def process_practical_info():
+    """Create chunks for practical office info from curated official-source records."""
+    data = load_json_file("practical_info.json", {"items": []})
+    docs = []
+
+    for idx, item in enumerate(data.get("items", [])):
+        title = item.get("title", "")
+        location = item.get("location", "")
+        lines = [
+            f"# {title}",
+            "Typ informacji: praktyczne informacje dla mieszkańca",
+        ]
+        if location:
+            lines.append(f"Lokalizacja: {location}")
+        for key, label in [
+            ("address", "Adres"),
+            ("public_transport", "Dojazd komunikacją"),
+            ("parking", "Parking"),
+            ("queue_system", "System kolejkowy"),
+            ("accessibility", "Dostępność"),
+            ("notes", "Uwagi"),
+        ]:
+            value = item.get(key)
+            if isinstance(value, list):
+                value = "; ".join(value)
+            if value:
+                lines.append(f"{label}: {value}")
+
+        docs.append({
+            "id": f"practical_info_{item.get('id') or idx}",
+            "content": "\n".join(lines),
+            "metadata": {
+                "source_url": item.get("source_url", ""),
+                "title": title,
+                "type": "practical_info",
+                "category": item.get("category", ""),
+                "location": location,
+            },
+        })
+
+    return docs
+
+
+def process_office_calendar():
+    """Create chunks for closures, holiday rules, and predictable high-traffic periods."""
+    data = load_json_file("office_calendar.json", {"items": []})
+    docs = []
+
+    for idx, item in enumerate(data.get("items", [])):
+        title = item.get("title", "")
+        lines = [
+            f"# {title}",
+            "Typ informacji: kalendarz i terminy urzędowe",
+        ]
+        for key, label in [
+            ("period", "Okres"),
+            ("status", "Status"),
+            ("details", "Szczegóły"),
+            ("resident_advice", "Wskazówka dla mieszkańca"),
+        ]:
+            value = item.get(key)
+            if isinstance(value, list):
+                value = "; ".join(value)
+            if value:
+                lines.append(f"{label}: {value}")
+
+        docs.append({
+            "id": f"office_calendar_{item.get('id') or idx}",
+            "content": "\n".join(lines),
+            "metadata": {
+                "source_url": item.get("source_url", ""),
+                "title": title,
+                "type": "office_calendar",
+                "category": item.get("category", ""),
+                "period": item.get("period", ""),
+            },
+        })
+
+    return docs
 
 
 def process_uslugi():
@@ -419,6 +996,36 @@ def main():
     print("  Processing department profiles...")
     prev = len(all_docs)
     all_docs.extend(process_departments())
+    print(f"    -> {len(all_docs) - prev} chunks")
+
+    print("  Processing department contacts...")
+    prev = len(all_docs)
+    all_docs.extend(process_department_contacts())
+    print(f"    -> {len(all_docs) - prev} chunks")
+
+    print("  Processing FAQ...")
+    prev = len(all_docs)
+    all_docs.extend(process_faq())
+    print(f"    -> {len(all_docs) - prev} chunks")
+
+    print("  Processing fee tables...")
+    prev = len(all_docs)
+    all_docs.extend(process_fee_tables())
+    print(f"    -> {len(all_docs) - prev} chunks")
+
+    print("  Processing online services map...")
+    prev = len(all_docs)
+    all_docs.extend(process_online_services())
+    print(f"    -> {len(all_docs) - prev} chunks")
+
+    print("  Processing practical info...")
+    prev = len(all_docs)
+    all_docs.extend(process_practical_info())
+    print(f"    -> {len(all_docs) - prev} chunks")
+
+    print("  Processing office calendar...")
+    prev = len(all_docs)
+    all_docs.extend(process_office_calendar())
     print(f"    -> {len(all_docs) - prev} chunks")
 
     print("  Processing struktura organizacyjna...")

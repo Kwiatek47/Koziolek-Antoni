@@ -1,0 +1,360 @@
+[
+  {
+    "id": "dowod_nowy",
+    "question": "Jak wyrobić dowód osobisty?",
+    "service_title": "Wydanie dowodu osobistego",
+    "aliases": ["nowy dowód", "wymiana dowodu", "wniosek o dowód", "dowód dla dziecka"],
+    "category": "dowody"
+  },
+  {
+    "id": "dowod_zgubiony",
+    "question": "Zgubiłem dowód osobisty, co zrobić?",
+    "service_title": "Zgłoszenie utraty lub uszkodzenia dowodu osobistego",
+    "aliases": ["skradziony dowód", "utrata dowodu", "zniszczony dowód", "unieważnić dowód"],
+    "category": "dowody"
+  },
+  {
+    "id": "pesel_zastrzezenie",
+    "question": "Jak zastrzec numer PESEL w urzędzie?",
+    "service_title": "Zastrzeżenie albo cofnięcie zastrzeżenia numeru PESEL w organie gminy",
+    "aliases": ["blokada PESEL", "cofnąć zastrzeżenie PESEL", "kradzież danych PESEL"],
+    "category": "dowody"
+  },
+  {
+    "id": "meldunek_staly",
+    "question": "Jak zameldować się na pobyt stały?",
+    "service_title": "Zameldowanie obywatela polskiego na pobyt stały",
+    "aliases": ["meldunek stały", "zmiana meldunku", "zameldować się w Lublinie"],
+    "category": "meldunek"
+  },
+  {
+    "id": "meldunek_czasowy",
+    "question": "Jak zameldować się czasowo?",
+    "service_title": "Zameldowanie obywatela polskiego na pobyt czasowy trwający ponad 3 miesiące",
+    "aliases": ["meldunek czasowy", "student meldunek", "tymczasowy adres"],
+    "category": "meldunek"
+  },
+  {
+    "id": "wymeldowanie",
+    "question": "Jak się wymeldować?",
+    "service_title": "Wymeldowanie obywatela polskiego z pobytu stałego",
+    "aliases": ["wypisać z meldunku", "wymeldować z mieszkania", "usunąć meldunek"],
+    "category": "meldunek"
+  },
+  {
+    "id": "firma_start",
+    "question": "Chcę założyć działalność gospodarczą, gdzie to zrobić?",
+    "service_title": "Rejestracja działalności gospodarczej (wpis do CEIDG)",
+    "aliases": ["założyć firmę", "jednoosobowa działalność", "wpis CEIDG", "firma online"],
+    "category": "dzialalnosc"
+  },
+  {
+    "id": "firma_zmiana",
+    "question": "Jak zmienić dane firmy w CEIDG?",
+    "service_title": "Zmiana wpisu do CEIDG",
+    "aliases": ["zmiana adresu firmy", "dopisać PKD", "zmienić CEIDG"],
+    "category": "dzialalnosc"
+  },
+  {
+    "id": "auto_zagranica",
+    "question": "Ile kosztuje rejestracja samochodu z zagranicy?",
+    "service_title": "Rejestracja pojazdu z zagranicy",
+    "aliases": ["auto z importu", "samochód sprowadzony", "tablice po imporcie"],
+    "category": "pojazdy"
+  },
+  {
+    "id": "auto_uzywane",
+    "question": "Jak przerejestrować używany samochód kupiony w Polsce?",
+    "service_title": "Rejestracja pojazdu zarejestrowanego na terenie RP",
+    "aliases": ["kupiłem auto", "zmiana właściciela pojazdu", "rejestracja używanego auta"],
+    "category": "pojazdy"
+  },
+  {
+    "id": "auto_nowe",
+    "question": "Jak zarejestrować nowy samochód z salonu?",
+    "service_title": "Rejestracja nowego pojazdu",
+    "aliases": ["nowe auto", "pierwsza rejestracja pojazdu", "tablice do auta z salonu"],
+    "category": "pojazdy"
+  },
+  {
+    "id": "sprzedaz_auta",
+    "question": "Sprzedałem samochód, ile mam czasu na zgłoszenie?",
+    "service_title": "Zgłoszenie zbycia pojazdu",
+    "aliases": ["zgłoszenie sprzedaży auta", "zbycie pojazdu", "umowa sprzedaży samochodu"],
+    "category": "pojazdy"
+  },
+  {
+    "id": "wyrejestrowanie_auta",
+    "question": "Jak wyrejestrować samochód po złomowaniu albo kradzieży?",
+    "service_title": "Wyrejestrowanie pojazdu (kradzież, złomowanie, zniszczenie)",
+    "aliases": ["złomowanie auta", "kradzież samochodu", "kasacja pojazdu"],
+    "category": "pojazdy"
+  },
+  {
+    "id": "rejestracja_pojazdu_online",
+    "question": "Czy mogę złożyć wniosek o rejestrację pojazdu elektronicznie?",
+    "service_title": "Elektroniczny wniosek o rejestrację pojazdu, rejestrację czasową pojazdu, wyrejestrowanie pojazdu",
+    "aliases": ["rejestracja auta online", "ePUAP rejestracja pojazdu", "wniosek elektroniczny pojazd"],
+    "category": "online"
+  },
+  {
+    "id": "prawo_jazdy_zmiana_danych",
+    "question": "Jak wymienić prawo jazdy po zmianie nazwiska?",
+    "service_title": "Wymiana prawa jazdy z powodu zmiany danych",
+    "aliases": ["prawo jazdy po ślubie", "nowe dane w prawie jazdy", "wymienić prawko"],
+    "category": "kierowcy"
+  },
+  {
+    "id": "prawo_jazdy_waznosc",
+    "question": "Kończy mi się ważność prawa jazdy, co zrobić?",
+    "service_title": "Wymiana prawa jazdy z powodu upływu terminu ważności",
+    "aliases": ["przedłużyć prawo jazdy", "badania do prawa jazdy", "termin ważności prawka"],
+    "category": "kierowcy"
+  },
+  {
+    "id": "pkk",
+    "question": "Jak uzyskać numer PKK do kursu prawa jazdy?",
+    "service_title": "Profil kandydata na kierowcę",
+    "aliases": ["profil kandydata na kierowcę", "pierwsze prawo jazdy", "kurs na prawko"],
+    "category": "kierowcy"
+  },
+  {
+    "id": "wtornik_prawa_jazdy",
+    "question": "Zgubiłem prawo jazdy, jak dostać duplikat?",
+    "service_title": "Wydanie wtórnika prawa jazdy",
+    "aliases": ["skradzione prawko", "duplikat prawa jazdy", "wtórnik prawka"],
+    "category": "kierowcy"
+  },
+  {
+    "id": "miedzynarodowe_prawo_jazdy",
+    "question": "Jak wyrobić międzynarodowe prawo jazdy?",
+    "service_title": "Wydanie międzynarodowego prawa jazdy",
+    "aliases": ["prawo jazdy za granicę", "international driving permit", "jazda poza UE"],
+    "category": "kierowcy"
+  },
+  {
+    "id": "odpis_aktu",
+    "question": "Jak dostać odpis aktu urodzenia, małżeństwa albo zgonu?",
+    "service_title": "Odpis aktu urodzenia, małżeństwa, zgonu",
+    "aliases": ["duplikat aktu", "akt urodzenia", "akt małżeństwa", "akt zgonu"],
+    "category": "usc"
+  },
+  {
+    "id": "rejestracja_dziecka",
+    "question": "Jak zarejestrować urodzenie dziecka?",
+    "service_title": "Rejestracja dziecka",
+    "aliases": ["akt urodzenia dziecka", "zgłoszenie narodzin", "urodziło się dziecko"],
+    "category": "usc"
+  },
+  {
+    "id": "rejestracja_zgonu",
+    "question": "Jak zgłosić zgon?",
+    "service_title": "Rejestracja zgonu",
+    "aliases": ["akt zgonu", "karta zgonu", "śmierć bliskiego"],
+    "category": "usc"
+  },
+  {
+    "id": "slub_cywilny",
+    "question": "Jak załatwić ślub cywilny w USC?",
+    "service_title": "Zawarcie małżeństwa w USC - ślub cywilny",
+    "aliases": ["termin ślubu", "małżeństwo w urzędzie", "opłata za ślub"],
+    "category": "usc"
+  },
+  {
+    "id": "slub_konkordatowy",
+    "question": "Jak uzyskać zaświadczenie do ślubu konkordatowego?",
+    "service_title": "Zaświadczenie do ślubu konkordatowego",
+    "aliases": ["ślub kościelny", "zaświadczenie z USC do kościoła", "konkordat"],
+    "category": "usc"
+  },
+  {
+    "id": "powrot_do_nazwiska",
+    "question": "Jak wrócić do nazwiska po rozwodzie?",
+    "service_title": "Powrót osoby rozwiedzionej do nazwiska noszonego przed zawarciem małżeństwa",
+    "aliases": ["zmiana nazwiska po rozwodzie", "wrócić do panieńskiego", "nazwisko po rozwodzie"],
+    "category": "usc"
+  },
+  {
+    "id": "stan_cywilny",
+    "question": "Jak uzyskać zaświadczenie o stanie cywilnym?",
+    "service_title": "Zaświadczenie o stanie cywilnym",
+    "aliases": ["potwierdzenie stanu cywilnego", "zaświadczenie z USC", "czy jestem kawalerem"],
+    "category": "usc"
+  },
+  {
+    "id": "becikowe",
+    "question": "Jak złożyć wniosek o becikowe?",
+    "service_title": "Jednorazowa zapomoga z tytułu urodzenia się dziecka",
+    "aliases": ["1000 zł na dziecko", "zapomoga po urodzeniu", "świadczenie za urodzenie dziecka"],
+    "category": "swiadczenia"
+  },
+  {
+    "id": "dodatek_mieszkaniowy",
+    "question": "Jak złożyć wniosek o dodatek mieszkaniowy?",
+    "service_title": "Dodatki mieszkaniowe",
+    "aliases": ["dopłata do czynszu", "dodatek do mieszkania", "pomoc w opłatach za mieszkanie"],
+    "category": "swiadczenia"
+  },
+  {
+    "id": "zasilek_rodzinny",
+    "question": "Jak ubiegać się o zasiłek rodzinny?",
+    "service_title": "Zasiłek rodzinny i dodatki do zasiłku rodzinnego",
+    "aliases": ["świadczenia rodzinne", "zasiłek na dziecko", "dodatek rodzinny"],
+    "category": "swiadczenia"
+  },
+  {
+    "id": "za_zyciem",
+    "question": "Jak złożyć wniosek o świadczenie z programu Za życiem?",
+    "service_title": "Program \"Za życiem\" (jednorazowe świadczenie - 4000 zł)",
+    "aliases": ["4000 zł za życiem", "świadczenie za życiem", "pomoc po urodzeniu dziecka"],
+    "category": "swiadczenia"
+  },
+  {
+    "id": "swiadczenie_pielegnacyjne",
+    "question": "Jak złożyć wniosek o świadczenie pielęgnacyjne?",
+    "service_title": "Świadczenie pielęgnacyjne",
+    "aliases": ["opieka nad osobą niepełnosprawną", "zasiłek dla opiekuna", "świadczenie opiekuna"],
+    "category": "swiadczenia"
+  },
+  {
+    "id": "wypis_wyrys",
+    "question": "Jak załatwić wypis i wyrys z planu zagospodarowania?",
+    "service_title": "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrzennego lub Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego",
+    "aliases": ["MPZP", "plan zagospodarowania", "przeznaczenie działki"],
+    "category": "planowanie"
+  },
+  {
+    "id": "warunki_zabudowy",
+    "question": "Jak uzyskać decyzję o warunkach zabudowy?",
+    "service_title": "Ustalenie warunków zabudowy",
+    "aliases": ["WZ", "decyzja WZ", "budować bez planu"],
+    "category": "planowanie"
+  },
+  {
+    "id": "pozwolenie_budowa",
+    "question": "Jak złożyć wniosek o pozwolenie na budowę?",
+    "service_title": "Pozwolenie na budowę",
+    "aliases": ["pozwolenie budowlane", "budowa domu", "projekt budowlany"],
+    "category": "budownictwo"
+  },
+  {
+    "id": "zgloszenie_robot",
+    "question": "Jak zgłosić roboty budowlane?",
+    "service_title": "Zgłoszenie budowy lub wykonywania innych robót budowlanych",
+    "aliases": ["zgłoszenie budowy", "remont bez pozwolenia", "roboty budowlane"],
+    "category": "budownictwo"
+  },
+  {
+    "id": "dziennik_budowy",
+    "question": "Jak uzyskać dziennik budowy?",
+    "service_title": "Wydanie i rejestracja dziennika budowy",
+    "aliases": ["rejestracja dziennika budowy", "dziennik robót", "odebrać dziennik budowy"],
+    "category": "budownictwo"
+  },
+  {
+    "id": "podatek_nieruchomosci",
+    "question": "Kupiłem mieszkanie, jak zgłosić podatek od nieruchomości?",
+    "service_title": "Złożenie informacji (korekty informacji) w sprawie podatku od nieruchomości przez osoby fizyczne",
+    "aliases": ["IN-1", "podatek od mieszkania", "zgłosić nieruchomość"],
+    "category": "podatki"
+  },
+  {
+    "id": "zaswiadczenie_niezaleganie",
+    "question": "Jak uzyskać zaświadczenie o niezaleganiu w podatkach?",
+    "service_title": "Złożenie wniosku o wydanie zaświadczenia o niezaleganiu w podatkach lub stwierdzającego stan zaległości",
+    "aliases": ["nie zalegam z podatkami", "zaświadczenie podatkowe", "potwierdzenie braku zaległości"],
+    "category": "podatki"
+  },
+  {
+    "id": "zwrot_oplaty_skarbowej",
+    "question": "Jak odzyskać nienależnie zapłaconą opłatę skarbową?",
+    "service_title": "Złożenie wniosku o zwrot opłaty skarbowej lub określenie wysokości nadpłaty w opłacie skarbowej",
+    "aliases": ["zwrot opłaty", "nadpłata opłaty skarbowej", "omyłkowa wpłata"],
+    "category": "podatki"
+  },
+  {
+    "id": "rzeczy_znalezione",
+    "question": "Gdzie jest Biuro Rzeczy Znalezionych?",
+    "service_title": "Biuro Rzeczy Znalezionych",
+    "aliases": ["zgubiony portfel", "znaleziony telefon", "zgubione klucze"],
+    "category": "organizacja"
+  },
+  {
+    "id": "skarga",
+    "question": "Jak złożyć skargę do urzędu?",
+    "service_title": "Skargi składane do Prezydenta Miasta Lublin",
+    "aliases": ["skarga na urząd", "zażalenie na pracownika", "problem z obsługą"],
+    "category": "organizacja"
+  },
+  {
+    "id": "informacja_publiczna",
+    "question": "Jak złożyć wniosek o informację publiczną?",
+    "service_title": "Udostępnianie informacji publicznej na wniosek",
+    "aliases": ["dostęp do informacji", "jawność dokumentów", "informacje z urzędu"],
+    "category": "organizacja"
+  },
+  {
+    "id": "stowarzyszenie_zwykle",
+    "question": "Jak wpisać stowarzyszenie zwykłe do ewidencji?",
+    "service_title": "Wniosek o wpis do ewidencji stowarzyszeń zwykłych",
+    "aliases": ["założyć stowarzyszenie zwykłe", "ewidencja stowarzyszeń", "stowarzyszenie bez KRS"],
+    "category": "organizacja"
+  },
+  {
+    "id": "wycinka_drzew",
+    "question": "Czy muszę zgłosić usunięcie drzewa z działki?",
+    "service_title": "Zgłoszenie zamiaru usunięcia drzew (dot. osób fizycznych)",
+    "aliases": ["wycinka drzewa", "usunąć drzewo", "drzewo na prywatnej działce"],
+    "category": "srodowisko"
+  },
+  {
+    "id": "drzewa_pas_drogowy",
+    "question": "Gdzie zgłosić problem z drzewem przy drodze?",
+    "service_title": "Podanie w sprawie drzew rosnących w pasie drogowym (tereny publiczne)",
+    "aliases": ["drzewo w pasie drogowym", "gałęzie przy ulicy", "drzewo zagraża bezpieczeństwu"],
+    "category": "srodowisko"
+  },
+  {
+    "id": "karta_parkingowa",
+    "question": "Jak uzyskać kartę parkingową dla osoby niepełnosprawnej?",
+    "service_title": "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+    "aliases": ["niebieska karta parkingowa", "parkowanie dla osoby niepełnosprawnej", "miejsce dla niepełnosprawnych"],
+    "category": "dostepnosc"
+  },
+  {
+    "id": "orzeczenie_niepelnosprawnosc",
+    "question": "Jak złożyć wniosek o orzeczenie o niepełnosprawności?",
+    "service_title": "Wydawanie orzeczeń o niepełnosprawności",
+    "aliases": ["komisja orzekająca", "orzeczenie dziecka", "niepełnosprawność dokumenty"],
+    "category": "dostepnosc"
+  },
+  {
+    "id": "alkohol_zezwolenie",
+    "question": "Jak uzyskać zezwolenie na sprzedaż alkoholu?",
+    "service_title": "Wydanie zezwolenia na detaliczną sprzedaż napojów alkoholowych",
+    "aliases": ["koncesja na alkohol", "sprzedaż alkoholu sklep", "zezwolenie alkoholowe"],
+    "category": "dzialalnosc"
+  },
+  {
+    "id": "cites",
+    "question": "Jak zarejestrować zwierzę egzotyczne CITES?",
+    "service_title": "Rejestracja zwierząt należących do gatunków podlegających ograniczeniom na podstawie przepisów prawa Unii Europejskiej",
+    "aliases": ["zwierzę egzotyczne", "CITES", "rejestracja żółwia"],
+    "category": "srodowisko"
+  },
+  {
+    "id": "petycja",
+    "question": "Jak złożyć petycję do Prezydenta Miasta Lublin?",
+    "service_title": "Petycje do Prezydenta Miasta Lublin",
+    "aliases": ["petycja do miasta", "wniosek zbiorowy", "postulat mieszkańców"],
+    "category": "organizacja"
+  },
+  {
+    "id": "rezerwacja_wizyty",
+    "question": "Czy warto rezerwować wizytę w urzędzie?",
+    "aliases": ["umówić wizytę", "rezerwacja terminu", "kolejka w urzędzie"],
+    "answer": "Tak. BIP Urzędu Miasta Lublin zachęca do wcześniejszej rezerwacji wizyty, a szczegółowe godziny pracy komórek organizacyjnych znajdują się w opisach usług. Dla spraw z konkretną kartą usługi sprawdź też wskazany wydział, adres, pokój i godziny przyjęć.",
+    "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin,1,18162,2.html",
+    "category": "organizacja"
+  }
+]
