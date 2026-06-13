@@ -240,33 +240,26 @@ def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
 
 
 # --- Structured extraction prompt ---
-EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin.
+EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Odpowiadaj JSON-em.
 
-ZADANIE: Na podstawie kontekstu z BIP Lublin odpowiedz JSON-em z tymi polami:
-- summary: 1-2 zdania opis sprawy
-- where.address: PEŁNY adres z kontekstu (np. "ul. Spokojna 2, 20-074 Lublin")
-- where.room: pokój/piętro/stanowisko z kontekstu
-- where.phone: numer telefonu z kontekstu (zaczyna się od 81)
-- where.hours: godziny przyjęć z kontekstu (np. "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15")
-- where.department: nazwa wydziału
-- how.steps: lista kroków z sekcji "Sposób i miejsce składania"
-- how.required_documents: lista z sekcji "Wymagane załączniki" i "Dokumenty do wglądu"
-- how.forms: nazwy formularzy/wniosków z kontekstu
-- how.submission_method: sposób złożenia (osobiście/online/ePUAP)
-- how_much.cost: opłata z sekcji "Wymagane opłaty"
-- how_much.time_estimate: czas z sekcji "Termin załatwienia sprawy"
-- how_much.legal_basis: podstawa prawna z sekcji "Podstawa prawna"
-- booking: true jeśli wymagana wizyta osobista
-- additional_info: ważne uwagi
+Format:
+{"summary":"krótko o sprawie","where":{"address":"pełny adres z ulicą i nr (np. ul. Spokojna 2, 20-074 Lublin)","room":"pokój/piętro","phone":"tel. z kontekstu (81 XXX XXXX)","hours":"godziny z kontekstu","department":"wydział"},"how":{"steps":["krok z kontekstu"],"required_documents":["dokument z kontekstu"],"forms":["formularz z kontekstu np. SA-075-01"],"submission_method":"osobiście/online/ePUAP"},"how_much":{"cost":"opłata z kontekstu","time_estimate":"czas wydania z kontekstu","legal_basis":"ustawa z kontekstu"},"who":null,"booking":true/false,"additional_info":"uwagi z kontekstu lub null"}
 
-PRZYKŁAD prawidłowej odpowiedzi:
-{"summary":"Wydanie dowodu osobistego w Urzędzie Miasta Lublin.","where":{"address":"ul. Spokojna 2, 20-074 Lublin","room":"pokój nr 221 (II piętro)","phone":"81 466 3562","hours":"poniedziałek-piątek 7:45-15:15","department":"Wydział Spraw Administracyjnych"},"how":{"steps":["Wypełnij wniosek o wydanie dowodu osobistego","Przygotuj aktualne zdjęcie 35x45mm","Złóż wniosek osobiście w urzędzie","Odbierz dowód osobiście"],"required_documents":["wniosek o wydanie dowodu osobistego","kolorowe zdjęcie 35x45mm","dotychczasowy dowód osobisty"],"forms":["SA-075-01"],"submission_method":"osobiście"},"how_much":{"cost":"bezpłatne","time_estimate":"30 dni","legal_basis":"Ustawa z dnia 6 sierpnia 2010 r. o dowodach osobistych (Dz.U. 2022 poz. 671)"},"who":null,"booking":true,"additional_info":null}
-
-ZASADY:
-- Użyj WYŁĄCZNIE danych z kontekstu poniżej
-- Jeśli pole nie ma danych w kontekście -> ustaw null (nie [nazwa], nie placeholder)
-- Nie wymyślaj telefonów, adresów, dokumentów
-- Odpowiedz TYLKO JSON-em"""
+Zasady:
+- TYLKO dane z kontekstu, null jeśli brak danych
+- W "address" podaj adres z sekcji "Sposób i miejsce składania" - szukaj "ul." + numer + kod pocztowy
+- W "hours" podaj DOKŁADNE godziny z kontekstu (np. "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15")
+- W "phone" podaj numer z kontekstu - zaczyna się od "81" lub "tel."
+- W "steps" podaj 3-5 KONKRETNYCH kroków z sekcji "Sposób i miejsce składania"
+- W "required_documents" wymień dokumenty z sekcji "Wymagane załączniki" i "Dokumenty do wglądu"
+- W "forms" podaj KODY formularzy (np. SA-075-01, KM-008-01)
+- W "time_estimate" podaj czas z "Termin załatwienia sprawy"
+- W "cost" podaj opłatę z "Wymagane opłaty"
+- W "legal_basis" podaj ustawę z sekcji "Podstawa prawna"
+- "who" = null
+- booking=true gdy wizyta osobista wymagana
+- NIE wymyślaj danych - null jeśli nie ma w kontekście
+- Odpowiedz WYLACZNIE JSON"""
 
 
 def get_structured_response(question: str, context: str) -> dict:
@@ -278,9 +271,7 @@ def get_structured_response(question: str, context: str) -> dict:
 
 PYTANIE MIESZKAŃCA: {question}
 
-INSTRUKCJA: Wyciągnij dane z kontekstu powyżej. Pole "address" to ADRES FIZYCZNY (np. "ul. Spokojna 2, Lublin"), NIE sposób złożenia. Pole "submission_method" to sposób złożenia (osobiście/online). NIE mieszaj tych pól.
-
-Odpowiedz TYLKO poprawnym JSON-em:"""
+Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
 
     response = llm.create_chat_completion(
         messages=[
