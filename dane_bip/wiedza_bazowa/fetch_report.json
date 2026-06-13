@@ -1,0 +1,259 @@
+{
+  "timestamp": "2026-06-13T12:26:31.990804",
+  "sections": {
+    "ustawy": [
+      {
+        "name": "KPA",
+        "status": "ok",
+        "articles_fetched": 23,
+        "articles_total": 23
+      },
+      {
+        "name": "Ustawa o dowodach osobistych",
+        "status": "ok",
+        "articles_fetched": 15,
+        "articles_total": 15
+      },
+      {
+        "name": "Ustawa o ewidencji ludności",
+        "status": "ok",
+        "articles_fetched": 40,
+        "articles_total": 40
+      },
+      {
+        "name": "Prawo o ruchu drogowym",
+        "status": "ok",
+        "articles_fetched": 28,
+        "articles_total": 28
+      },
+      {
+        "name": "Ustawa o opłacie skarbowej",
+        "status": "ok",
+        "articles_fetched": 47,
+        "articles_total": 47
+      },
+      {
+        "name": "Ustawa o informatyzacji",
+        "status": "ok",
+        "articles_fetched": 20,
+        "articles_total": 20
+      },
+      {
+        "name": "Ustawa o aktach stanu cywilnego",
+        "status": "ok",
+        "articles_fetched": 50,
+        "articles_total": 50
+      },
+      {
+        "name": "Ustawa o samorządzie gminnym",
+        "status": "ok",
+        "articles_fetched": 70,
+        "articles_total": 70
+      }
+    ],
+    "pojecia": [
+      {
+        "term": "PESEL",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 539
+      },
+      {
+        "term": "decyzja administracyjna",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 65
+      },
+      {
+        "term": "postanowienie",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 37
+      },
+      {
+        "term": "zaświadczenie",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 62
+      },
+      {
+        "term": "zażalenie",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 47
+      },
+      {
+        "term": "odwołanie",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 54
+      },
+      {
+        "term": "tryb odwoławczy",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 58
+      },
+      {
+        "term": "dowód osobisty",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 385
+      },
+      {
+        "term": "paszport",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 385
+      },
+      {
+        "term": "prawo jazdy",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 385
+      },
+      {
+        "term": "meldunek",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 385
+      },
+      {
+        "term": "akt urodzenia",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 52
+      },
+      {
+        "term": "akt małżeństwa",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 42
+      },
+      {
+        "term": "akt zgonu",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 51
+      },
+      {
+        "term": "ePUAP",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 397
+      },
+      {
+        "term": "profil zaufany",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 244
+      },
+      {
+        "term": "e-dowód",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 385
+      },
+      {
+        "term": "mObywatel",
+        "status": "ok",
+        "source": "gov_pl",
+        "words": 385
+      },
+      {
+        "term": "podpis kwalifikowany",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 45
+      },
+      {
+        "term": "opłata skarbowa",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 56
+      },
+      {
+        "term": "KPA",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 47
+      },
+      {
+        "term": "wniosek",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 42
+      },
+      {
+        "term": "załącznik",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 39
+      },
+      {
+        "term": "termin załatwienia",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 50
+      },
+      {
+        "term": "skarga",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 55
+      },
+      {
+        "term": "informacja publiczna",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 53
+      },
+      {
+        "term": "dowód rejestracyjny",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 46
+      },
+      {
+        "term": "pozwolenie na budowę",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 48
+      },
+      {
+        "term": "zezwolenie",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 50
+      },
+      {
+        "term": "świadectwo",
+        "status": "ok",
+        "source": "ustawa",
+        "words": 33
+      }
+    ],
+    "e_uslugi": [
+      {
+        "name": "Profil Zaufany",
+        "status": "ok",
+        "words": 244
+      },
+      {
+        "name": "ePUAP",
+        "status": "ok",
+        "words": 1374
+      },
+      {
+        "name": "mObywatel",
+        "status": "ok",
+        "words": 412
+      },
+      {
+        "name": "e-dowód",
+        "status": "ok",
+        "words": 742
+      }
+    ]
+  }
+}
