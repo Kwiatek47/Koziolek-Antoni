@@ -74,20 +74,28 @@ class ResponseCache:
         normalized = self._normalize(question)
         return hashlib.md5(normalized.encode()).hexdigest()
 
+    @staticmethod
+    def _is_valid_response(response: dict) -> bool:
+        if response.get("raw_fallback"):
+            return False
+        summary = response.get("summary")
+        return not (isinstance(summary, str) and summary.strip().startswith("{"))
+
     def get(self, question: str) -> Optional[dict]:
         key = self._key(question)
         if key in self._cache:
             ts, response = self._cache[key]
-            if time.time() - ts < self.ttl:
+            if time.time() - ts < self.ttl and self._is_valid_response(response):
                 self._cache.move_to_end(key)
                 self._hits += 1
                 return response
-            else:
-                del self._cache[key]
+            del self._cache[key]
         self._misses += 1
         return None
 
     def put(self, question: str, response: dict):
+        if not self._is_valid_response(response):
+            return
         key = self._key(question)
         self._cache[key] = (time.time(), response)
         self._cache.move_to_end(key)
@@ -190,7 +198,7 @@ def build_bm25():
 # --- LLM ---
 llm = Llama(
     model_path=MODEL_PATH,
-    n_ctx=4096,
+    n_ctx=8192,
     n_threads=N_THREADS,
     verbose=False,
 )
@@ -301,9 +309,46 @@ Zasady:
 - Odpowiedz WYLACZNIE JSON"""
 
 
+def _count_tokens(text: str) -> int:
+    """Count tokens using the model's tokenizer."""
+    return len(llm.tokenize(text.encode("utf-8")))
+
+
+def _truncate_context(context: str, max_tokens: int) -> str:
+    """Truncate context to fit within token budget."""
+    if max_tokens <= 0:
+        return context[:2000]
+    if _count_tokens(context) <= max_tokens:
+        return context
+    chunks = context.split("\n\n---\n\n")
+    result = []
+    total = 0
+    for chunk in chunks:
+        chunk_tokens = _count_tokens(chunk)
+        if total + chunk_tokens > max_tokens:
+            break
+        result.append(chunk)
+        total += chunk_tokens
+    return "\n\n---\n\n".join(result) if result else context[: max_tokens * 3]
+
+
+def _fit_context(context: str, system_prompt: str, question: str, user_template: str, max_output_tokens: int) -> str:
+    """Trim context so prompt + output fits in n_ctx."""
+    wrapper = user_template.format(context="", question=question)
+    overhead = _count_tokens(system_prompt) + _count_tokens(wrapper) + 32
+    ctx_budget = llm.n_ctx() - max_output_tokens - overhead
+    return _truncate_context(context, max(512, ctx_budget))
+
+
+FALLBACK_SUMMARY = (
+    "Przepraszam, nie udało mi się przygotować pełnej odpowiedzi. "
+    "Spróbuj zadać pytanie inaczej."
+)
+
+
 def get_structured_response(question: str, context: str) -> dict:
     """Get structured JSON response from LLM."""
-    user_prompt = f"""KONTEKST Z BIP LUBLIN:
+    user_template = """KONTEKST Z BIP LUBLIN:
 ---
 {context}
 ---
@@ -311,6 +356,9 @@ def get_structured_response(question: str, context: str) -> dict:
 PYTANIE MIESZKAŃCA: {question}
 
 Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
+    max_output = 1000
+    context = _fit_context(context, EXTRACTION_PROMPT, question, user_template, max_output)
+    user_prompt = user_template.format(context=context, question=question)
 
     response = llm.create_chat_completion(
         messages=[
@@ -318,10 +366,12 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.05,
-        max_tokens=1200,
+        max_tokens=max_output,
     )
 
     raw_text = response["choices"][0]["message"]["content"]
+    if response["choices"][0].get("finish_reason") == "length":
+        return {"summary": FALLBACK_SUMMARY, "raw_fallback": True}
 
     try:
         data = json.loads(raw_text)
@@ -338,9 +388,9 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
                 try:
                     data = json.loads(fixed)
                 except json.JSONDecodeError:
-                    return {"summary": raw_text[:500], "raw_fallback": True}
+                    return {"summary": FALLBACK_SUMMARY, "raw_fallback": True}
         else:
-            return {"summary": raw_text[:500], "raw_fallback": True}
+            return {"summary": FALLBACK_SUMMARY, "raw_fallback": True}
 
     # Fix nested how_much inside how (common LLM mistake)
     how = data.get("how")
@@ -550,7 +600,10 @@ ZASADY:
 
 def get_simple_response(question: str, context: str) -> str:
     """Quick text response for simple informational questions."""
-    user_prompt = f"""Kontekst:\n{context}\n\nPytanie: {question}\n\nOdpowiedz krótko (2-4 zdania):"""
+    user_template = "Kontekst:\n{context}\n\nPytanie: {question}\n\nOdpowiedz krótko (2-4 zdania):"
+    max_output = 300
+    context = _fit_context(context, SIMPLE_PROMPT, question, user_template, max_output)
+    user_prompt = user_template.format(context=context, question=question)
 
     response = llm.create_chat_completion(
         messages=[
@@ -558,7 +611,7 @@ def get_simple_response(question: str, context: str) -> str:
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.1,
-        max_tokens=300,
+        max_tokens=max_output,
     )
     return response["choices"][0]["message"]["content"]
 
@@ -582,7 +635,7 @@ Zasady:
 
 def get_fill_document_response(question: str, context: str) -> dict:
     """Get structured form-filling guidance from LLM."""
-    user_prompt = f"""KONTEKST Z BIP LUBLIN (formularze i procedury):
+    user_template = """KONTEKST Z BIP LUBLIN (formularze i procedury):
 ---
 {context}
 ---
@@ -590,6 +643,9 @@ def get_fill_document_response(question: str, context: str) -> dict:
 PYTANIE MIESZKAŃCA: {question}
 
 Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
+    max_output = 1200
+    context = _fit_context(context, FILL_DOCUMENT_PROMPT, question, user_template, max_output)
+    user_prompt = user_template.format(context=context, question=question)
 
     response = llm.create_chat_completion(
         messages=[
@@ -597,7 +653,7 @@ Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.1,
-        max_tokens=1500,
+        max_tokens=max_output,
     )
 
     raw_text = response["choices"][0]["message"]["content"]
@@ -611,7 +667,7 @@ Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
                 return json.loads(json_match.group())
             except json.JSONDecodeError:
                 pass
-        return {"summary": raw_text, "raw_fallback": True}
+        return {"summary": FALLBACK_SUMMARY, "raw_fallback": True}
 
 
 # --- Hybrid retrieval ---
@@ -991,6 +1047,8 @@ def query(q: Query):
 
     # Full structured response for procedural questions
         structured = get_structured_response(q.question, context)
+        if structured.get("raw_fallback"):
+            return structured
 
         where = structured.get("where")
         if not where or not isinstance(where, dict):
@@ -1062,7 +1120,8 @@ def query(q: Query):
             "sources": sources,
             "suggestions": suggestions,
         }
-        response_cache.put(q.question, result)
+        if not structured.get("raw_fallback"):
+            response_cache.put(q.question, result)
         return result
     finally:
         llm_lock.release()
