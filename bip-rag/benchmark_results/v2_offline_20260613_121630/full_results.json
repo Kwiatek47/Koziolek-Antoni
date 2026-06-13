@@ -1,0 +1,336 @@
+[
+  {
+    "id": "V01",
+    "question": "Jak uzyskać Kartę Dużej Rodziny w Lublinie?",
+    "difficulty": "medium",
+    "category": "HOW+WHERE",
+    "search_time_ms": 63.2,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 0.333,
+    "content_keywords_found": [
+      "wniosek"
+    ],
+    "content_keywords_missing": [
+      "troje",
+      "oświadczen"
+    ],
+    "top6_titles": [
+      "Karta Dużej Rodziny",
+      "Karta Dużej Rodziny",
+      "Karta Dużej Rodziny",
+      "Karta Dużej Rodziny",
+      "Karta Dużej Rodziny",
+      "Karta Dużej Rodziny"
+    ],
+    "top6_departments": [
+      "Wydział Inicjatyw i Programów Społecznyc",
+      "?",
+      "?",
+      "?",
+      "?",
+      "?"
+    ],
+    "expected_department": "Wydział Inicjatyw i Programów Społecznych"
+  },
+  {
+    "id": "V02",
+    "question": "Chcę wziąć ślub cywilny w Lublinie. Ile to kosztuje i jakie dokumenty?",
+    "difficulty": "medium",
+    "category": "HOW+HOW_MUCH",
+    "search_time_ms": 79.9,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 0.667,
+    "content_keywords_found": [
+      "84 zł",
+      "zapewnieni"
+    ],
+    "content_keywords_missing": [
+      "dowod"
+    ],
+    "top6_titles": [
+      "Zaświadczenie o stanie cywilnym",
+      "Zawarcie małżeństwa w USC - ślub cywilny",
+      "Zawarcie małżeństwa w USC - ślub cywilny",
+      "Zaświadczenie do ślubu konkordatowego",
+      "Odpis aktu urodzenia, małżeństwa, zgonu",
+      "Zawarcie małżeństwa w USC - ślub cywilny"
+    ],
+    "top6_departments": [
+      "?",
+      "Urząd Stanu Cywilnego",
+      "Urząd Stanu Cywilnego",
+      "Urząd Stanu Cywilnego",
+      "?",
+      "Urząd Stanu Cywilnego"
+    ],
+    "expected_department": "Urząd Stanu Cywilnego"
+  },
+  {
+    "id": "V03",
+    "question": "Ile kosztuje becikowe i gdzie złożyć wniosek?",
+    "difficulty": "easy",
+    "category": "HOW_MUCH+WHERE",
+    "search_time_ms": 62.2,
+    "title_hit": false,
+    "department_hit": false,
+    "content_recall": 0.333,
+    "content_keywords_found": [
+      "dochod"
+    ],
+    "content_keywords_missing": [
+      "1000",
+      "12 miesięc"
+    ],
+    "top6_titles": [
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Złożenie wniosku o umorzenie kosztów egzekucyjnych",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Złożenie wniosku o umorzenie kosztów egzekucyjnych",
+      "Złożenie wniosku o rozłożenie na raty kosztów egzekucyjnych"
+    ],
+    "top6_departments": [
+      "?",
+      "Wydział Egzekucji",
+      "Biuro Miejskiego Konserwatora Zabytków i",
+      "Biuro Miejskiego Konserwatora Zabytków i",
+      "Wydział Egzekucji",
+      "Wydział Egzekucji"
+    ],
+    "expected_department": "Wydział Świadczeń"
+  },
+  {
+    "id": "V04",
+    "question": "Gdzie i jak wyrobić kartę wędkarską w Lublinie?",
+    "difficulty": "easy",
+    "category": "HOW+WHERE",
+    "search_time_ms": 61.7,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "10 zł",
+      "wniosek",
+      "egzamin"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Karta wędkarska",
+      "Karta wędkarska",
+      "Karta wędkarska",
+      "Karta wędkarska",
+      "Wydanie dowodu osobistego",
+      "Wydanie dowodu osobistego"
+    ],
+    "top6_departments": [
+      "?",
+      "Wydział Geodezji",
+      "?",
+      "?",
+      "Wydział Spraw Administracyjnych",
+      "Wydział Spraw Administracyjnych"
+    ],
+    "expected_department": "Wydział Geodezji"
+  },
+  {
+    "id": "V05",
+    "question": "Jak uzyskać pozwolenie na budowę domu w Lublinie?",
+    "difficulty": "hard",
+    "category": "HOW+WHERE",
+    "search_time_ms": 60.5,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "wniosek",
+      "projekt",
+      "decyzj"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Wniosek o wydanie zaświadczenia o samodzielności lokali",
+      "Zmiana pozwolenia na budowę",
+      "Wniosek o wydanie decyzji o niezbędności wejścia do sąsiedni",
+      "Zmiana pozwolenia na budowę",
+      "Zmiana pozwolenia na budowę",
+      "Pozwolenie na budowę"
+    ],
+    "top6_departments": [
+      "?",
+      "Wydział Architektury i Budownictwa",
+      "?",
+      "Wydział Architektury i Budownictwa",
+      "Wydział Architektury i Budownictwa",
+      "Wydział Architektury i Budownictwa"
+    ],
+    "expected_department": "Wydział Architektury i Budownictwa"
+  },
+  {
+    "id": "V06",
+    "question": "Jak zameldować się na stałe w Lublinie?",
+    "difficulty": "easy",
+    "category": "HOW+WHERE",
+    "search_time_ms": 50.6,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 0.0,
+    "content_keywords_found": [],
+    "content_keywords_missing": [
+      "formularz",
+      "właściciel",
+      "dowod"
+    ],
+    "top6_titles": [
+      "Zameldowanie obywatela polskiego na pobyt stały",
+      "Zameldowanie obywatela polskiego na pobyt czasowy trwający p",
+      "Postępowanie administracyjne w sprawie wymeldowania z pobytu",
+      "Postępowanie administracyjne w sprawie zameldowania na pobyt",
+      "Postępowanie administracyjne w sprawie zameldowania na pobyt",
+      "Postępowanie administracyjne w sprawie anulowania czynności "
+    ],
+    "top6_departments": [
+      "Wydział Spraw Administracyjnych",
+      "Wydział Spraw Administracyjnych",
+      "Wydział Spraw Administracyjnych",
+      "Wydział Spraw Administracyjnych",
+      "Wydział Spraw Administracyjnych",
+      "Wydział Spraw Administracyjnych"
+    ],
+    "expected_department": "Wydział Spraw Administracyjnych"
+  },
+  {
+    "id": "V07",
+    "question": "Ile kosztuje karta parkingowa dla osoby niepełnosprawnej?",
+    "difficulty": "medium",
+    "category": "HOW_MUCH+HOW",
+    "search_time_ms": 70.1,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "21 zł",
+      "wniosek",
+      "orzeczeni"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+      "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+      "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+      "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+      "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+      "Wydawanie karty parkingowej dla osoby niepełnosprawnej"
+    ],
+    "top6_departments": [
+      "Miejski Zespół do Spraw Orzekania o Niep",
+      "Miejski Zespół do Spraw Orzekania o Niep",
+      "Miejski Zespół do Spraw Orzekania o Niep",
+      "Miejski Zespół do Spraw Orzekania o Niep",
+      "Miejski Zespół do Spraw Orzekania o Niep",
+      "Miejski Zespół do Spraw Orzekania o Niep"
+    ],
+    "expected_department": "Miejski Zespół do Spraw Orzekania o Niepełnosprawności"
+  },
+  {
+    "id": "V08",
+    "question": "Jak zarejestrować żłobek w Lublinie i ile to kosztuje?",
+    "difficulty": "hard",
+    "category": "HOW+HOW_MUCH",
+    "search_time_ms": 60.4,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 0.333,
+    "content_keywords_found": [
+      "rejestr"
+    ],
+    "content_keywords_missing": [
+      "1000 zł",
+      "portal"
+    ],
+    "top6_titles": [
+      "Dotacja dla podmiotów niepublicznych prowadzących żłobek lub",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Dotacja dla podmiotów niepublicznych prowadzących żłobek lub",
+      "Dotacja dla podmiotów niepublicznych prowadzących żłobek lub",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski"
+    ],
+    "top6_departments": [
+      "Wydział Zdrowia i Profilaktyki",
+      "?",
+      "Wydział Zdrowia i Profilaktyki",
+      "?",
+      "Biuro Miejskiego Konserwatora Zabytków i",
+      "Biuro Miejskiego Konserwatora Zabytków i"
+    ],
+    "expected_department": "Wydział Zdrowia i Profilaktyki"
+  },
+  {
+    "id": "V09",
+    "question": "Czy potrzebuję zezwolenia na posiadanie psa rasy agresywnej w Lublinie?",
+    "difficulty": "hard",
+    "category": "HOW",
+    "search_time_ms": 81.0,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "zezwoleni",
+      "opłata",
+      "skarbowa"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Zezwolenie na hodowanie lub utrzymywanie psa",
+      "Zezwolenie na hodowanie lub utrzymywanie psa",
+      "Zezwolenie na hodowanie lub utrzymywanie psa",
+      "Zezwolenie na hodowanie lub utrzymywanie psa",
+      "Zezwolenie na hodowanie lub utrzymywanie psa",
+      "Zezwolenie na hodowanie lub utrzymywanie psa"
+    ],
+    "top6_departments": [
+      "?",
+      "Wydział Zieleni i Gospodarki Komunalnej",
+      "Wydział Zieleni i Gospodarki Komunalnej",
+      "Wydział Zieleni i Gospodarki Komunalnej",
+      "?",
+      "Wydział Zieleni i Gospodarki Komunalnej"
+    ],
+    "expected_department": "Wydział Zieleni i Gospodarki Komunalnej"
+  },
+  {
+    "id": "V10",
+    "question": "Jak uzyskać zasiłek pielęgnacyjny i ile wynosi?",
+    "difficulty": "medium",
+    "category": "HOW+HOW_MUCH",
+    "search_time_ms": 59.8,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "wniosek",
+      "orzeczeni",
+      "niepełnospraw"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Zasiłek pielęgnacyjny",
+      "Zasiłek pielęgnacyjny",
+      "Wydawanie orzeczeń o stopniu niepełnosprawności",
+      "Zasiłek pielęgnacyjny",
+      "Zasiłek pielęgnacyjny",
+      "Świadczenie pielęgnacyjne"
+    ],
+    "top6_departments": [
+      "Wydział Świadczeń",
+      "Wydział Świadczeń",
+      "?",
+      "?",
+      "?",
+      "Wydział Świadczeń"
+    ],
+    "expected_department": "Wydział Świadczeń"
+  }
+]

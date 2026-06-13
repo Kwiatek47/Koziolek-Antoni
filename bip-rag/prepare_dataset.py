@@ -10,7 +10,7 @@ import subprocess
 import sys
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "dane_bip")
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "documents.json")
+OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "data", "documents.json")
 
 def extract_pdf_text(pdf_path):
     """Extract text from PDF using pdftotext or python fallback."""
@@ -38,7 +38,7 @@ def extract_pdf_text(pdf_path):
     return ""
 
 
-def chunk_text(text, max_chars=1500, overlap=200):
+def chunk_text(text, max_chars=1000, overlap=300):
     """Split text into overlapping chunks."""
     if len(text) <= max_chars:
         return [text]
@@ -47,7 +47,6 @@ def chunk_text(text, max_chars=1500, overlap=200):
     start = 0
     while start < len(text):
         end = start + max_chars
-        # Try to break at paragraph or sentence boundary
         if end < len(text):
             for sep in ['\n\n', '\n', '. ', ', ']:
                 last_sep = text.rfind(sep, start + max_chars // 2, end)
@@ -57,6 +56,38 @@ def chunk_text(text, max_chars=1500, overlap=200):
         chunks.append(text[start:end].strip())
         start = end - overlap
     return [c for c in chunks if c]
+
+
+SYNONYMS = {
+    "Wydanie dowodu osobistego": "wyrobienie dowodu, nowy dowód, wymiana dowodu, jak wyrobić dowód, wyrobienie dowodu osobistego, zdjęcie do dowodu, wniosek o dowód",
+    "Zgłoszenie zbycia pojazdu": "sprzedaż samochodu, sprzedaż auta, zgłoszenie sprzedaży pojazdu, sprzedałem samochód, ile czasu na zgłoszenie sprzedaży, 30 dni na zgłoszenie",
+    "Rejestracja działalności gospodarczej (wpis do CEIDG)": "założenie firmy, wpis CEIDG, otwarcie działalności, zarejestrować firmę",
+    "Rejestracja pojazdu z zagranicy": "rejestracja samochodu z importu, auto z zagranicy, sprowadzenie auta",
+    "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrzennego lub Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego": "plan zagospodarowania, MPZP, wypis z planu, wyrys z planu",
+    "Wymiana prawa jazdy z powodu zmiany danych": "wymiana prawka, nowe prawo jazdy po zmianie nazwiska, zmiana danych w prawie jazdy",
+    "Wymiana prawa jazdy z powodu upływu terminu ważności": "przedłużenie prawa jazdy, odnowienie prawka",
+    "Rejestracja nowego pojazdu": "rejestracja nowego samochodu, rejestracja nowego auta",
+    "Rejestracja pojazdu zarejestrowanego na terenie RP": "przerejestrowanie samochodu, przerejestrowanie auta",
+    "Wydanie międzynarodowego prawa jazdy": "międzynarodowe prawo jazdy, prawko za granicę",
+    "Profil kandydata na kierowcę": "prawo jazdy po raz pierwszy, kurs na prawo jazdy, PKK",
+    "Dodatki mieszkaniowe": "dopłata do czynszu, dofinansowanie mieszkania, dodatek na mieszkanie",
+    "Ustalenie warunków zabudowy": "warunki zabudowy, WZ, decyzja o warunkach zabudowy",
+    "Zameldowanie na pobyt stały": "meldunek stały, zameldować się na stałe",
+    "Zameldowanie na pobyt czasowy": "meldunek czasowy, zameldować się tymczasowo",
+    "Wymeldowanie z pobytu stałego": "wymeldowanie, wypisanie z meldunku",
+    "Biuro Rzeczy Znalezionych": "rzeczy zgubione, znalezione przedmioty, zgubiony portfel",
+    "Zasiłek rodzinny i dodatki do zasiłku rodzinnego": "zasiłek na dziecko, świadczenia rodzinne",
+    "Jednorazowa zapomoga z tytułu urodzenia się dziecka": "becikowe, ile kosztuje becikowe, gdzie złożyć wniosek o becikowe, zapomoga na dziecko, świadczenie za urodzenie, 1000 zł na dziecko",
+    "Zgłoszenie utraty lub uszkodzenia dowodu osobistego": "zgubiony dowód, utrata dowodu, zniszczony dowód",
+}
+
+
+def get_synonyms_for_title(title: str) -> str:
+    """Find matching synonyms for a service title."""
+    for key, synonyms in SYNONYMS.items():
+        if key.lower() in title.lower() or title.lower() in key.lower():
+            return synonyms
+    return ""
 
 
 def process_uslugi():
@@ -76,10 +107,23 @@ def process_uslugi():
         department = sections.get("Komórka organizacyjna załatwiająca sprawę", "")
         card_number = sections.get("Numer karty informacyjnej", "")
 
-        # Prefix every chunk with title + department for better retrieval
-        prefix = f"Usługa: {title}\nWydział: {department}\nNumer karty: {card_number}\n\n"
+        address_raw = sections.get("Sposób i miejsce składania dokumentów", "")
+        address_short = address_raw[:100].split('\n')[0] if address_raw else ""
+        cost_raw = sections.get("Wymagane opłaty", "Brak")
+        cost_short = cost_raw[:80].split('\n')[0] if cost_raw else "Brak"
 
-        # Build a clean document from sections
+        synonyms = get_synonyms_for_title(title)
+        synonym_line = f"Szukaj też: {synonyms}\n" if synonyms else ""
+
+        prefix = (
+            f"Usługa: {title}\n"
+            f"Wydział: {department}\n"
+            f"Numer karty: {card_number}\n"
+            f"Adres: {address_short}\n"
+            f"Opłata: {cost_short}\n"
+            f"{synonym_line}\n"
+        )
+
         content_parts = [f"# {title}\n"]
         for sec_name, sec_content in sections.items():
             content_parts.append(f"## {sec_name}\n{sec_content}\n")
@@ -189,6 +233,12 @@ def process_osoby():
          "https://bip.lublin.eu/prezydent-zastepcy-pelnomocnicy/zastepcy-prezydenta/"),
     ]
 
+    osoby_synonyms = {
+        "prezydent.txt": "Kto jest prezydentem Lublina? Kto rządzi miastem? Prezydent Krzysztof Żuk.",
+        "pelnomocnicy.txt": "Kto jest pełnomocnikiem prezydenta? Pełnomocnicy miasta Lublin.",
+        "zastepcy_prezydenta.txt": "Kto jest zastępcą prezydenta? Wiceprezydent Lublina.",
+    }
+
     for filename, title, doc_type, url in files_config:
         filepath = os.path.join(DATA_DIR, filename)
         if not os.path.exists(filepath):
@@ -196,13 +246,15 @@ def process_osoby():
         with open(filepath) as f:
             content = f.read().strip()
 
+        prefix = f"# {title}\nSzukaj też: {osoby_synonyms.get(filename, '')}\n\n"
+
         metadata = {
             "source_url": url,
             "title": title,
             "type": doc_type,
         }
 
-        chunks = chunk_text(f"# {title}\n\n{content}")
+        chunks = chunk_text(prefix + content)
         for i, chunk in enumerate(chunks):
             docs.append({
                 "id": f"osoba_{filename.replace('.txt', '')}_{i}",
@@ -316,8 +368,18 @@ def main():
     all_docs.extend(process_pdfs())
     print(f"    -> {len(all_docs) - prev} chunks")
 
+    print("  Processing wiedza bazowa...")
+    prev = len(all_docs)
+    try:
+        from prepare_knowledge import process_knowledge
+        all_docs.extend(process_knowledge())
+    except Exception as e:
+        print(f"    WARNING: wiedza bazowa skipped: {e}")
+    print(f"    -> {len(all_docs) - prev} chunks")
+
     print(f"\nTotal documents/chunks: {len(all_docs)}")
 
+    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
     with open(OUTPUT_FILE, 'w') as f:
         json.dump(all_docs, f, ensure_ascii=False, indent=2)
 

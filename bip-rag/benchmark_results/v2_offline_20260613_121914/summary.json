@@ -1,0 +1,153 @@
+{
+  "timestamp": "20260613_121914",
+  "version": "v2",
+  "total_chunks": 17081,
+  "title_hit_rate": 0.9,
+  "department_hit_rate": 0.9,
+  "avg_content_recall": 0.7333333333333333,
+  "per_question": [
+    {
+      "id": "V01",
+      "question": "Jak uzyskać Kartę Dużej Rodziny w Lublinie?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.333,
+      "missing": [
+        "troje",
+        "oświadczen"
+      ],
+      "top3_titles": [
+        "Karta Dużej Rodziny",
+        "Karta Dużej Rodziny",
+        "Karta Dużej Rodziny"
+      ]
+    },
+    {
+      "id": "V02",
+      "question": "Chcę wziąć ślub cywilny w Lublinie. Ile to kosztuje i jakie ",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "dowod"
+      ],
+      "top3_titles": [
+        "Zaświadczenie o stanie cywilnym",
+        "Zawarcie małżeństwa w USC - ślub cywilny",
+        "Zawarcie małżeństwa w USC - ślub cywilny"
+      ]
+    },
+    {
+      "id": "V03",
+      "question": "Ile kosztuje becikowe i gdzie złożyć wniosek?",
+      "title_hit": false,
+      "dept_hit": false,
+      "content_recall": 0.333,
+      "missing": [
+        "1000",
+        "urodzeni"
+      ],
+      "top3_titles": [
+        "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+        "Złożenie wniosku o umorzenie kosztów egzekucyjnych",
+        "Wniosek o udzielenie dotacji celowej na prace konserwatorski"
+      ]
+    },
+    {
+      "id": "V04",
+      "question": "Gdzie i jak wyrobić kartę wędkarską w Lublinie?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Karta wędkarska",
+        "Karta wędkarska",
+        "Karta wędkarska"
+      ]
+    },
+    {
+      "id": "V05",
+      "question": "Jak uzyskać pozwolenie na budowę domu w Lublinie?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Wniosek o wydanie zaświadczenia o samodzielności lokali",
+        "Zmiana pozwolenia na budowę",
+        "Wniosek o wydanie decyzji o niezbędności wejścia do sąsiedni"
+      ]
+    },
+    {
+      "id": "V06",
+      "question": "Jak zameldować się na stałe w Lublinie?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.333,
+      "missing": [
+        "zgłoszenie",
+        "pełnomocnictw"
+      ],
+      "top3_titles": [
+        "Zameldowanie obywatela polskiego na pobyt stały",
+        "Zameldowanie obywatela polskiego na pobyt czasowy trwający p",
+        "Postępowanie administracyjne w sprawie wymeldowania z pobytu"
+      ]
+    },
+    {
+      "id": "V07",
+      "question": "Ile kosztuje karta parkingowa dla osoby niepełnosprawnej?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+        "Wydawanie karty parkingowej dla osoby niepełnosprawnej",
+        "Wydawanie karty parkingowej dla osoby niepełnosprawnej"
+      ]
+    },
+    {
+      "id": "V08",
+      "question": "Jak zarejestrować żłobek w Lublinie i ile to kosztuje?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "1000"
+      ],
+      "top3_titles": [
+        "Dotacja dla podmiotów niepublicznych prowadzących żłobek lub",
+        "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+        "Dotacja dla podmiotów niepublicznych prowadzących żłobek lub"
+      ]
+    },
+    {
+      "id": "V09",
+      "question": "Czy potrzebuję zezwolenia na posiadanie psa rasy agresywnej ",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Zezwolenie na hodowanie lub utrzymywanie psa",
+        "Zezwolenie na hodowanie lub utrzymywanie psa",
+        "Zezwolenie na hodowanie lub utrzymywanie psa"
+      ]
+    },
+    {
+      "id": "V10",
+      "question": "Jak uzyskać zasiłek pielęgnacyjny i ile wynosi?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Zasiłek pielęgnacyjny",
+        "Zasiłek pielęgnacyjny",
+        "Wydawanie orzeczeń o stopniu niepełnosprawności"
+      ]
+    }
+  ]
+}

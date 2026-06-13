@@ -64,10 +64,13 @@ bm25_metadatas: list[dict] = []
 bm25_index: Optional[BM25Okapi] = None
 
 
+PL_NORMALIZE = str.maketrans("óąęćśźżłń", "oaecszzln")
+
+
 def tokenize_pl(text: str) -> list[str]:
-    text = text.lower()
+    text = text.lower().translate(PL_NORMALIZE)
     text = re.sub(r"[^\w\s]", " ", text)
-    return [t for t in text.split() if len(t) > 1]
+    return [t[:5] for t in text.split() if len(t) > 2]
 
 
 def build_bm25():
@@ -175,13 +178,26 @@ def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
 EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiadaj JSON-em.
 
 Format:
-{"summary":"krótko o sprawie","where":{"address":"adres","room":"pokój","phone":"tel","hours":"godziny","department":"wydział"},"how":{"steps":["krok1","krok2"],"required_documents":["dok1"],"forms":["formularz"],"submission_method":"osobiście/online"},"how_much":{"cost":"kwota lub bezpłatne","time_estimate":"czas","legal_basis":"ustawa"},"who":{"name":"imię","role":"stanowisko","department":"wydział","gender":"M/F"},"booking":true/false,"additional_info":"uwagi"}
+{"summary":"krótko o sprawie","where":{"address":"adres","room":"pokój","phone":"tel","hours":"godziny","department":"wydział"},"how":{"steps":["krok1","krok2"],"required_documents":["dok1"],"forms":["formularz"],"submission_method":"osobiście/online"},"how_much":{"cost":"kwota lub bezpłatne","time_estimate":"czas","legal_basis":"ustawa"},"who":{"name":"imię","role":"stanowisko","department":"wydział","gender":"M/F"},"booking":true/false,"additional_info":"uwagi","sources":["url1"]}
 
 Zasady:
 - TYLKO dane z kontekstu, null jeśli brak
+- ZAWSZE wypełnij summary (min. 1 zdanie)
+- Jeśli pytanie dotyczy osoby (kto jest, kto kieruje) - wypełnij sekcję "who"
+- Jeśli kontekst nie zawiera wystarczających informacji, w summary napisz co wiesz i zasugeruj kontakt telefoniczny
 - dowód osobisty = Wydział Spraw Administracyjnych (Spokojna 2)
 - dowód rejestracyjny/prawo jazdy = Wydział Komunikacji (Czechowska 19A)
+- rejestracja działalności gospodarczej = Wydział Spraw Administracyjnych (Spokojna 2, pok. 253)
 - booking=true gdy wizyta osobista wymagana
+- W steps podaj konkretne kroki do wykonania, nie ogólniki
+- W sources podaj URL-e źródłowe z kontekstu jeśli dostępne
+- Kontekst może zawierać DWA typy dokumentów:
+  * type=usluga → procedura LOKALNA w Urzędzie Miasta Lublin (adres, godziny, wydział, opłaty lokalne)
+  * type=wiedza_bazowa → definicja/ustawa OGÓLNOPOLSKA (NIE podawaj adresów Lublina z wiedzy bazowej)
+- Gdy pytanie dotyczy definicji pojęcia (co to jest X) → odpowiadaj z wiedzy bazowej
+- Gdy pytanie dotyczy procedury (jak wyrobić X) → odpowiadaj z karty usługi
+- Podawaj legal_basis z metadanych legal_ref gdy dostępne
+- Jeśli informacji NIE MA w kontekście → null, NIE wymyślaj
 - Odpowiedz WYŁĄCZNIE JSON"""
 
 
@@ -267,8 +283,10 @@ ZASADY:
 - Użyj WYŁĄCZNIE informacji z podanego kontekstu
 - NIE wymyślaj linków, adresów URL, numerów telefonów
 - NIE podawaj informacji których nie ma w kontekście
-- Jeśli kontekst nie zawiera odpowiedzi, powiedz: "Nie znalazłem tej informacji w BIP Lublin."
-- Odpowiadaj po polsku, konkretnie"""
+- Jeśli kontekst nie zawiera odpowiedzi, powiedz: "Nie mam informacji na ten temat w bazie Urzędu Miasta Lublin."
+- Odpowiadaj po polsku, konkretnie
+- Dla definicji pojęć (type=wiedza_bazowa) podaj krótkie wyjaśnienie + źródło prawne jeśli jest
+- NIE podawaj adresów Lublina gdy odpowiadasz z wiedzy ogólnopolskiej"""
 
 
 def get_simple_response(question: str, context: str) -> str:
@@ -287,7 +305,7 @@ def get_simple_response(question: str, context: str) -> str:
 
 
 # --- Hybrid retrieval ---
-def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[list[str], list[dict]]:
+def hybrid_search(question: str, top_k: int = 30, final_k: int = 6) -> tuple[list[str], list[dict]]:
     """Hybrid retrieval: dense + BM25 + RRF fusion."""
     dense_results = collection.query(query_texts=[question], n_results=top_k)
     dense_ids = dense_results["ids"][0]
@@ -320,49 +338,47 @@ def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[lis
     for rank, bid in enumerate(bm25_results_ids):
         rrf_scores[bid] = rrf_scores.get(bid, 0) + 1.0 / (RRF_K + rank + 1)
 
-    # Strong title-based re-ranking
-    question_lower = question.lower()
-    question_words = set(w for w in question_lower.split() if len(w) > 3)
+    # Token-based title re-ranking (prefix stemming for Polish)
+    query_tokens_set = set(tokenize_pl(question))
 
     for did in list(rrf_scores.keys()):
         meta = id_to_meta.get(did, {})
-        title = meta.get("title", "").lower()
-        title_words = [w for w in title.split() if len(w) > 3]
-        if title_words:
-            matching = sum(1 for w in title_words if w in question_lower)
-            match_ratio = matching / len(title_words)
-            # Strong boost for title matches
-            rrf_scores[did] += match_ratio * 0.05
-            # Check if question keywords appear in title
-            reverse_match = sum(1 for w in question_words if w in title)
-            if question_words:
-                rrf_scores[did] += (reverse_match / len(question_words)) * 0.05
+        title = meta.get("title", "")
+        title_tokens = set(tokenize_pl(title))
+        if title_tokens:
+            overlap = query_tokens_set & title_tokens
+            rrf_scores[did] += (len(overlap) / max(len(query_tokens_set), 1)) * 0.08
+
+        doc = id_to_doc.get(did, "")
+        header = doc[:300]
+        if "Szukaj też:" in header:
+            synonym_line = header[header.index("Szukaj też:"):].split("\n")[0]
+            syn_tokens = set(tokenize_pl(synonym_line))
+            syn_overlap = query_tokens_set & syn_tokens
+            rrf_scores[did] += (len(syn_overlap) / max(len(query_tokens_set), 1)) * 0.08
+
+    # Knowledge base boost for definition queries
+    question_lower = question.lower()
+    DEFINITION_PATTERNS = [
+        "co to jest", "czym jest", "co oznacza", "co to znaczy",
+        "czym sie rozni", "jaka jest roznica", "definicja",
+        "co to", "czym to", "na czym polega",
+    ]
+    is_definition_query = any(p in question_lower for p in DEFINITION_PATTERNS)
+    if is_definition_query:
+        for did in list(rrf_scores.keys()):
+            meta = id_to_meta.get(did, {})
+            if meta.get("type") == "wiedza_bazowa":
+                rrf_scores[did] += 0.08
+            elif meta.get("type") == "usluga":
+                rrf_scores[did] -= 0.03
 
     sorted_ids = sorted(rrf_scores.keys(), key=lambda x: rrf_scores[x], reverse=True)
 
-    # Take top results, but prioritize those with title overlap
     final_docs = []
     final_metas = []
     seen = set()
 
-    # First pass: items with title keyword match
-    for did in sorted_ids:
-        if len(final_docs) >= final_k:
-            break
-        meta = id_to_meta.get(did, {})
-        title = meta.get("title", "").lower()
-        has_overlap = any(w in title for w in question_words)
-        if not has_overlap:
-            continue
-        doc = id_to_doc.get(did, "")
-        h = hash(doc[:200])
-        if h in seen:
-            continue
-        seen.add(h)
-        final_docs.append(doc)
-        final_metas.append(meta)
-
-    # Second pass: fill remaining slots
     for did in sorted_ids:
         if len(final_docs) >= final_k:
             break
@@ -499,7 +515,20 @@ def query(q: Query):
     top_k = q.top_k or TOP_K
     intent = classify_intent(q.question)
     documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
-    context = "\n\n---\n\n".join(documents)
+
+    context_parts = []
+    for doc, meta in zip(documents, metadatas):
+        doc_type = meta.get("type", "unknown")
+        scope = meta.get("scope", "")
+        legal_ref = meta.get("legal_ref", "")
+        header = f"[{doc_type}"
+        if scope:
+            header += f", zasieg: {scope}"
+        if legal_ref:
+            header += f", {legal_ref}"
+        header += "]"
+        context_parts.append(f"{header}\n{doc}")
+    context = "\n\n---\n\n".join(context_parts)
 
     if intent == "simple":
         # Quick text answer - no full structured pipeline

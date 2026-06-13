@@ -1,0 +1,157 @@
+{
+  "timestamp": "20260613_115653",
+  "total_chunks": 17110,
+  "title_hit_rate": 0.7,
+  "department_hit_rate": 0.9,
+  "avg_content_recall": 0.6083333333333333,
+  "per_question": [
+    {
+      "id": "Q01",
+      "question": "Jak wyrobić dowód osobisty w Lublinie?",
+      "title_hit": false,
+      "dept_hit": true,
+      "content_recall": 0.333,
+      "missing": [
+        "zdjęcie",
+        "osobiście"
+      ],
+      "top3_titles": [
+        "Wydanie dowodu osobistego",
+        "Wydanie dowodu osobistego",
+        "Wydanie dowodu osobistego"
+      ]
+    },
+    {
+      "id": "Q02",
+      "question": "Ile kosztuje rejestracja samochodu z zagranicy?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "tablice"
+      ],
+      "top3_titles": [
+        "Rejestracja pojazdu z zagranicy",
+        "Rejestracja pojazdu z zagranicy",
+        "Rejestracja pojazdu z zagranicy"
+      ]
+    },
+    {
+      "id": "Q03",
+      "question": "Kto jest prezydentem Lublina?",
+      "title_hit": false,
+      "dept_hit": true,
+      "content_recall": 0.0,
+      "missing": [
+        "Krzysztof",
+        "Żuk"
+      ],
+      "top3_titles": [
+        "Poszerzenia lokali",
+        "Przekształcenie prawa użytkowania wieczystego gruntów zabudo",
+        "Przekształcenie prawa użytkowania wieczystego gruntów zabudo"
+      ]
+    },
+    {
+      "id": "Q04",
+      "question": "Gdzie jest Biuro Rzeczy Znalezionych i jakie ma godziny otwa",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Biuro Rzeczy Znalezionych",
+        "Biuro Rzeczy Znalezionych",
+        "Biuro Rzeczy Znalezionych"
+      ]
+    },
+    {
+      "id": "Q05",
+      "question": "Jakie dokumenty potrzebuję do wymiany prawa jazdy po zmianie",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.75,
+      "missing": [
+        "zdjęcie"
+      ],
+      "top3_titles": [
+        "Wymiana prawa jazdy z powodu zmiany danych",
+        "Wymiana prawa jazdy z powodu zmiany danych",
+        "Wymiana prawa jazdy z powodu zmiany danych"
+      ]
+    },
+    {
+      "id": "Q06",
+      "question": "Jak złożyć wniosek o dodatek mieszkaniowy?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "dochód"
+      ],
+      "top3_titles": [
+        "Najem lokalu z mieszkaniowego zasobu miasta - składanie doku",
+        "Najem lokalu do remontu z mieszkaniowego zasobu miasta",
+        "Rodzina Trzy Plus"
+      ]
+    },
+    {
+      "id": "Q07",
+      "question": "Jak załatwić wypis z planu zagospodarowania przestrzennego?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+        "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+        "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze"
+      ]
+    },
+    {
+      "id": "Q08",
+      "question": "Chcę zarejestrować działalność gospodarczą. Gdzie w urzędzie",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Rejestracja działalności gospodarczej (wpis do CEIDG)",
+        "Zaświadczenie o stanie cywilnym",
+        "Rejestracja działalności gospodarczej (wpis do CEIDG)"
+      ]
+    },
+    {
+      "id": "Q09",
+      "question": "Jakie są godziny pracy Urzędu Stanu Cywilnego i jak zarejest",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "akt urodz"
+      ],
+      "top3_titles": [
+        "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+        "Urząd Stanu Cywilnego",
+        "Rejestracja dziecka"
+      ]
+    },
+    {
+      "id": "Q10",
+      "question": "Zgłoszenie sprzedaży samochodu - co muszę zrobić i ile mam c",
+      "title_hit": false,
+      "dept_hit": false,
+      "content_recall": 0.0,
+      "missing": [
+        "30 dni",
+        "zawiadomieni",
+        "umow"
+      ],
+      "top3_titles": [
+        "Zgłoszenie zamiaru usunięcia drzew (dot. osób fizycznych)",
+        "Zatrzymanie prawa jazdy z powodu przekroczenia dopuszczalnej",
+        "Zatrzymywanie praw jazdy dłużnikom alimentacyjnym"
+      ]
+    }
+  ]
+}

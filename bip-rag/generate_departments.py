@@ -151,7 +151,6 @@ DEPT_PROFILES = {
 
 def generate_department_docs():
     """Generate RAG documents for each department."""
-    # Load services to group by department
     uslugi_path = os.path.join(DATA_DIR, "uslugi.json")
     if not os.path.exists(uslugi_path):
         print("uslugi.json not found!")
@@ -159,6 +158,38 @@ def generate_department_docs():
 
     with open(uslugi_path) as f:
         services = json.load(f)
+
+    # Load organizational structure for hours/phones
+    struktura_path = os.path.join(DATA_DIR, "struktura_organizacyjna_full.json")
+    dept_info_extra = {}
+    if os.path.exists(struktura_path):
+        with open(struktura_path) as f:
+            struktura = json.load(f)
+        for entry in struktura:
+            title = entry.get("title", "")
+            content = entry.get("content", "")
+            if not content:
+                continue
+            info = {}
+            if "Telefon" in content:
+                import re
+                phone_match = re.search(r"Telefon\n(.+?)(?:\n|$)", content)
+                if phone_match:
+                    info["phone"] = phone_match.group(1).strip()
+            if "Godziny pracy" in content:
+                hours_match = re.search(r"od poniedziałku do piątku w godzinach (\d+[:.]\d+\s*[-–]\s*\d+[:.]\d+)", content)
+                if hours_match:
+                    info["hours"] = f"pon-pt {hours_match.group(1)}"
+                else:
+                    hours_match = re.search(r"poniedziałek.*?(\d+[:.]\d+)", content)
+                    if hours_match:
+                        info["hours"] = "Zróżnicowane godziny - sprawdź na BIP"
+            if "Kierownik komórki organizacyjnej" in content:
+                head_match = re.search(r"Kierownik komórki organizacyjnej\n(.+?)(?:\n|$)", content)
+                if head_match:
+                    info["head"] = head_match.group(1).strip()
+            if info:
+                dept_info_extra[title] = info
 
     # Group services by department
     dept_services = {}
@@ -179,7 +210,11 @@ def generate_department_docs():
         address = profile.get("address", "")
         note = profile.get("note", "")
 
-        # Build document content
+        extra = dept_info_extra.get(dept_name, {})
+        phone = extra.get("phone", "")
+        hours = extra.get("hours", "pon-pt 7:30-15:30")
+        head = extra.get("head", "")
+
         lines = [
             f"# {dept_name}",
             f"",
@@ -189,6 +224,13 @@ def generate_department_docs():
 
         if address:
             lines.append(f"Adres: {address}")
+        if phone:
+            lines.append(f"Telefon: {phone}")
+        if hours:
+            lines.append(f"Godziny pracy: {hours}")
+        if head:
+            lines.append(f"Kierownik: {head}")
+        if address or phone or hours:
             lines.append("")
 
         if note:

@@ -1,0 +1,147 @@
+{
+  "timestamp": "20260613_120223",
+  "total_chunks": 17081,
+  "title_hit_rate": 1.0,
+  "department_hit_rate": 1.0,
+  "avg_content_recall": 0.8749999999999998,
+  "per_question": [
+    {
+      "id": "Q01",
+      "question": "Jak wyrobić dowód osobisty w Lublinie?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "osobiście"
+      ],
+      "top3_titles": [
+        "Wydanie dowodu osobistego",
+        "Wydanie dowodu osobistego",
+        "Wydanie dowodu osobistego"
+      ]
+    },
+    {
+      "id": "Q02",
+      "question": "Ile kosztuje rejestracja samochodu z zagranicy?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "tablice"
+      ],
+      "top3_titles": [
+        "Rejestracja pojazdu z zagranicy",
+        "Rejestracja pojazdu z zagranicy",
+        "Rejestracja pojazdu z zagranicy"
+      ]
+    },
+    {
+      "id": "Q03",
+      "question": "Kto jest prezydentem Lublina?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Zastępcy Prezydenta Miasta Lublin",
+        "Prezydent Miasta Lublin",
+        "Pełnomocnicy Prezydenta Miasta Lublin"
+      ]
+    },
+    {
+      "id": "Q04",
+      "question": "Gdzie jest Biuro Rzeczy Znalezionych i jakie ma godziny otwa",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Biuro Rzeczy Znalezionych",
+        "Biuro Rzeczy Znalezionych",
+        "Biuro Rzeczy Znalezionych"
+      ]
+    },
+    {
+      "id": "Q05",
+      "question": "Jakie dokumenty potrzebuję do wymiany prawa jazdy po zmianie",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.75,
+      "missing": [
+        "zdjęcie"
+      ],
+      "top3_titles": [
+        "Wymiana prawa jazdy z powodu zmiany danych",
+        "Wymiana prawa jazdy z powodu zmiany danych",
+        "Wymiana prawa jazdy z powodu zmiany danych"
+      ]
+    },
+    {
+      "id": "Q06",
+      "question": "Jak złożyć wniosek o dodatek mieszkaniowy?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Najem lokalu z mieszkaniowego zasobu miasta - składanie doku",
+        "Dodatki mieszkaniowe",
+        "Dodatki mieszkaniowe"
+      ]
+    },
+    {
+      "id": "Q07",
+      "question": "Jak załatwić wypis z planu zagospodarowania przestrzennego?",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+        "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+        "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze"
+      ]
+    },
+    {
+      "id": "Q08",
+      "question": "Chcę zarejestrować działalność gospodarczą. Gdzie w urzędzie",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Rejestracja działalności gospodarczej (wpis do CEIDG)",
+        "Rejestracja działalności gospodarczej (wpis do CEIDG)",
+        "Rejestracja działalności gospodarczej (wpis do CEIDG)"
+      ]
+    },
+    {
+      "id": "Q09",
+      "question": "Jakie są godziny pracy Urzędu Stanu Cywilnego i jak zarejest",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 1.0,
+      "missing": [],
+      "top3_titles": [
+        "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+        "Rejestracja dziecka",
+        "Urząd Stanu Cywilnego"
+      ]
+    },
+    {
+      "id": "Q10",
+      "question": "Zgłoszenie sprzedaży samochodu - co muszę zrobić i ile mam c",
+      "title_hit": true,
+      "dept_hit": true,
+      "content_recall": 0.667,
+      "missing": [
+        "umow"
+      ],
+      "top3_titles": [
+        "Zgłoszenie zbycia pojazdu",
+        "Zgłoszenie zbycia pojazdu",
+        "Zgłoszenie zbycia pojazdu"
+      ]
+    }
+  ]
+}

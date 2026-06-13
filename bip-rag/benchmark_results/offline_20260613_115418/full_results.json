@@ -1,0 +1,765 @@
+[
+  {
+    "id": "Q01",
+    "question": "Jak wyrobić dowód osobisty w Lublinie?",
+    "difficulty": "easy",
+    "category": "HOW+WHERE",
+    "search_time_ms": 37.9,
+    "title_hit": false,
+    "department_hit": false,
+    "content_recall": 0.667,
+    "content_keywords_found": [
+      "wniosek",
+      "osobiście"
+    ],
+    "content_keywords_missing": [
+      "zdjęcie"
+    ],
+    "top6_titles": [
+      "Podejrzenie nieuprawnionego wykorzystania danych osobowych",
+      "Wtórnik tablicy",
+      "Podejrzenie nieuprawnionego wykorzystania danych osobowych",
+      "Zawieszenie i wycofanie zawieszenia certyfikatów dowodu osob",
+      "Zgłoszenie utraty lub uszkodzenia dowodu osobistego",
+      "Zamiana lokalu z urzędu"
+    ],
+    "top6_types": [
+      "pdf_attachment",
+      "usluga",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "usluga"
+    ],
+    "top6_departments": [
+      "?",
+      "Wydział Komunikacji",
+      "?",
+      "?",
+      "?",
+      "Wydział Spraw Mieszkaniowych"
+    ],
+    "top6_scores": [
+      12.32,
+      12.249,
+      12.212,
+      11.276,
+      11.276,
+      10.488
+    ],
+    "top15_titles": [
+      "Podejrzenie nieuprawnionego wykorzystania danych osobowych",
+      "Wtórnik tablicy",
+      "Podejrzenie nieuprawnionego wykorzystania danych osobowych",
+      "Zamiana lokalu z urzędu",
+      "Zamiana kontrahencka (wzajemna) lokali mieszkalnych",
+      "Złożenie deklaracji (korekty deklaracji) na podatek leśny",
+      "Złożenie deklaracji (korekty deklaracji) na podatek rolny",
+      "Najem lokali w Towarzystwie Budownictwa Społecznego \"NOWY DO",
+      "Zawieszenie i wycofanie zawieszenia certyfikatów dowodu osob",
+      "Zgłoszenie utraty lub uszkodzenia dowodu osobistego",
+      "Podejrzenie nieuprawnionego wykorzystania danych osobowych",
+      "Wydawanie legitymacji dokumentującej niepełnosprawność lub s",
+      "Zaświadczenie dotyczące terenu (w przypadku braku Miejscoweg",
+      "Podnajem lokalu",
+      "Wtórnik tablicy"
+    ],
+    "top6_content_preview": [
+      "# Załącznik: sa-101-01.pdf\n\nDziennik Ustaw                                                          – 11 –                                        Poz. 1865\n\n                                           ",
+      "Usługa: Wtórnik tablicy\nWydział: Wydział Komunikacji\nNumer karty: KM-048\n\n# Wtórnik tablicy\n\n## Numer karty informacyjnej\nKM-048\n\n## Komórka organizacyjna załatwiająca sprawę\nWydział Komunikacji\n\n## S",
+      "Imię (imiona)\n\n                           Nazwisko\n\n                  Nazwisko rodowe\n\n                                             Podają je zarówno kobiety, jak i mężczyźni.\n\n                     Da",
+      ".............................................................................\nSeria i nr dowodu osobistego: ..........................................................................................\n\n",
+      ".............................................................................\nSeria i nr dowodu osobistego: ..........................................................................................\n\n",
+      "Usługa: Zamiana lokalu z urzędu\nWydział: Wydział Spraw Mieszkaniowych\nNumer karty: WSM-019\n\nkument potwierdzający wysokość otrzymanych kwot,\nw przypadku osób nie osiągających dochodów bądź uzyskującyc"
+    ],
+    "ground_truth": "Usługa SA-025. Wydział Spraw Administracyjnych, ul. Spokojna 2. Wymagane: wniosek, zdjęcie 35x45mm, dowód tożsamości. Bezpłatne. Termin: 30 dni.",
+    "expected_department": "Wydział Spraw Administracyjnych",
+    "expected_address": "Spokojna 2"
+  },
+  {
+    "id": "Q02",
+    "question": "Ile kosztuje rejestracja samochodu z zagranicy?",
+    "difficulty": "medium",
+    "category": "HOW_MUCH+WHERE",
+    "search_time_ms": 37.8,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "opłata",
+      "rejestracyjn",
+      "tablice"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Zaświadczenie na krajowe przewozy drogowe osób lub rzeczy na",
+      "Rejestracja pojazdu z zagranicy",
+      "Rejestracja pojazdu na tablice tymczasowe na wniosek właścic",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Rejestracja pojazdu z zagranicy"
+    ],
+    "top6_types": [
+      "pdf_attachment",
+      "usluga",
+      "usluga",
+      "pdf_attachment",
+      "usluga",
+      "usluga"
+    ],
+    "top6_departments": [
+      "?",
+      "Wydział Komunikacji",
+      "Wydział Komunikacji",
+      "?",
+      "Biuro Miejskiego Konserwatora Zabytków i",
+      "Wydział Komunikacji"
+    ],
+    "top6_scores": [
+      15.474,
+      14.017,
+      13.809,
+      13.377,
+      13.211,
+      12.934
+    ],
+    "top15_titles": [
+      "Zaświadczenie na krajowe przewozy drogowe osób lub rzeczy na",
+      "Rejestracja pojazdu na tablice tymczasowe na wniosek właścic",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Wniosek o udzielenie dotacji celowej na prace konserwatorski",
+      "Rejestracja pojazdu z zagranicy",
+      "Zaświadczenie na krajowe przewozy drogowe osób lub rzeczy na",
+      "Zezwolenie na prowadzenie działalności w zakresie  opróżnian",
+      "Biuro Rzeczy Znalezionych",
+      "Rejestracja pojazdu z zagranicy",
+      "Elektroniczny wniosek o rejestrację pojazdu, rejestrację cza",
+      "Rejestracja pojazdu zarejestrowanego na terenie RP",
+      "Świadczenie pielęgnacyjne",
+      "Rejestracja pojazdu na tablice tymczasowe na wniosek właścic",
+      "Urząd Stanu Cywilnego",
+      "Licencja na wykonywanie krajowego transportu drogowego osób "
+    ],
+    "top6_content_preview": [
+      "ii:\n                 – C lub C+E, o ile uzyskał on odpowiednią kwalifikację wstępną,\n                 – C1 lub C1+E, o ile uzyskał on odpowiednią kwalifikację wstępną\n                 przyśpieszoną,\n\n",
+      "Usługa: Rejestracja pojazdu z zagranicy\nWydział: Wydział Komunikacji\nNumer karty: KM-032\n\nciem wewnątrzwspólnotowym pojazdu. Oświadczenie może mieć formę odrębnego dokumentu, adnotacji na fakturze VAT",
+      "Usługa: Rejestracja pojazdu na tablice tymczasowe na wniosek właściciela\nWydział: Wydział Komunikacji\nNumer karty: KM-035\n\n3.odt\nData dodania: 21-12-2021 13:56\nRozmiar załącznika: 14,19 KB\nOświadczeni",
+      "ję                                                                       dotacji\n\nMinister właściwy do spraw kultury\n\ni ochrony dziedzictwa narodowego\n\nWojewódzki konserwator zabytków\n\nRada gminy\n\n\n\n\n",
+      "Usługa: Wniosek o udzielenie dotacji celowej na prace konserwatorskie, restauratorskie lub roboty budowlane przy zabytku wpisanym do rejestru zabytków lub ujętym w gminnej ewidencji zabytków, położony",
+      "Usługa: Rejestracja pojazdu z zagranicy\nWydział: Wydział Komunikacji\nNumer karty: KM-032\n\nnie do Samorządowego Kolegium Odwoławczego w Lublinie za pośrednictwem Prezydenta Miasta Lublin w terminie 14 "
+    ],
+    "ground_truth": "Usługa KM. Wydział Komunikacji, Czechowska 19A. Opłaty: 256.50 zł (tablice + dowód + nalepka + opłata ewidencyjna). Akcyza, badanie techniczne osobno.",
+    "expected_department": "Wydział Komunikacji",
+    "expected_address": "Czechowska 19"
+  },
+  {
+    "id": "Q03",
+    "question": "Kto jest prezydentem Lublina?",
+    "difficulty": "easy",
+    "category": "WHO",
+    "search_time_ms": 28.0,
+    "title_hit": false,
+    "department_hit": true,
+    "content_recall": 0.0,
+    "content_keywords_found": [],
+    "content_keywords_missing": [
+      "Krzysztof",
+      "Żuk"
+    ],
+    "top6_titles": [
+      "Poszerzenia lokali",
+      "Najem lokalu z mieszkaniowego zasobu miasta - składanie doku",
+      "Przekształcenie prawa użytkowania wieczystego gruntów zabudo",
+      "Zezwolenie na wyłączenie gruntów z produkcji rolniczej, zwan",
+      "Przekształcenie prawa użytkowania wieczystego gruntów zabudo",
+      "Rejestracja pojazdu zarejestrowanego na terenie RP"
+    ],
+    "top6_types": [
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment"
+    ],
+    "top6_departments": [
+      "?",
+      "?",
+      "?",
+      "?",
+      "?",
+      "?"
+    ],
+    "top6_scores": [
+      9.554,
+      9.066,
+      9.0,
+      8.683,
+      8.68,
+      8.565
+    ],
+    "top15_titles": [
+      "Poszerzenia lokali",
+      "Przekształcenie prawa użytkowania wieczystego gruntów zabudo",
+      "Zezwolenie na wyłączenie gruntów z produkcji rolniczej, zwan",
+      "Przekształcenie prawa użytkowania wieczystego gruntów zabudo",
+      "Dodatki mieszkaniowe",
+      "Przedłużenie umowy najmu socjalnego lokalu i tymczasowego po",
+      "Zamiana lokalu z urzędu",
+      "Najem lokalu do remontu z mieszkaniowego zasobu miasta",
+      "Najem lokalu z mieszkaniowego zasobu miasta - składanie doku",
+      "Przywrócenie tytułu prawnego do lokalu",
+      "Najem lokalu po śmierci najemcy - dotyczy osób, które pozost",
+      "Rejestracja pojazdu zarejestrowanego na terenie RP",
+      "Złożenie wniosku o ulgę w spłacie zobowiązań podatkowych z t",
+      "Wymiana dowodu rejestracyjnego z powodu braku miejsca na wpi",
+      "Wtórnik znaku legalizacyjnego"
+    ],
+    "top6_content_preview": [
+      "piętro ....................\nUrządzenia techniczne: wod-kan                                wc                    łazienka                             C.O.                        gaz\n\n\nOpinia czy istnie",
+      "......................................................................\nOświadczam, że w podanym wyżej okresie dochody moje i wymienionych wyżej kolejno członków mojego\ngospodarstwa domowego wyniosły:\n",
+      "ie będziemy\n            mogli np. dzwonić pod numer kontaktowy.\n       6. Z danych osobowych będziemy korzystać do momentu zakończenia realizacji celów określonych w pkt 3, a po tym czasie dokumenta-\n",
+      "ul. Wieniawska 14\n                                                                                                 20-071 Lublin\n\n                                Wniosek o wyłączenie gruntów z produkc",
+      "płatnicze) - w celu dokonania zwrotów\n                   opłaty,\n               •   innym podmiotom, które na podstawie stosownych umów podpisanych z Gminą Lublin przetwarzają dane osobowe dla któ -\n ",
+      "# Załącznik: km-031-03.pdf\n\nLublin, dnia .................................. r.\n...................................................\n                (imię i nazwisko)\n..................................."
+    ],
+    "ground_truth": "Krzysztof Żuk, Prezydent Miasta Lublin od 2010 r. Plac Króla Władysława Łokietka 1.",
+    "expected_department": null,
+    "expected_address": null
+  },
+  {
+    "id": "Q04",
+    "question": "Gdzie jest Biuro Rzeczy Znalezionych i jakie ma godziny otwarcia?",
+    "difficulty": "easy",
+    "category": "WHERE",
+    "search_time_ms": 58.7,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "Dolna",
+      "7:30",
+      "15:30"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych"
+    ],
+    "top6_types": [
+      "usluga",
+      "usluga",
+      "pdf_attachment",
+      "usluga",
+      "pdf_attachment",
+      "usluga"
+    ],
+    "top6_departments": [
+      "Wydział Organizacji Urzędu",
+      "Wydział Organizacji Urzędu",
+      "?",
+      "Wydział Organizacji Urzędu",
+      "?",
+      "Wydział Organizacji Urzędu"
+    ],
+    "top6_scores": [
+      19.533,
+      18.859,
+      18.429,
+      18.333,
+      18.033,
+      16.498
+    ],
+    "top15_titles": [
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Biuro Rzeczy Znalezionych",
+      "Wydział Organizacji Urzędu",
+      "Biuro Rzeczy Znalezionych",
+      "Rada Kultury Przestrzeni",
+      "Biuro Rzeczy Znalezionych",
+      "Nabywanie nieruchomości na rzecz Gminy lub Skarbu Państwa",
+      "Przeniesienie własności rzeczy lub praw majątkowych w zamian",
+      "Zezwolenie na usunięcie",
+      "Udostępnienie informacji o środowisku i jego ochronie",
+      "Podejrzenie nieuprawnionego wykorzystania danych osobowych",
+      "Podział nieruchomości w trybie art. 93 lub art. 94 Ustawy o "
+    ],
+    "top6_content_preview": [
+      "Usługa: Biuro Rzeczy Znalezionych\nWydział: Wydział Organizacji Urzędu\nNumer karty: OR-006\n\nrawach, wynikających z regulacji o ochronie danych osobowych:\nAdministratorem Pani/Pana danych osobowych jest",
+      "Usługa: Biuro Rzeczy Znalezionych\nWydział: Wydział Organizacji Urzędu\nNumer karty: OR-006\n\nanych osobowych jest niezbędne do realizacji wyżej wymienionych celów. Do sporządzenia protokołu wymagamy pod",
+      "mail: iod@lublin.eu; lub pisemnie na adres Administratora danych: plac Króla\n      Władysława Łokietka 1, 20–109 Lublin.\n   3. Dane osobowe uzyskane w związku z przyjęciem zawiadomienia o znalezieniu\n",
+      "Usługa: Biuro Rzeczy Znalezionych\nWydział: Wydział Organizacji Urzędu\nNumer karty: OR-006\n\n# Biuro Rzeczy Znalezionych\n\n## Numer karty informacyjnej\nOR-006\n\n## Komórka organizacyjna załatwiająca spraw",
+      "zenia o ochronie danych\n         osobowych.\n   9. Podanie przez Panią/Pana danych osobowych jest obowiązkowe, w sytuacji gdy\n      przesłankę przetwarzania danych osobowych stanowi przepis prawa.\n\n\n\n\n",
+      "Usługa: Biuro Rzeczy Znalezionych\nWydział: Wydział Organizacji Urzędu\nNumer karty: OR-006\n\nanych osobowych w dowolnym momencie. Cofnięcie to nie ma wpływu na zgodność przetwarzania, którego dokonano n"
+    ],
+    "ground_truth": "Wydział Organizacji Urzędu, ul. Dolna 3-Maja 5, pok. 3 (parter), tel. 81 466 1200. Pon-pt 07:30-15:30.",
+    "expected_department": "Wydział Organizacji Urzędu",
+    "expected_address": "Dolna 3-Maja 5"
+  },
+  {
+    "id": "Q05",
+    "question": "Jakie dokumenty potrzebuję do wymiany prawa jazdy po zmianie nazwiska?",
+    "difficulty": "medium",
+    "category": "HOW",
+    "search_time_ms": 61.7,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 0.5,
+    "content_keywords_found": [
+      "wniosek",
+      "prawo jazdy"
+    ],
+    "content_keywords_missing": [
+      "zdjęcie",
+      "100"
+    ],
+    "top6_titles": [
+      "Wymiana prawa jazdy z powodu zmiany danych",
+      "Wydanie wtórnika prawa jazdy",
+      "Wymiana prawa jazdy z powodu upływu terminu ważności",
+      "Zwrot prawa jazdy zatrzymanego elektronicznie",
+      "Wymiana prawa jazdy nieokreślonego w Konwencji Wiedeńskiej o",
+      "Wymiana prawa jazdy wydanego za granicą przez państwo członk"
+    ],
+    "top6_types": [
+      "usluga",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment"
+    ],
+    "top6_departments": [
+      "Wydział Komunikacji",
+      "?",
+      "?",
+      "?",
+      "?",
+      "?"
+    ],
+    "top6_scores": [
+      18.85,
+      18.633,
+      18.454,
+      18.433,
+      18.383,
+      18.247
+    ],
+    "top15_titles": [
+      "Wydział Komunikacji",
+      "Wymiana prawa jazdy z powodu zmiany danych",
+      "Zatrzymanie prawa jazdy z powodu przekroczenia dopuszczalnej",
+      "Zatrzymywanie praw jazdy dłużnikom alimentacyjnym",
+      "Wymiana prawa jazdy nieokreślonego w Konwencji Wiedeńskiej o",
+      "Wymiana prawa jazdy z powodu upływu terminu ważności",
+      "Profil kandydata na kierowcę",
+      "Zwrot zatrzymanego prawa jazdy osobie mającej orzeczony zaka",
+      "Badania lekarskie i psychologiczne kierowców i osób bez upra",
+      "Profil kierowcy zawodowego - wymiana praw jazdy kierowców wy",
+      "Przekroczenie limitu 20 lub 24 punktów karnych za wykroczeni",
+      "Wydanie wtórnika prawa jazdy",
+      "Zwrot prawa jazdy zatrzymanego elektronicznie",
+      "Wymiana prawa jazdy wydanego za granicą przez państwo członk",
+      "Wymiana karty motorowerowej na prawo jazdy kategorii AM"
+    ],
+    "top6_content_preview": [
+      "Usługa: Wymiana prawa jazdy z powodu zmiany danych\nWydział: Wydział Komunikacji\nNumer karty: KM-070\n\nnię Papierów Wartościowych wynosi od 10 do 14 dni.\nW przypadku odbioru prawa jazdy za pośrednictwem",
+      "stanowisku kierowcy,\n      c) kopię orzeczenia psychologicznego o braku przeciwwskazań psychologicznych do wykonywania\n          pracy na stanowisku kierowcy,\n      d) kopię posiadanego prawa jazdy,\n ",
+      "stanowisku kierowcy,\n      c) kopię orzeczenia psychologicznego o braku przeciwwskazań psychologicznych do wykonywania\n          pracy na stanowisku kierowcy,\n      d) kopię posiadanego prawa jazdy,\n ",
+      "stanowisku kierowcy,\n      c) kopię orzeczenia psychologicznego o braku przeciwwskazań psychologicznych do wykonywania\n          pracy na stanowisku kierowcy,\n      d) kopię posiadanego prawa jazdy,\n ",
+      "stanowisku kierowcy,\n      c) kopię orzeczenia psychologicznego o braku przeciwwskazań psychologicznych do wykonywania\n          pracy na stanowisku kierowcy,\n      d) kopię posiadanego prawa jazdy,\n ",
+      "stanowisku kierowcy,\n      c) kopię orzeczenia psychologicznego o braku przeciwwskazań psychologicznych do wykonywania\n          pracy na stanowisku kierowcy,\n      d) kopię posiadanego prawa jazdy,\n "
+    ],
+    "ground_truth": "Usługa KM-024. Wydział Komunikacji. Dokumenty: wniosek, zdjęcie, dotychczasowe prawo jazdy, dowód osobisty. Opłata 100 zł + 0.50 zł.",
+    "expected_department": "Wydział Komunikacji",
+    "expected_address": "Czechowska 19"
+  },
+  {
+    "id": "Q06",
+    "question": "Jak złożyć wniosek o dodatek mieszkaniowy?",
+    "difficulty": "medium",
+    "category": "HOW+WHERE",
+    "search_time_ms": 37.1,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "wniosek",
+      "dochód",
+      "powierzchni"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Najem lokalu z mieszkaniowego zasobu miasta - składanie doku",
+      "Wtórnik tablicy",
+      "Zamiana kontrahencka (wzajemna) lokali mieszkalnych",
+      "Dodatki mieszkaniowe",
+      "Dodatki mieszkaniowe",
+      "Dodatki mieszkaniowe"
+    ],
+    "top6_types": [
+      "usluga",
+      "usluga",
+      "usluga",
+      "usluga",
+      "usluga",
+      "usluga"
+    ],
+    "top6_departments": [
+      "Wydział Spraw Mieszkaniowych",
+      "Wydział Komunikacji",
+      "Wydział Spraw Mieszkaniowych",
+      "Wydział Świadczeń",
+      "Wydział Świadczeń",
+      "Wydział Świadczeń"
+    ],
+    "top6_scores": [
+      11.833,
+      11.807,
+      10.979,
+      10.796,
+      10.597,
+      10.397
+    ],
+    "top15_titles": [
+      "Wtórnik tablicy",
+      "Najem lokalu z mieszkaniowego zasobu miasta - składanie doku",
+      "Zamiana kontrahencka (wzajemna) lokali mieszkalnych",
+      "Złożenie deklaracji (korekty deklaracji) na podatek leśny",
+      "Złożenie deklaracji (korekty deklaracji) na podatek rolny",
+      "Realizacja wyroków sądowych bez uprawnienia do najmu socjaln",
+      "Zamiana lokalu z urzędu",
+      "Realizacja wyroków sądowych z uprawnieniem do najmu socjalne",
+      "Dodatki mieszkaniowe",
+      "Wpis do Ewidencji uczniowskich klubów sportowych",
+      "Wydawanie wypisów i wyrysów z operatu ewidencyjnego",
+      "Dodatki mieszkaniowe",
+      "Najem lokalu do remontu z mieszkaniowego zasobu miasta",
+      "Sprawy związane z osiedleniem się kandydatów na repatriantów",
+      "Dodatki mieszkaniowe"
+    ],
+    "top6_content_preview": [
+      "Usługa: Najem lokalu z mieszkaniowego zasobu miasta - składanie dokumentów pod kątem opracowywanych wykazów osób zakwalifikowanych do zawarcia umowy najmu lokalu z mieszkaniowego zasobu miasta Lublin\n",
+      "Usługa: Wtórnik tablicy\nWydział: Wydział Komunikacji\nNumer karty: KM-048\n\nadanie fałszywych zeznań.\ntablica rejestracyjna w przypadku zniszczenia.\n\n## Dokumenty do wglądu\ndowód osobisty (w tym mDowód)",
+      "Usługa: Zamiana kontrahencka (wzajemna) lokali mieszkalnych\nWydział: Wydział Spraw Mieszkaniowych\nNumer karty: WSM-020\n\nseparacji - prawomocne orzeczenie sądu,\nzgoda dysponenta na zamianę lokalu (spół",
+      "Usługa: Dodatki mieszkaniowe\nWydział: Wydział Świadczeń\nNumer karty: WS-009\n\nienia skargi do Prezesa Urzędu Ochrony Danych Osobowych, w sytuacji, gdy uznają Państwo, że przetwarzanie danych osobowych ",
+      "Usługa: Dodatki mieszkaniowe\nWydział: Wydział Świadczeń\nNumer karty: WS-009\n\n# Dodatki mieszkaniowe\n\n## Numer karty informacyjnej\nWS-009\n\n## Komórka organizacyjna załatwiająca sprawę\nWydział Świadczeń",
+      "Usługa: Dodatki mieszkaniowe\nWydział: Wydział Świadczeń\nNumer karty: WS-009\n\nwy\n1 miesiąc od złożenia wniosku.\n\n## Tryb odwoławczy\nOdwołanie do Samorządowego Kolegium Odwoławczego w Lublinie, za pośre"
+    ],
+    "ground_truth": "Wydział Świadczeń. Wymagane: wniosek + deklaracja o dochodach. Kryterium dochodowe i metrażowe. Decyzja w 30 dni.",
+    "expected_department": "Wydział Świadczeń",
+    "expected_address": null
+  },
+  {
+    "id": "Q07",
+    "question": "Jak załatwić wypis z planu zagospodarowania przestrzennego?",
+    "difficulty": "hard",
+    "category": "HOW+HOW_MUCH",
+    "search_time_ms": 43.6,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 0.333,
+    "content_keywords_found": [
+      "wniosek"
+    ],
+    "content_keywords_missing": [
+      "opłata",
+      "skarbowa"
+    ],
+    "top6_titles": [
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wydział Planowania"
+    ],
+    "top6_types": [
+      "usluga",
+      "pdf_attachment",
+      "pdf_attachment",
+      "usluga",
+      "usluga",
+      "department_profile"
+    ],
+    "top6_departments": [
+      "Wydział Planowania",
+      "?",
+      "?",
+      "Wydział Planowania",
+      "Wydział Planowania",
+      "Wydział Planowania"
+    ],
+    "top6_scores": [
+      30.027,
+      27.384,
+      27.156,
+      26.857,
+      24.396,
+      24.077
+    ],
+    "top15_titles": [
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Wydział Planowania",
+      "Wydział Planowania",
+      "Pismo dotyczące aktu planowania przestrzennego (wniosek",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze",
+      "Pismo dotyczące aktu planowania przestrzennego (wniosek",
+      "Zaświadczenie o zgodności budowy z ustaleniami obowiązująceg",
+      "Zaświadczenie o zgodności zamierzonego sposobu użytkowania o",
+      "Zaświadczenie dotyczące terenu (w przypadku braku Miejscoweg",
+      "Dzierżawa",
+      "Przygotowanie inwestycji mieszkaniowych oraz inwestycji towa",
+      "Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrze"
+    ],
+    "top6_content_preview": [
+      "Usługa: Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrzennego lub Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego\nWydział: Wydział Planowania\nNumer karty: PL-008\n\n# Wypis i",
+      "i wyrysu lub wypisu/wyrysu (niepotrzebne skreślić):\n         •   z Miejscowego Planu Zagospodarowania Przestrzennego\n\n         •   ze Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego\n\nI",
+      "Wieniawska 14\n                                                                                             20-071 Lublin\n\n                                           WNIOSEK O WYDANIE WYPISU I WYRYSU\n\n",
+      "Usługa: Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrzennego lub Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego\nWydział: Wydział Planowania\nNumer karty: PL-008\n\nArt. 30 u",
+      "Usługa: Wypis i wyrys z Miejscowego Planu Zagospodarowania Przestrzennego lub Studium Uwarunkowań i Kierunków Zagospodarowania Przestrzennego\nWydział: Wydział Planowania\nNumer karty: PL-008\n\nwypisu i ",
+      "# Wydział Planowania\n\nJednostka organizacyjna Urzędu Miasta Lublin.\n\n## Lista usług (12 w BIP):\n- Decyzja w sprawie opłaty planistycznej - na wniosek\n- Decyzja w sprawie opłaty planistycznej - z urzęd"
+    ],
+    "ground_truth": "Wydział Planowania. Opłata skarbowa: 30 zł za wypis do 5 stron, 50 zł powyżej. Wyrys 20 zł za każdą stronę A4. Termin: bez zbędnej zwłoki, max 30 dni.",
+    "expected_department": "Wydział Planowania",
+    "expected_address": null
+  },
+  {
+    "id": "Q08",
+    "question": "Chcę zarejestrować działalność gospodarczą. Gdzie w urzędzie to załatwię?",
+    "difficulty": "hard",
+    "category": "WHERE+HOW",
+    "search_time_ms": 51.9,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "CEIDG",
+      "wniosek",
+      "rejestr"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Profil kandydata na kierowcę",
+      "Zaświadczenie o stanie cywilnym",
+      "Sprowadzenie zwłok (szczątków ludzkich) z zagranicy w celu i",
+      "Wydanie zaświadczenia o przedsiębiorcy wpisanym do ewidencji",
+      "Odpis aktu urodzenia, małżeństwa, zgonu",
+      "Wydanie i rejestracja dziennika budowy"
+    ],
+    "top6_types": [
+      "usluga",
+      "pdf_attachment",
+      "usluga",
+      "usluga",
+      "pdf_attachment",
+      "usluga"
+    ],
+    "top6_departments": [
+      "Wydział Komunikacji",
+      "?",
+      "Wydział Zieleni i Gospodarki Komunalnej",
+      "Wydział Spraw Administracyjnych",
+      "?",
+      "Wydział Architektury i Budownictwa"
+    ],
+    "top6_scores": [
+      12.717,
+      11.753,
+      11.158,
+      10.96,
+      10.817,
+      10.467
+    ],
+    "top15_titles": [
+      "Profil kandydata na kierowcę",
+      "Zaświadczenie o stanie cywilnym",
+      "Sprowadzenie zwłok (szczątków ludzkich) z zagranicy w celu i",
+      "Odpis aktu urodzenia, małżeństwa, zgonu",
+      "Wydanie zaświadczenia o przedsiębiorcy wpisanym do ewidencji",
+      "Wydanie i rejestracja dziennika budowy",
+      "Udostępnienie za życia miejsca grzebalnego pod pochówek trad",
+      "Wydanie zezwolenia na sprzedaż napojów alkoholowych przedsię",
+      "Udostępnienie miejsca grzebalnego: w Alei Zasłużonych cmenta",
+      "Bonifikata od opłat rocznych z tytułu użytkowania wieczysteg",
+      "Zaprzestanie wykonywania działalności gospodarczej",
+      "Zawieszenie działalności gospodarczej",
+      "Rejestracja działalności gospodarczej (wpis do CEIDG)",
+      "Wznowienie działalności gospodarczej",
+      "Zmiana wpisu do CEIDG"
+    ],
+    "top6_content_preview": [
+      "Usługa: Profil kandydata na kierowcę\nWydział: Wydział Komunikacji\nNumer karty: KM-055\n\no przynależności do wspólnoty wyznaniowej zarejestrowanej w Rzeczypospolitej Polskiej; dopuszcza się załączenie z",
+      "a wolności do lat 3.\n                             Oświadczam, że nie istnieją okoliczności mające wpływ na stan cywilny,\n                             nieodzwierciedlone w rejestrze stanu cywilnego.\n\n\n",
+      "Usługa: Sprowadzenie zwłok (szczątków ludzkich) z zagranicy w celu ich pochowania\nWydział: Wydział Zieleni i Gospodarki Komunalnej\nNumer karty: GK-003\n\nzwłok i szczątków ludzkich zza granicy i ich poc",
+      "Usługa: Wydanie zaświadczenia o przedsiębiorcy wpisanym do ewidencji działalności gospodarczej prowadzonej do 31.12.2011 r. przez Prezydenta Miasta Lublin\nWydział: Wydział Spraw Administracyjnych\nNume",
+      ".............................. �\n.................................................................................................................................................................... �\n",
+      "Usługa: Wydanie i rejestracja dziennika budowy\nWydział: Wydział Architektury i Budownictwa\nNumer karty: AB-018\n\nPana danych kontaktowych (tj. numeru telefonu) wskazanych we wniosku o wydanie dziennika"
+    ],
+    "ground_truth": "Rejestracja poprzez CEIDG (online). W UM Lublin pomoc w Wydziale Działalności Gospodarczej lub Biurze Obsługi Mieszkańców. Bezpłatne.",
+    "expected_department": "Wydział Spraw Administracyjnych",
+    "expected_address": null
+  },
+  {
+    "id": "Q09",
+    "question": "Jakie są godziny pracy Urzędu Stanu Cywilnego i jak zarejestrować urodzenie dziecka?",
+    "difficulty": "medium",
+    "category": "WHERE+HOW",
+    "search_time_ms": 73.0,
+    "title_hit": true,
+    "department_hit": true,
+    "content_recall": 1.0,
+    "content_keywords_found": [
+      "7:45",
+      "15:15",
+      "akt urodz"
+    ],
+    "content_keywords_missing": [],
+    "top6_titles": [
+      "Uznanie ojcostwa",
+      "Urząd Stanu Cywilnego",
+      "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+      "Zmiana imienia (imion) dziecka",
+      "Rejestracja dziecka",
+      "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne"
+    ],
+    "top6_types": [
+      "usluga",
+      "struktura_organizacyjna",
+      "usluga",
+      "usluga",
+      "usluga",
+      "usluga"
+    ],
+    "top6_departments": [
+      "Urząd Stanu Cywilnego",
+      "?",
+      "Urząd Stanu Cywilnego",
+      "Urząd Stanu Cywilnego",
+      "Urząd Stanu Cywilnego",
+      "Urząd Stanu Cywilnego"
+    ],
+    "top6_scores": [
+      26.771,
+      26.65,
+      26.275,
+      26.259,
+      24.571,
+      24.161
+    ],
+    "top15_titles": [
+      "Uznanie ojcostwa",
+      "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+      "Zmiana imienia (imion) dziecka",
+      "Urząd Stanu Cywilnego",
+      "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+      "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+      "Zmiana imienia (imion) dziecka",
+      "Rejestracja dziecka",
+      "Nadanie dziecku nazwiska przysługującego dzieciom z aktualne",
+      "Odpis aktu urodzenia, małżeństwa, zgonu",
+      "Zmiana imienia (imion) dziecka",
+      "Rejestracja zgonu",
+      "Sprostowanie aktu",
+      "Odtworzenie aktu zagranicznego",
+      "Rejestracja orzeczenia sądu zagranicznego na podstawie Kodek"
+    ],
+    "top6_content_preview": [
+      "Usługa: Uznanie ojcostwa\nWydział: Urząd Stanu Cywilnego\nNumer karty: USC-023\n\n# Uznanie ojcostwa\n\n## Numer karty informacyjnej\nUSC-023\n\n## Komórka organizacyjna załatwiająca sprawę\nUrząd Stanu Cywilne",
+      "# Urząd Stanu Cywilnego\n\nData utworzenia: 03-11-2008\nKierownik komórki organizacyjnej\nBartosz Głowacki\nSymbol komórki organizacyjnej\nUSC\nDepartament\nDepartament Prezydenta\nAdres\nul. Spokojna 2, p. 262",
+      "Usługa: Nadanie dziecku nazwiska przysługującego dzieciom z aktualnego małżeństwa matki\nWydział: Urząd Stanu Cywilnego\nNumer karty: USC-005\n\n# Nadanie dziecku nazwiska przysługującego dzieciom z aktua",
+      "Usługa: Zmiana imienia (imion) dziecka\nWydział: Urząd Stanu Cywilnego\nNumer karty: USC-010\n\n# Zmiana imienia (imion) dziecka\n\n## Numer karty informacyjnej\nUSC-010\n\n## Komórka organizacyjna załatwiając",
+      "Usługa: Rejestracja dziecka\nWydział: Urząd Stanu Cywilnego\nNumer karty: USC-008\n\n# Rejestracja dziecka\n\n## Numer karty informacyjnej\nUSC-008\n\n## Komórka organizacyjna załatwiająca sprawę\nUrząd Stanu C",
+      "Usługa: Nadanie dziecku nazwiska przysługującego dzieciom z aktualnego małżeństwa matki\nWydział: Urząd Stanu Cywilnego\nNumer karty: USC-005\n\narodowej\nDane dotyczące urodzeń, małżeństw i zgonów mogą by"
+    ],
+    "ground_truth": "USC, Spokojna 2, II piętro. Godziny: pon-pt 7:45-15:15. Rejestracja urodzenia: w ciągu 21 dni. Wymagane: karta urodzenia ze szpitala, dowody rodziców.",
+    "expected_department": "Urząd Stanu Cywilnego",
+    "expected_address": "Spokojna 2"
+  },
+  {
+    "id": "Q10",
+    "question": "Zgłoszenie sprzedaży samochodu - co muszę zrobić i ile mam czasu?",
+    "difficulty": "medium",
+    "category": "HOW+HOW_MUCH",
+    "search_time_ms": 49.2,
+    "title_hit": false,
+    "department_hit": false,
+    "content_recall": 0.0,
+    "content_keywords_found": [],
+    "content_keywords_missing": [
+      "30 dni",
+      "zawiadomieni",
+      "umow"
+    ],
+    "top6_titles": [
+      "Zgłoszenie zamiaru usunięcia drzew (dot. osób fizycznych)",
+      "Zatrzymanie prawa jazdy z powodu przekroczenia dopuszczalnej",
+      "Zatrzymywanie praw jazdy dłużnikom alimentacyjnym",
+      "Wymiana prawa jazdy nieokreślonego w Konwencji Wiedeńskiej o",
+      "Wymiana prawa jazdy z powodu upływu terminu ważności",
+      "Profil kandydata na kierowcę"
+    ],
+    "top6_types": [
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment",
+      "pdf_attachment"
+    ],
+    "top6_departments": [
+      "?",
+      "?",
+      "?",
+      "?",
+      "?",
+      "?"
+    ],
+    "top6_scores": [
+      17.83,
+      15.57,
+      15.57,
+      15.57,
+      15.57,
+      15.57
+    ],
+    "top15_titles": [
+      "Zgłoszenie zamiaru usunięcia drzew (dot. osób fizycznych)",
+      "Zatrzymanie prawa jazdy z powodu przekroczenia dopuszczalnej",
+      "Zatrzymywanie praw jazdy dłużnikom alimentacyjnym",
+      "Wymiana prawa jazdy nieokreślonego w Konwencji Wiedeńskiej o",
+      "Wymiana prawa jazdy z powodu upływu terminu ważności",
+      "Profil kandydata na kierowcę",
+      "Zwrot zatrzymanego prawa jazdy osobie mającej orzeczony zaka",
+      "Badania lekarskie i psychologiczne kierowców i osób bez upra",
+      "Profil kierowcy zawodowego - wymiana praw jazdy kierowców wy",
+      "Przekroczenie limitu 20 lub 24 punktów karnych za wykroczeni",
+      "Wydanie wtórnika prawa jazdy",
+      "Zwrot prawa jazdy zatrzymanego elektronicznie",
+      "Wymiana prawa jazdy wydanego za granicą przez państwo członk",
+      "Wymiana karty motorowerowej na prawo jazdy kategorii AM",
+      "Wydanie międzynarodowego prawa jazdy"
+    ],
+    "top6_content_preview": [
+      "IS WNIOSKODAWCY\n                                                                Podpis …………………………………………….………………………..\n\nF. PODPISY WSPÓŁWŁAŚCICIELI (zgoda na usunięcie drzew wskazanych w zgłoszeniu)\n\n\n\n",
+      "3) nie został orzeczony w stosunku do mnie - prawomocnym wyrokiem sądu - zakaz prowadzenia\n         d) dowód uiszczenia opłaty za wydanie prawa jazdy/pozwolenia2) w wysokości .........................",
+      "3) nie został orzeczony w stosunku do mnie - prawomocnym wyrokiem sądu - zakaz prowadzenia\n         d) dowód uiszczenia opłaty za wydanie prawa jazdy/pozwolenia2) w wysokości .........................",
+      "3) nie został orzeczony w stosunku do mnie - prawomocnym wyrokiem sądu - zakaz prowadzenia\n         d) dowód uiszczenia opłaty za wydanie prawa jazdy/pozwolenia2) w wysokości .........................",
+      "3) nie został orzeczony w stosunku do mnie - prawomocnym wyrokiem sądu - zakaz prowadzenia\n         d) dowód uiszczenia opłaty za wydanie prawa jazdy/pozwolenia2) w wysokości .........................",
+      "3) nie został orzeczony w stosunku do mnie - prawomocnym wyrokiem sądu - zakaz prowadzenia\n         d) dowód uiszczenia opłaty za wydanie prawa jazdy/pozwolenia2) w wysokości ........................."
+    ],
+    "ground_truth": "Usługa KM - Zgłoszenie zbycia pojazdu. Wydział Komunikacji. Termin: 30 dni od sprzedaży. Dokumenty: zawiadomienie + kopia umowy. Bezpłatne.",
+    "expected_department": "Wydział Komunikacji",
+    "expected_address": "Czechowska 19"
+  }
+]
