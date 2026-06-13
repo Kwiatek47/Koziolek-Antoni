@@ -283,22 +283,49 @@ def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[lis
     for rank, bid in enumerate(bm25_results_ids):
         rrf_scores[bid] = rrf_scores.get(bid, 0) + 1.0 / (RRF_K + rank + 1)
 
-    # Title boost
+    # Strong title-based re-ranking
     question_lower = question.lower()
-    for did in rrf_scores:
+    question_words = set(w for w in question_lower.split() if len(w) > 3)
+
+    for did in list(rrf_scores.keys()):
         meta = id_to_meta.get(did, {})
         title = meta.get("title", "").lower()
         title_words = [w for w in title.split() if len(w) > 3]
         if title_words:
             matching = sum(1 for w in title_words if w in question_lower)
-            rrf_scores[did] += (matching / len(title_words)) * 0.02
+            match_ratio = matching / len(title_words)
+            # Strong boost for title matches
+            rrf_scores[did] += match_ratio * 0.05
+            # Check if question keywords appear in title
+            reverse_match = sum(1 for w in question_words if w in title)
+            if question_words:
+                rrf_scores[did] += (reverse_match / len(question_words)) * 0.05
 
     sorted_ids = sorted(rrf_scores.keys(), key=lambda x: rrf_scores[x], reverse=True)
 
+    # Take top results, but prioritize those with title overlap
     final_docs = []
     final_metas = []
     seen = set()
 
+    # First pass: items with title keyword match
+    for did in sorted_ids:
+        if len(final_docs) >= final_k:
+            break
+        meta = id_to_meta.get(did, {})
+        title = meta.get("title", "").lower()
+        has_overlap = any(w in title for w in question_words)
+        if not has_overlap:
+            continue
+        doc = id_to_doc.get(did, "")
+        h = hash(doc[:200])
+        if h in seen:
+            continue
+        seen.add(h)
+        final_docs.append(doc)
+        final_metas.append(meta)
+
+    # Second pass: fill remaining slots
     for did in sorted_ids:
         if len(final_docs) >= final_k:
             break
