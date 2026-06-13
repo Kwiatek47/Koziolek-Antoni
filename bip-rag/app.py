@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 BIP Lublin RAG - Retrieval Augmented Generation for Lublin city services.
-Simple API server with ChromaDB for vector search and OpenAI-compatible LLM.
+Simple API server with ChromaDB for vector search and local LLM via llama-cpp-python.
 """
 import json
 import os
@@ -11,6 +11,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from llama_cpp import Llama
 
 app = FastAPI(
     title="BIP Lublin RAG",
@@ -21,13 +22,11 @@ app = FastAPI(
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 CHROMA_DIR = os.path.join(DATA_DIR, "chroma_db")
 DOCUMENTS_FILE = os.path.join(DATA_DIR, "documents.json")
+MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(os.path.dirname(__file__), "models", "Llama-3.2-3B-Instruct-Q4_K_M.gguf"))
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sdadas/st-polish-paraphrase-from-distilroberta")
-LLM_BASE_URL = os.getenv("LLM_BASE_URL", "http://localhost:11434/v1")
-LLM_MODEL = os.getenv("LLM_MODEL", "llama3.1:8b")
-LLM_API_KEY = os.getenv("LLM_API_KEY", "ollama")
-
 TOP_K = int(os.getenv("TOP_K", "8"))
+N_THREADS = int(os.getenv("N_THREADS", "8"))
 
 embedding_fn = SentenceTransformerEmbeddingFunction(
     model_name=EMBEDDING_MODEL,
@@ -39,6 +38,13 @@ collection = chroma_client.get_or_create_collection(
     name="bip_lublin",
     embedding_function=embedding_fn,
     metadata={"hnsw:space": "cosine"},
+)
+
+llm = Llama(
+    model_path=MODEL_PATH,
+    n_ctx=4096,
+    n_threads=N_THREADS,
+    verbose=False,
 )
 
 
@@ -57,13 +63,7 @@ class IndexStatus(BaseModel):
     indexed: bool
 
 
-def get_llm_response(question: str, context: str) -> str:
-    """Call LLM with context for RAG response."""
-    from openai import OpenAI
-
-    client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
-
-    system_prompt = """Jesteś pomocnym asystentem Urzędu Miasta Lublin. Odpowiadasz na pytania mieszkańców na podstawie danych z BIP (Biuletyn Informacji Publicznej).
+SYSTEM_PROMPT = """Jesteś pomocnym asystentem Urzędu Miasta Lublin. Odpowiadasz na pytania mieszkańców na podstawie danych z BIP (Biuletyn Informacji Publicznej).
 
 Zasady:
 - Odpowiadaj TYLKO na podstawie podanego kontekstu
@@ -73,6 +73,9 @@ Zasady:
 - Bądź konkretny: podawaj numery telefonów, adresy, godziny, wymagane dokumenty
 - Jeśli pytanie dotyczy procedury/usługi, wymień kroki do załatwienia sprawy"""
 
+
+def get_llm_response(question: str, context: str) -> str:
+    """Call local LLM with context for RAG response."""
     user_prompt = f"""Kontekst z BIP Lublin:
 ---
 {context}
@@ -82,17 +85,16 @@ Pytanie: {question}
 
 Odpowiedz na podstawie powyższego kontekstu. Podaj źródła."""
 
-    response = client.chat.completions.create(
-        model=LLM_MODEL,
+    response = llm.create_chat_completion(
         messages=[
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.1,
-        max_tokens=2000,
+        max_tokens=1500,
     )
 
-    return response.choices[0].message.content
+    return response["choices"][0]["message"]["content"]
 
 
 @app.get("/health")

@@ -60,18 +60,17 @@ echo "[6/6] Creating services..."
 sudo tee /etc/systemd/system/bip-backend.service > /dev/null << 'SERVICE'
 [Unit]
 Description=BIP Lublin RAG Backend
-After=network.target ollama.service
+After=network.target
 
 [Service]
 Type=simple
 User=user
-WorkingDirectory=/home/user/bip-rag
-ExecStart=/home/user/bip-rag/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000
+WorkingDirectory=/home/user/Kozio-ek-Antoni/bip-rag
+ExecStart=/home/user/Kozio-ek-Antoni/bip-rag/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000
 Restart=always
 RestartSec=5
-Environment=LLM_BASE_URL=http://localhost:11434/v1
-Environment=LLM_MODEL=llama3.1:8b
-Environment=LLM_API_KEY=ollama
+Environment=MODEL_PATH=/home/user/Kozio-ek-Antoni/bip-rag/models/Llama-3.2-3B-Instruct-Q4_K_M.gguf
+Environment=N_THREADS=8
 
 [Install]
 WantedBy=multi-user.target
