@@ -4,7 +4,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Wydanie dowodu osobistego w Urzędzie Miasta Lublin.",
-      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 221 (II piętro)", "phone": "81 466 3562", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Spraw Administracyjnych"},
+      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 221 (II piętro)", "phone": "81 466 3562", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Spraw Administracyjnych", "lat": 51.2465, "lng": 22.5527},
       "how": {"steps": ["Wypełnij wniosek o wydanie dowodu osobistego (formularz SA-075-01)", "Przygotuj aktualne kolorowe zdjęcie 35x45mm", "Złóż wniosek osobiście w urzędzie lub przez ePUAP", "Odbierz dowód osobiście po 30 dniach"], "required_documents": ["wniosek o wydanie dowodu osobistego", "kolorowe zdjęcie 35x45mm", "dotychczasowy dowód osobisty (jeśli posiada)"], "forms": ["SA-075-01"], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "bezpłatne", "time_estimate": "do 30 dni", "legal_basis": "Ustawa z dnia 6 sierpnia 2010 r. o dowodach osobistych (Dz.U. 2022 poz. 671)"},
       "booking": true,
@@ -32,7 +32,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Zgłoszenie utraty dowodu osobistego i wniosek o nowy dokument.",
-      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 221 (II piętro)", "phone": "81 466 3562", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Spraw Administracyjnych"},
+      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 221 (II piętro)", "phone": "81 466 3562", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Spraw Administracyjnych", "lat": 51.2465, "lng": 22.5527},
       "how": {"steps": ["Zgłoś utratę dowodu w urzędzie gminy lub przez ePUAP (formularz SA-076-01)", "Dotychczasowy dowód zostanie unieważniony", "Złóż wniosek o wydanie nowego dowodu osobistego", "Odbierz nowy dowód po ok. 30 dniach"], "required_documents": ["formularz zgłoszenia utraty dowodu (SA-076-01)", "kolorowe zdjęcie 35x45mm"], "forms": ["SA-076-01"], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "bezpłatne", "time_estimate": "do 30 dni"},
       "booking": true,
@@ -44,7 +44,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Rejestracja pojazdu w Wydziale Komunikacji Urzędu Miasta Lublin.",
-      "where": {"address": "ul. Czechowska 19A, 20-072 Lublin", "room": "pokój nr 6 (parter)", "phone": "81 466 3223", "hours": "poniedziałek 9:15-16:30, wtorek-piątek 7:45-15:00", "department": "Wydział Komunikacji"},
+      "where": {"address": "ul. Czechowska 19A, 20-072 Lublin", "room": "pokój nr 6 (parter)", "phone": "81 466 3223", "hours": "poniedziałek 9:15-16:30, wtorek-piątek 7:45-15:00", "department": "Wydział Komunikacji", "lat": 51.2483, "lng": 22.5558},
       "how": {"steps": ["Przygotuj wymagane dokumenty (dowód własności, karta pojazdu, OC)", "Wypełnij wniosek KM-008-01", "Złóż dokumenty w Wydziale Komunikacji", "Odbierz dowód rejestracyjny i tablice"], "required_documents": ["dowód własności pojazdu (umowa, faktura)", "karta pojazdu", "dowód ubezpieczenia OC", "dowód osobisty właściciela", "dotychczasowy dowód rejestracyjny", "tablice rejestracyjne (przy przerejestracji)"], "forms": ["KM-008-01"], "submission_method": "osobiście"},
       "how_much": {"cost": "161 zł (tablice + dowód rejestracyjny + nalepka)", "time_estimate": "do 30 dni (tymczasowy dowód od ręki)", "legal_basis": "Ustawa z dnia 20 czerwca 1997 r. Prawo o ruchu drogowym"},
       "booking": true,
@@ -64,7 +64,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Przerejestrowanie pojazdu zarejestrowanego na terenie RP w Wydziale Komunikacji.",
-      "where": {"address": "ul. Czechowska 19A, 20-072 Lublin", "room": "pokój nr 6 (parter)", "phone": "81 466 3223", "hours": "poniedziałek 9:15-16:30, wtorek-piątek 7:45-15:00", "department": "Wydział Komunikacji"},
+      "where": {"address": "ul. Czechowska 19A, 20-072 Lublin", "room": "pokój nr 6 (parter)", "phone": "81 466 3223", "hours": "poniedziałek 9:15-16:30, wtorek-piątek 7:45-15:00", "department": "Wydział Komunikacji", "lat": 51.2483, "lng": 22.5558},
       "how": {"steps": ["Przygotuj umowę kupna-sprzedaży i dokumenty pojazdu", "Wykup ubezpieczenie OC", "Wypełnij wniosek KM-008-01", "Złóż dokumenty w Wydziale Komunikacji", "Odbierz nowe tablice i dowód rejestracyjny"], "required_documents": ["umowa kupna-sprzedaży", "karta pojazdu", "dowód rejestracyjny", "polisa OC", "dowód osobisty", "tablice rejestracyjne", "zaświadczenie o przeglądzie technicznym"], "forms": ["KM-008-01"], "submission_method": "osobiście"},
       "how_much": {"cost": "161 zł (z nowymi tablicami) lub 81 zł (z zachowaniem tablic)", "time_estimate": "do 30 dni"},
       "booking": true,
@@ -76,7 +76,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Zameldowanie na pobyt stały lub czasowy w Lublinie.",
-      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 253 (II piętro)", "phone": "81 466 3622", "hours": "poniedziałek 8:00-16:30, wtorek-piątek 8:00-15:00", "department": "Wydział Spraw Administracyjnych"},
+      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 253 (II piętro)", "phone": "81 466 3622", "hours": "poniedziałek 8:00-16:30, wtorek-piątek 8:00-15:00", "department": "Wydział Spraw Administracyjnych", "lat": 51.2465, "lng": 22.5527},
       "how": {"steps": ["Wypełnij formularz zgłoszenia pobytu stałego (SA-006-01) lub czasowego (SA-009-01)", "Uzyskaj potwierdzenie pobytu od właściciela/zarządcy lokalu", "Złóż formularz osobiście w urzędzie lub przez ePUAP", "Otrzymasz zaświadczenie o zameldowaniu"], "required_documents": ["wypełniony formularz zgłoszenia pobytu", "dowód osobisty lub paszport", "dokument potwierdzający tytuł prawny do lokalu (do wglądu)"], "forms": ["SA-006-01 (pobyt stały)", "SA-009-01 (pobyt czasowy)"], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "bezpłatne", "time_estimate": "od ręki", "legal_basis": "Ustawa z dnia 24 września 2010 r. o ewidencji ludności (Dz.U. 2022 poz. 1191)"},
       "booking": true,
@@ -88,7 +88,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Zameldowanie na pobyt czasowy powyżej 3 miesięcy.",
-      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 253 (II piętro)", "phone": "81 466 3622", "hours": "poniedziałek 8:00-16:30, wtorek-piątek 8:00-15:00", "department": "Wydział Spraw Administracyjnych"},
+      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "room": "pokój nr 253 (II piętro)", "phone": "81 466 3622", "hours": "poniedziałek 8:00-16:30, wtorek-piątek 8:00-15:00", "department": "Wydział Spraw Administracyjnych", "lat": 51.2465, "lng": 22.5527},
       "how": {"steps": ["Wypełnij formularz SA-009-01 (zgłoszenie pobytu czasowego)", "Uzyskaj podpis właściciela lokalu na formularzu", "Złóż formularz w urzędzie lub przez ePUAP", "Otrzymasz zaświadczenie o zameldowaniu czasowym"], "required_documents": ["formularz SA-009-01", "dowód osobisty lub paszport", "dokument potwierdzający tytuł prawny do lokalu"], "forms": ["SA-009-01"], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "bezpłatne", "time_estimate": "od ręki"},
       "booking": true,
@@ -100,7 +100,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Wymiana prawa jazdy z powodu upływu terminu ważności lub zmiany danych.",
-      "where": {"address": "ul. Czechowska 19A, 20-072 Lublin", "room": "parter", "phone": "81 466 3223", "hours": "poniedziałek 9:15-16:30, wtorek-piątek 7:45-15:00", "department": "Wydział Komunikacji"},
+      "where": {"address": "ul. Czechowska 19A, 20-072 Lublin", "room": "parter", "phone": "81 466 3223", "hours": "poniedziałek 9:15-16:30, wtorek-piątek 7:45-15:00", "department": "Wydział Komunikacji", "lat": 51.2483, "lng": 22.5558},
       "how": {"steps": ["Wypełnij wniosek o wymianę prawa jazdy", "Przygotuj aktualne zdjęcie 35x45mm", "Dołącz orzeczenie lekarskie (jeśli wymiana z powodu terminu)", "Złóż dokumenty w Wydziale Komunikacji", "Odbierz nowe prawo jazdy"], "required_documents": ["wniosek o wydanie prawa jazdy", "kolorowe zdjęcie 35x45mm", "dotychczasowe prawo jazdy", "orzeczenie lekarskie (przy wymianie terminowej)", "dowód osobisty"], "forms": ["KM-001-01"], "submission_method": "osobiście"},
       "how_much": {"cost": "100,50 zł", "time_estimate": "do 30 dni", "legal_basis": "Ustawa z dnia 5 stycznia 2011 r. o kierujących pojazdami"},
       "booking": true,
@@ -128,7 +128,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Zawarcie małżeństwa w Urzędzie Stanu Cywilnego w Lublinie.",
-      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "phone": "81 466 3500", "hours": "poniedziałek-piątek 7:45-15:15", "department": "Urząd Stanu Cywilnego"},
+      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "phone": "81 466 3500", "hours": "poniedziałek-piątek 7:45-15:15", "department": "Urząd Stanu Cywilnego", "lat": 51.2465, "lng": 22.5527},
       "how": {"steps": ["Złóż dokumenty w USC minimum miesiąc przed planowaną datą", "Przedstaw odpisy aktów urodzenia", "Złóż zapewnienie o braku przeszkód do zawarcia małżeństwa", "Ustal termin ceremonii", "Staw się na ceremonię z dwoma świadkami"], "required_documents": ["dowody osobiste narzeczonych", "odpisy skrócone aktów urodzenia", "zapewnienie o braku przeszkód małżeńskich", "dowód opłaty skarbowej (84 zł)"], "forms": [], "submission_method": "osobiście"},
       "how_much": {"cost": "84 zł (akt małżeństwa) + 1000 zł (ślub poza urzędem)", "time_estimate": "min. 1 miesiąc od złożenia dokumentów", "legal_basis": "Ustawa z dnia 28 listopada 2014 r. Prawo o aktach stanu cywilnego"},
       "booking": true,
@@ -148,7 +148,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Wydanie pozwolenia na budowę w Wydziale Architektury i Budownictwa.",
-      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "phone": "81 466 2300", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Architektury i Budownictwa"},
+      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "phone": "81 466 2300", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Architektury i Budownictwa", "lat": 51.2471, "lng": 22.5600},
       "how": {"steps": ["Przygotuj projekt budowlany (4 egzemplarze)", "Uzyskaj warunki zabudowy (jeśli brak planu miejscowego)", "Wypełnij wniosek o pozwolenie na budowę", "Złóż wniosek z kompletem dokumentów", "Oczekuj na decyzję (65 dni)"], "required_documents": ["wniosek o pozwolenie na budowę", "projekt budowlany (4 egz.)", "oświadczenie o prawie do dysponowania nieruchomością", "decyzja o warunkach zabudowy (jeśli wymagana)", "uzgodnienia i opinie wymagane przepisami"], "forms": [], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "zależy od inwestycji (budynek mieszkalny - bezpłatne)", "time_estimate": "65 dni", "legal_basis": "Ustawa z dnia 7 lipca 1994 r. Prawo budowlane"},
       "booking": true,
@@ -160,7 +160,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Wydanie pozwolenia na budowę w Wydziale Architektury i Budownictwa.",
-      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "phone": "81 466 2300", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Architektury i Budownictwa"},
+      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "phone": "81 466 2300", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Architektury i Budownictwa", "lat": 51.2471, "lng": 22.5600},
       "how": {"steps": ["Przygotuj projekt budowlany (4 egzemplarze)", "Uzyskaj warunki zabudowy (jeśli brak planu miejscowego)", "Wypełnij wniosek o pozwolenie na budowę", "Złóż wniosek z kompletem dokumentów", "Oczekuj na decyzję (65 dni)"], "required_documents": ["wniosek o pozwolenie na budowę", "projekt budowlany (4 egz.)", "oświadczenie o prawie do dysponowania nieruchomością", "decyzja o warunkach zabudowy (jeśli wymagana)"], "forms": [], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "zależy od inwestycji (budynek mieszkalny - bezpłatne)", "time_estimate": "65 dni", "legal_basis": "Ustawa z dnia 7 lipca 1994 r. Prawo budowlane"},
       "booking": true,
@@ -172,7 +172,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Jednorazowa zapomoga z tytułu urodzenia się dziecka (becikowe) — 1000 zł.",
-      "where": {"address": "ul. Peowiaków 13, 20-007 Lublin", "room": "I piętro", "phone": "81 466 3331", "hours": "poniedziałek-piątek 7:45-15:15", "department": "Wydział Spraw Mieszkaniowych"},
+      "where": {"address": "ul. Peowiaków 13, 20-007 Lublin", "room": "I piętro", "phone": "81 466 3331", "hours": "poniedziałek-piątek 7:45-15:15", "department": "Wydział Spraw Mieszkaniowych", "lat": 51.2500, "lng": 22.5576},
       "how": {"steps": ["Wypełnij wniosek o becikowe", "Dołącz zaświadczenie lekarskie o opiece medycznej od 10. tygodnia ciąży", "Dołącz zaświadczenie o dochodach rodziny", "Złóż wniosek w ciągu 12 miesięcy od urodzenia dziecka"], "required_documents": ["wniosek o becikowe", "zaświadczenie lekarskie o opiece medycznej", "zaświadczenie o dochodach", "akt urodzenia dziecka", "dowód osobisty wnioskodawcy"], "forms": [], "submission_method": "osobiście"},
       "how_much": {"cost": "bezpłatne (wypłata: 1000 zł)", "time_estimate": "do 30 dni"},
       "booking": true,
@@ -184,7 +184,7 @@
     "response": {
       "intent": "procedure",
       "summary": "Ustalenie warunków zabudowy dla terenu bez planu miejscowego.",
-      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "phone": "81 466 2300", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Architektury i Budownictwa"},
+      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "phone": "81 466 2300", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Architektury i Budownictwa", "lat": 51.2471, "lng": 22.5600},
       "how": {"steps": ["Wypełnij wniosek o ustalenie warunków zabudowy", "Dołącz kopię mapy zasadniczej z zaznaczonym terenem", "Opisz planowaną inwestycję (funkcja, gabaryty)", "Złóż wniosek w urzędzie", "Oczekuj na decyzję"], "required_documents": ["wniosek o warunki zabudowy", "kopia mapy zasadniczej (2 egz.)", "opis planowanej inwestycji", "zapewnienia mediów (woda, prąd, gaz)"], "forms": [], "submission_method": "osobiście lub ePUAP"},
       "how_much": {"cost": "598 zł (zwolniony właściciel nieruchomości)", "time_estimate": "do 90 dni", "legal_basis": "Ustawa z dnia 27 marca 2003 r. o planowaniu i zagospodarowaniu przestrzennym"},
       "booking": false,
@@ -204,11 +204,55 @@
     "response": {
       "intent": "procedure",
       "summary": "Rejestracja działalności gospodarczej — wpis do CEIDG.",
-      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "room": "Biuro Obsługi Mieszkańców", "phone": "81 466 1002", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Biuro Obsługi Mieszkańców"},
+      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "room": "Biuro Obsługi Mieszkańców", "phone": "81 466 1002", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Biuro Obsługi Mieszkańców", "lat": 51.2471, "lng": 22.5600},
       "how": {"steps": ["Wypełnij wniosek CEIDG-1 (online na ceidg.gov.pl lub w urzędzie)", "Przygotuj dane: PKD, adres firmy, forma opodatkowania", "Złóż wniosek osobiście lub elektronicznie", "Wpis jest aktywny od wskazanego dnia"], "required_documents": ["wniosek CEIDG-1", "dowód osobisty"], "forms": ["CEIDG-1"], "submission_method": "osobiście lub online (ceidg.gov.pl)"},
       "how_much": {"cost": "bezpłatne", "time_estimate": "1 dzień roboczy", "legal_basis": "Ustawa z dnia 6 marca 2018 r. Prawo przedsiębiorców"},
       "booking": false,
       "suggestions": ["Ile kosztuje założenie firmy?", "Co to jest PKD?", "Jak wybrać formę opodatkowania?"]
+    }
+  },
+  {
+    "question": "Jak uzyskać odpis aktu urodzenia?",
+    "response": {
+      "intent": "procedure",
+      "summary": "Wydanie odpisu aktu urodzenia w Urzędzie Stanu Cywilnego.",
+      "where": {"address": "ul. Spokojna 2, 20-074 Lublin", "phone": "81 466 3500", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Urząd Stanu Cywilnego", "lat": 51.2465, "lng": 22.5527},
+      "how": {"steps": ["Złóż wniosek o wydanie odpisu aktu urodzenia", "Dokonaj opłaty skarbowej (22 zł skrócony / 33 zł zupełny)", "Odbierz odpis — w przypadku aktu sporządzonego w Lublinie wydanie od ręki"], "required_documents": ["wniosek o wydanie odpisu", "dowód osobisty", "dowód opłaty skarbowej"], "forms": [], "submission_method": "osobiście lub ePUAP"},
+      "how_much": {"cost": "22 zł (odpis skrócony) / 33 zł (odpis zupełny)", "time_estimate": "od ręki (akt lubelski) / do 10 dni (z innego USC)", "legal_basis": "Ustawa z dnia 28 listopada 2014 r. Prawo o aktach stanu cywilnego (Dz.U. 2023 poz. 1378)"},
+      "booking": true,
+      "suggestions": ["Ile kosztuje odpis aktu urodzenia?", "Czy mogę zamówić odpis online?", "Jak uzyskać odpis aktu małżeństwa?"]
+    }
+  },
+  {
+    "question": "Karta Miejska Lublin",
+    "response": {
+      "intent": "procedure",
+      "summary": "Wyrobienie Lubelskiej Karty Miejskiej (LKM) do komunikacji miejskiej.",
+      "where": {"address": "al. Kraśnicka 25 (Punkt Obsługi Pasażerów ZTM)", "phone": "81 466 2959", "hours": "poniedziałek-piątek 7:00-17:00, sobota 9:00-14:00", "department": "Zarząd Transportu Miejskiego", "lat": 51.2369, "lng": 22.5253},
+      "how": {"steps": ["Zgłoś się do Punktu Obsługi Pasażerów ZTM", "Wypełnij wniosek o wydanie karty", "Opłać kartę i wybierz bilet okresowy", "Odbierz kartę od ręki (lub w ciągu 7 dni)"], "required_documents": ["dowód osobisty lub legitymacja szkolna/studencka", "zdjęcie (opcjonalnie — mogą zrobić na miejscu)"], "forms": [], "submission_method": "osobiście"},
+      "how_much": {"cost": "15 zł (karta) + cena biletu okresowego", "time_estimate": "od ręki"},
+      "booking": false,
+      "suggestions": ["Ile kosztuje bilet miesięczny w Lublinie?", "Jakie zniżki na komunikację?", "Czy jest aplikacja mobilna ZTM?"]
+    }
+  },
+  {
+    "question": "Odpady komunalne – harmonogram",
+    "response": {
+      "intent": "simple",
+      "summary": "Harmonogram odbioru odpadów komunalnych w Lublinie dostępny jest na stronie zmpgk.lublin.eu. Odpady segregowane (papier, plastik, szkło, bio) odbierane są co 2 tygodnie, odpady zmieszane co tydzień. Gabaryty można oddać w PSZOK (ul. Metalurgiczna 6) lub zgłosić odbiór pod nr 81 533 07 87. Deklarację śmieciową składa się w Wydziale Ochrony Środowiska (ul. Zana 38).",
+      "suggestions": ["Gdzie jest PSZOK w Lublinie?", "Jak segregować odpady?", "Ile wynosi opłata za śmieci?"]
+    }
+  },
+  {
+    "question": "Jak uzyskać zaświadczenie o niezaleganiu z podatkami?",
+    "response": {
+      "intent": "procedure",
+      "summary": "Wydanie zaświadczenia o niezaleganiu w podatkach lokalnych.",
+      "where": {"address": "ul. Wieniawska 14, 20-071 Lublin", "room": "Biuro Obsługi Mieszkańców (parter)", "phone": "81 466 1002", "hours": "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15", "department": "Wydział Finansowy", "lat": 51.2471, "lng": 22.5600},
+      "how": {"steps": ["Wypełnij wniosek o wydanie zaświadczenia", "Uiść opłatę skarbową 21 zł", "Złóż wniosek w Biurze Obsługi Mieszkańców", "Odbierz zaświadczenie (do 7 dni)"], "required_documents": ["wniosek o wydanie zaświadczenia", "dowód osobisty", "dowód opłaty skarbowej (21 zł)", "pełnomocnictwo (jeśli działa pełnomocnik)"], "forms": [], "submission_method": "osobiście lub ePUAP"},
+      "how_much": {"cost": "21 zł (opłata skarbowa)", "time_estimate": "do 7 dni", "legal_basis": "Ustawa z dnia 29 sierpnia 1997 r. Ordynacja podatkowa (Dz.U. 2023 poz. 2383)"},
+      "booking": false,
+      "suggestions": ["Ile kosztuje zaświadczenie?", "Jak zapłacić podatek od nieruchomości?", "Gdzie zapłacić opłatę skarbową?"]
     }
   }
 ]

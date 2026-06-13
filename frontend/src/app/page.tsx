@@ -30,6 +30,7 @@ import {
   ThumbsUp,
   Square,
   Volume2,
+  Zap,
 } from "lucide-react";
 import { Locale, SPEECH_LOCALES, translations } from "@/i18n/translations";
 import LangSwitcher from "@/components/LangSwitcher";
@@ -90,6 +91,7 @@ interface StructuredResponse {
   common_mistakes?: string[];
   where_to_get?: string;
   where_to_submit?: string;
+  cached?: boolean;
 }
 
 interface Message {
@@ -98,6 +100,7 @@ interface Message {
   content: string;
   structured?: StructuredResponse;
   question?: string;
+  responseTimeMs?: number;
 }
 
 const SUGGESTION_ICONS = [FileText, MapPin, Banknote, Building2, User, ListChecks];
@@ -168,6 +171,7 @@ export default function Home() {
       setMessages((prev) => [...prev, userMessage]);
       setLoading(true);
 
+      const startTime = performance.now();
       try {
         const res = await fetch("/api/query", {
           method: "POST",
@@ -175,6 +179,7 @@ export default function Home() {
           body: JSON.stringify({ question, lang: locale, history }),
         });
         const data = await res.json();
+        const elapsed = Math.round(performance.now() - startTime);
 
         setMessages((prev) => [
           ...prev,
@@ -184,6 +189,7 @@ export default function Home() {
             content: data.summary || data.answer || t.errors.noAnswer,
             structured: data,
             question,
+            responseTimeMs: elapsed,
           },
         ]);
       } catch {
@@ -256,10 +262,11 @@ export default function Home() {
               {messages.map((msg, i) => (
                 <div key={i}>
                   {msg.role === "user" ? (
-                    <div className="flex justify-end">
+                    <div className="flex justify-end user-enter">
                       <div className="chat-user">{msg.content}</div>
                     </div>
                   ) : (
+                    <div className="msg-enter">
                     <AssistantMessage
                       msg={msg}
                       onFollowUp={send}
@@ -268,6 +275,7 @@ export default function Home() {
                       locale={locale}
                       t={t}
                     />
+                    </div>
                   )}
                 </div>
               ))}
@@ -332,9 +340,17 @@ function AssistantMessage({
       <Image src="/logo.png" alt="" width={32} height={32} className="rounded-lg shrink-0 mt-0.5 ring-1 ring-lublin-border" />
       <div className="flex-1 min-w-0 space-y-3">
         <div className="chat-ai">
-          <p className="text-[15px] leading-[1.65] text-lublin-text/90">{msg.content}</p>
+          <p className="text-[15px] leading-[1.65] text-lublin-text/90">
+            {msg.content}
+            {s?.cached && <span className="instant-badge"><Zap size={10} /> Instant</span>}
+          </p>
         </div>
         <div className="message-actions" aria-label={t.feedback.responseActions}>
+          {msg.responseTimeMs != null && (
+            <span className="text-[10px] text-lublin-muted/60 font-mono tabular-nums mr-1">
+              {msg.responseTimeMs < 1000 ? `${msg.responseTimeMs}ms` : `${(msg.responseTimeMs / 1000).toFixed(1)}s`}
+            </span>
+          )}
           <ReadAloudButton text={msg.content} locale={locale} t={t.tts} />
           <button
             type="button"
@@ -361,6 +377,7 @@ function AssistantMessage({
         {s && (
           <div className="space-y-2.5 pl-0.5">
             {s.intent === "fill_document" && s.fields && s.fields.length > 0 && (
+              <div className="card-enter">
               <FillDocumentCard
                 documentName={s.document_name}
                 fields={s.fields}
@@ -370,15 +387,16 @@ function AssistantMessage({
                 whereToSubmit={s.where_to_submit}
                 t={t}
               />
+              </div>
             )}
-            {s.intent !== "simple" && s.intent !== "fill_document" && s.where && hasData(s.where) && <WhereCard data={s.where} t={t} />}
-            {s.intent !== "simple" && s.intent !== "fill_document" && s.booking && <BookingCard department={s.where?.department} t={t} />}
-            {s.intent !== "simple" && s.intent !== "fill_document" && s.how && hasData(s.how) && <HowCard data={s.how} t={t} />}
-            {s.intent !== "simple" && s.intent !== "fill_document" && s.how_much && hasData(s.how_much) && <HowMuchCard data={s.how_much} t={t} />}
-            {s.intent !== "simple" && s.intent !== "fill_document" && s.who && hasData(s.who) && <WhoCard data={s.who} t={t} />}
-            {s.intent !== "simple" && s.intent !== "fill_document" && s.additional_info && <InfoCard text={s.additional_info} />}
-            {s.sources && s.sources.length > 0 && <SourcesBar sources={s.sources} />}
-            {s.suggestions && s.suggestions.length > 0 && <SuggestionsBar suggestions={s.suggestions} onSelect={onFollowUp} t={t} />}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.where && hasData(s.where) && <div className="card-enter"><WhereCard data={s.where} t={t} /></div>}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.booking && <div className="card-enter"><BookingCard department={s.where?.department} t={t} /></div>}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.how && hasData(s.how) && <div className="card-enter"><HowCard data={s.how} t={t} /></div>}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.how_much && hasData(s.how_much) && <div className="card-enter"><HowMuchCard data={s.how_much} t={t} /></div>}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.who && hasData(s.who) && <div className="card-enter"><WhoCard data={s.who} t={t} /></div>}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.additional_info && <div className="card-enter"><InfoCard text={s.additional_info} /></div>}
+            {s.sources && s.sources.length > 0 && <div className="card-enter"><SourcesBar sources={s.sources} /></div>}
+            {s.suggestions && s.suggestions.length > 0 && <div className="card-enter"><SuggestionsBar suggestions={s.suggestions} onSelect={onFollowUp} t={t} /></div>}
           </div>
         )}
       </div>
@@ -474,7 +492,7 @@ function WhereCard({ data, t }: { data: WhereInfo; t: T }) {
           )}
         </div>
         {data.lat && data.lng && (
-          <div className="mt-3 rounded-xl overflow-hidden h-[140px] ring-1 ring-lublin-border">
+          <div className="mt-3 rounded-xl overflow-hidden h-[140px] ring-1 ring-lublin-border map-container">
             <MapEmbed center={[data.lat, data.lng]} zoom={16} markers={[{ lat: data.lat, lng: data.lng, label: data.department || "Urząd" }]} />
           </div>
         )}
@@ -828,7 +846,7 @@ function SuggestionsBar({ suggestions, onSelect, t }: { suggestions: string[]; o
 /* --- LOADING --- */
 function LoadingIndicator({ t }: { t: T }) {
   return (
-    <div className="flex gap-3 items-start">
+    <div className="flex gap-3 items-start msg-enter">
       <Image src="/logo.png" alt="" width={32} height={32} className="rounded-lg shrink-0 mt-0.5 ring-1 ring-lublin-border" />
       <div className="chat-ai">
         <div className="flex items-center gap-3">
@@ -857,7 +875,7 @@ function LoadingIndicator({ t }: { t: T }) {
 /* --- WELCOME --- */
 function Welcome({ onSuggestion, t }: { onSuggestion: (t: string) => void; t: T }) {
   return (
-    <div className="flex flex-col items-center pt-12 pb-4">
+    <div className="flex flex-col items-center pt-12 pb-4 welcome-hero">
       <div className="relative mb-6">
         <Image src="/logo.png" alt="Koziołek Antek" width={72} height={72} className="rounded-2xl shadow-md ring-1 ring-black/5" />
         <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-[2.5px] border-white flex items-center justify-center">
@@ -872,7 +890,7 @@ function Welcome({ onSuggestion, t }: { onSuggestion: (t: string) => void; t: T 
         {t.welcome.description}
       </p>
 
-      <div className="w-full max-w-md space-y-2">
+      <div className="w-full max-w-md space-y-2 welcome-suggestions-grid">
         <p className="text-[11px] font-medium text-lublin-muted/70 uppercase tracking-widest px-1 mb-2">{t.welcome.popular}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {t.suggestions.map(({ text }, idx) => {

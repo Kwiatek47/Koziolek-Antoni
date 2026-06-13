@@ -400,4 +400,152 @@
     border-radius: 8px;
     padding: 6px 10px;
   }
+
+  /* === WOW ANIMATIONS === */
+
+  /* Message entrance animation */
+  .msg-enter {
+    animation: msg-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes msg-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Card stagger animation */
+  .card-enter {
+    animation: card-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .card-enter:nth-child(1) { animation-delay: 0.08s; }
+  .card-enter:nth-child(2) { animation-delay: 0.16s; }
+  .card-enter:nth-child(3) { animation-delay: 0.24s; }
+  .card-enter:nth-child(4) { animation-delay: 0.32s; }
+  .card-enter:nth-child(5) { animation-delay: 0.40s; }
+  .card-enter:nth-child(6) { animation-delay: 0.48s; }
+
+  @keyframes card-pop {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Instant badge (cached responses) */
+  .instant-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-lublin-green);
+    background: var(--color-lublin-green-light);
+    border: 1px solid color-mix(in srgb, var(--color-lublin-green) 20%, transparent);
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+    margin-left: 8px;
+  }
+
+  /* User bubble entrance */
+  .user-enter {
+    animation: user-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes user-pop {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Map shimmer load */
+  .map-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .map-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+    background-size: 200% 100%;
+    animation: map-shimmer 1.5s ease-in-out;
+    animation-fill-mode: forwards;
+    pointer-events: none;
+    z-index: 10;
+    border-radius: inherit;
+  }
+
+  @keyframes map-shimmer {
+    0% { background-position: -200% 0; opacity: 1; }
+    80% { background-position: 200% 0; opacity: 1; }
+    100% { background-position: 200% 0; opacity: 0; }
+  }
+
+  /* Welcome hero animation */
+  .welcome-hero {
+    animation: welcome-float 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes welcome-float {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .welcome-suggestions-grid {
+    animation: suggestions-fade 0.5s ease both;
+    animation-delay: 0.3s;
+  }
+
+  @keyframes suggestions-fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Response time badge */
+  .response-time {
+    font-size: 10px;
+    font-family: "SF Mono", "Fira Code", monospace;
+    color: var(--color-lublin-muted);
+    opacity: 0.6;
+  }
+
+  /* Smooth scroll behavior */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  /* Typing indicator enhancement */
+  @keyframes typing-dot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  .typing-dot {
+    animation: typing-dot 1.4s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
 }
