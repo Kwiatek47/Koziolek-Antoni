@@ -414,6 +414,47 @@ SIMPLE_PATTERNS = [
     "adres", "gdzie mieści się",
 ]
 
+# --- Harmful / off-topic detection ---
+HARMFUL_PATTERNS = [
+    "koks", "kokain", "narkot", "amfetamin", "metaamfetamin", "heroin", "marihuan",
+    "trawka", "mefedron", "mdma", "ecstasy", "lsd", "crack", "haszysz",
+    "jak zrobić bombę", "jak zabić", "jak ukraść", "jak włamać",
+    "bomb", "terroryz", "broń", "pistolet", "karabin",
+    "samobójstw", "jak się zabić", "chcę umrzeć",
+    "porn", "sex", "seks z", "nagie", "erotyk",
+    "pedofil", "gwałt", "molestow",
+    "hack", "phishing", "crack", "pirat",
+    "jak oszukać", "jak wyłudzić", "jak sfałszować",
+]
+
+OFFTOPIC_PATTERNS = [
+    "przepis na", "jak ugotować", "jak upiec",
+    "jaka pogoda", "pogoda na",
+    "kto wygrał", "wynik meczu",
+    "napisz wiersz", "opowiedz żart", "opowiedz dowcip",
+    "kim jesteś", "jaki jest sens życia",
+    "co sądzisz o", "twoja opinia",
+    "jak schudnąć", "dieta",
+    "horoskop", "wróżba",
+]
+
+REFUSAL_RESPONSE = {
+    "harmful": "Przepraszam, nie mogę pomóc w tej sprawie. Jestem Koziołkiem Antkiem — asystentem Urzędu Miasta Lublin. Pomagam wyłącznie w sprawach urzędowych: dokumenty, rejestracje, meldunki, pozwolenia itp. Jak mogę Ci pomóc w sprawie urzędowej?",
+    "offtopic": "Hmm, to nie jest sprawa urzędowa 😊 Jestem Koziołkiem Antkiem i pomagam z procedurami w Urzędzie Miasta Lublin — dowody, meldunki, rejestracja pojazdów, pozwolenia i wiele więcej. Zapytaj mnie o coś urzędowego!",
+}
+
+
+def check_moderation(question: str) -> str | None:
+    """Check if question is harmful or off-topic. Returns refusal key or None."""
+    q = question.lower().strip()
+    for pattern in HARMFUL_PATTERNS:
+        if pattern in q:
+            return "harmful"
+    for pattern in OFFTOPIC_PATTERNS:
+        if pattern in q:
+            return "offtopic"
+    return None
+
 
 def classify_intent(question: str) -> str:
     """Classify question as 'fill_document', 'procedure', or 'simple'."""
@@ -741,6 +782,19 @@ def query(q: Query):
     """Structured RAG query - detects intent and adapts response format."""
     if collection.count() == 0:
         raise HTTPException(400, "Index is empty. Call POST /index first.")
+
+    # Moderation check (zero-latency, before cache/LLM)
+    moderation = check_moderation(q.question)
+    if moderation:
+        return {
+            "intent": "refused",
+            "summary": REFUSAL_RESPONSE[moderation],
+            "suggestions": [
+                "Jak wyrobić dowód osobisty?",
+                "Gdzie zarejestrować samochód?",
+                "Meldunek czasowy – procedura",
+            ],
+        }
 
     # Check cache first (0s response for repeated questions)
     cached = response_cache.get(q.question)
