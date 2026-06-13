@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-lublin-green: #2d6a4f;
+  --color-lublin-green: #006643;
   --color-lublin-green-light: #e8f5ef;
-  --color-lublin-red: #CE1126;
+  --color-lublin-red: #E30613;
   --color-lublin-red-light: #fef1f2;
-  --color-lublin-red-dark: #a80d1e;
+  --color-lublin-red-dark: #b8050f;
   --color-lublin-gold: #c9a227;
-  --color-lublin-surface: #fafbfa;
-  --color-lublin-text: #1a1d1b;
-  --color-lublin-border: #e5e9e6;
+  --color-lublin-surface: #f8faf9;
+  --color-lublin-text: #111412;
+  --color-lublin-border: #eff2f0;
   --color-lublin-muted: #6b7770;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
   body {
-    background-color: white;
+    background-color: var(--color-lublin-surface);
     color: var(--color-lublin-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -24,16 +24,17 @@
 }
 
 @layer components {
+  /* Chat bubbles */
   .chat-user {
     background: linear-gradient(135deg, var(--color-lublin-red), var(--color-lublin-red-dark));
     color: white;
     border-radius: 20px 20px 4px 20px;
     padding: 12px 16px;
-    max-width: 82%;
+    max-width: 80%;
     margin-left: auto;
     font-size: 15px;
     line-height: 1.5;
-    box-shadow: 0 2px 8px rgba(206, 17, 38, 0.15);
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.15);
   }
   .chat-ai {
     background-color: white;
@@ -41,11 +42,41 @@
     border: 1px solid var(--color-lublin-border);
     border-radius: 20px 20px 20px 4px;
     padding: 14px 16px;
-    max-width: 88%;
     font-size: 15px;
     line-height: 1.6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+
+  /* Structured cards */
+  .card {
+    background: white;
+    border: 1px solid var(--color-lublin-border);
+    border-radius: 16px;
+    overflow: hidden;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-lublin-border);
+  }
+  .card-icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .card-body {
+    padding: 14px;
+  }
+
+  /* Source chips */
   .source-chip {
     display: inline-flex;
     align-items: center;
@@ -54,7 +85,7 @@
     color: var(--color-lublin-red);
     font-size: 11px;
     font-weight: 500;
-    padding: 4px 10px;
+    padding: 5px 10px;
     border-radius: 999px;
     text-decoration: none;
     transition: all 0.15s;
@@ -63,6 +94,8 @@
     background-color: var(--color-lublin-red);
     color: white;
   }
+
+  /* Suggestion buttons */
   .suggestion-btn {
     padding: 12px 14px;
     border: 1.5px solid var(--color-lublin-border);
@@ -79,26 +112,24 @@
     background-color: var(--color-lublin-red-light);
     color: var(--color-lublin-red-dark);
   }
-  .map-container {
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid var(--color-lublin-border);
-  }
+
+  /* Input */
   .input-bar {
     flex: 1;
     padding: 14px 16px;
     border-radius: 14px;
     border: 1.5px solid var(--color-lublin-border);
-    background: var(--color-lublin-surface);
+    background: white;
     font-size: 15px;
     transition: all 0.15s;
   }
   .input-bar:focus {
     outline: none;
-    border-color: var(--color-lublin-red);
-    box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.08);
-    background: white;
+    border-color: var(--color-lublin-green);
+    box-shadow: 0 0 0 3px rgba(0, 102, 67, 0.08);
   }
+
+  /* Send button */
   .send-btn {
     width: 48px;
     height: 48px;
@@ -110,7 +141,7 @@
     justify-content: center;
     flex-shrink: 0;
     transition: all 0.15s;
-    box-shadow: 0 2px 8px rgba(206, 17, 38, 0.2);
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.2);
   }
   .send-btn:disabled {
     opacity: 0.35;

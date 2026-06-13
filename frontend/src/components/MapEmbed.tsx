@@ -1,69 +1,87 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface Location {
-  name: string;
+interface Marker {
   lat: number;
   lng: number;
-  departments: string[];
-  service_count: number;
+  label: string;
 }
 
-export default function MapEmbed() {
+interface MapEmbedProps {
+  center?: [number, number];
+  zoom?: number;
+  markers?: Marker[];
+}
+
+export default function MapEmbed({ center, zoom = 14, markers }: MapEmbedProps) {
   const [L, setL] = useState<any>(null);
-  const [locations, setLocations] = useState<Location[]>([]);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const idRef = useRef(`map-${Math.random().toString(36).slice(2)}`);
 
   useEffect(() => {
-    // Load leaflet dynamically
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-    document.head.appendChild(link);
-
-    import("leaflet").then((leaflet) => {
-      setL(leaflet.default);
-    });
-
-    fetch("/api/locations")
-      .then((r) => r.json())
-      .then((d) => setLocations(d.locations || []))
-      .catch(() => {});
+    const existing = document.querySelector('link[href*="leaflet"]');
+    if (!existing) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+    import("leaflet").then((leaflet) => setL(leaflet.default));
   }, []);
 
   useEffect(() => {
-    if (!L || locations.length === 0) return;
+    if (!L || !mapRef.current) return;
 
-    const container = document.getElementById("map-embed");
-    if (!container) return;
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
 
-    // Clear previous map
-    container.innerHTML = "";
+    const mapCenter = center || [51.2465, 22.558];
+    const map = L.map(mapRef.current).setView(mapCenter, zoom);
+    mapInstanceRef.current = map;
 
-    const map = L.map(container).setView([51.2465, 22.558], 14);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap",
+      attribution: "© OSM",
     }).addTo(map);
 
     const icon = L.divIcon({
-      html: `<div style="background:#006B3F;width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`,
+      html: `<div style="background:#E30613;width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>`,
       className: "",
-      iconSize: [12, 12],
-      iconAnchor: [6, 6],
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
     });
 
-    locations.forEach((loc) => {
-      L.marker([loc.lat, loc.lng], { icon })
-        .addTo(map)
-        .bindPopup(
-          `<strong>${loc.name}</strong><br><span style="color:#5f6d64;font-size:12px">${loc.service_count} usług</span>`
-        );
-    });
+    if (markers && markers.length > 0) {
+      markers.forEach((m) => {
+        L.marker([m.lat, m.lng], { icon })
+          .addTo(map)
+          .bindPopup(`<strong>${m.label}</strong>`)
+          .openPopup();
+      });
+    } else {
+      // Load all locations from API
+      fetch("/api/locations")
+        .then((r) => r.json())
+        .then((d) => {
+          (d.locations || []).forEach((loc: any) => {
+            L.marker([loc.lat, loc.lng], { icon })
+              .addTo(map)
+              .bindPopup(`<strong>${loc.name}</strong><br><span style="font-size:12px;color:#666">${loc.service_count} usług</span>`);
+          });
+        })
+        .catch(() => {});
+    }
+
+    setTimeout(() => map.invalidateSize(), 100);
 
     return () => {
       map.remove();
+      mapInstanceRef.current = null;
     };
-  }, [L, locations]);
+  }, [L, center, zoom, markers]);
 
-  return <div id="map-embed" className="w-full h-full" />;
+  return <div ref={mapRef} className="w-full h-full" />;
 }

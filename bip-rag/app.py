@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-BIP Lublin RAG - Hybrid Retrieval (Dense + BM25) with RRF fusion.
-Uses ChromaDB for dense vectors, rank-bm25 for sparse, and llama-cpp-python for LLM.
+BIP Lublin RAG v2 - Structured Intelligent Pipeline
+Hybrid Retrieval (Dense + BM25 + RRF) with structured response extraction.
 """
 import json
-import math
 import os
 import re
 from typing import Optional
@@ -18,8 +17,8 @@ from llama_cpp import Llama
 from rank_bm25 import BM25Okapi
 
 app = FastAPI(
-    title="BIP Lublin RAG - Koziołek Antek",
-    description="Hybrydowy system RAG oparty na danych BIP Urząd Miasta Lublin",
+    title="Koziołek Antek - Structured RAG Pipeline",
+    description="Hybrydowy system RAG z ustrukturyzowanymi odpowiedziami",
     version="2.0.0",
 )
 
@@ -43,7 +42,7 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sdadas/st-polish-paraphrase-from
 TOP_K = int(os.getenv("TOP_K", "15"))
 FINAL_K = int(os.getenv("FINAL_K", "6"))
 N_THREADS = int(os.getenv("N_THREADS", "8"))
-RRF_K = 60  # RRF constant
+RRF_K = 60
 
 # --- Embedding & ChromaDB ---
 embedding_fn = SentenceTransformerEmbeddingFunction(
@@ -58,7 +57,7 @@ collection = chroma_client.get_or_create_collection(
     metadata={"hnsw:space": "cosine"},
 )
 
-# --- BM25 index (built on /index, kept in memory) ---
+# --- BM25 ---
 bm25_corpus: list[str] = []
 bm25_ids: list[str] = []
 bm25_metadatas: list[dict] = []
@@ -66,27 +65,20 @@ bm25_index: Optional[BM25Okapi] = None
 
 
 def tokenize_pl(text: str) -> list[str]:
-    """Simple Polish tokenizer - lowercase, remove punctuation, split."""
     text = text.lower()
     text = re.sub(r"[^\w\s]", " ", text)
     return [t for t in text.split() if len(t) > 1]
 
 
 def build_bm25():
-    """Build BM25 index from loaded documents."""
     global bm25_index, bm25_corpus, bm25_ids, bm25_metadatas
-
-    docs_file = DOCUMENTS_FILE
-    if not os.path.exists(docs_file):
+    if not os.path.exists(DOCUMENTS_FILE):
         return
-
-    with open(docs_file) as f:
+    with open(DOCUMENTS_FILE) as f:
         docs = json.load(f)
-
     bm25_corpus = [d["content"] for d in docs]
     bm25_ids = [d["id"] for d in docs]
     bm25_metadatas = [d["metadata"] for d in docs]
-
     tokenized = [tokenize_pl(doc) for doc in bm25_corpus]
     bm25_index = BM25Okapi(tokenized)
 
@@ -99,16 +91,52 @@ llm = Llama(
     verbose=False,
 )
 
+
 # --- Pydantic models ---
 class Query(BaseModel):
     question: str
     top_k: Optional[int] = None
 
 
-class Answer(BaseModel):
-    answer: str
-    sources: list[dict]
-    retrieval_info: Optional[dict] = None
+class WhereInfo(BaseModel):
+    address: Optional[str] = None
+    room: Optional[str] = None
+    phone: Optional[str] = None
+    hours: Optional[str] = None
+    department: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+
+
+class HowInfo(BaseModel):
+    steps: list[str] = []
+    required_documents: list[str] = []
+    forms: list[str] = []
+    submission_method: Optional[str] = None
+
+
+class HowMuchInfo(BaseModel):
+    cost: Optional[str] = None
+    time_estimate: Optional[str] = None
+    legal_basis: Optional[str] = None
+
+
+class WhoInfo(BaseModel):
+    name: Optional[str] = None
+    role: Optional[str] = None
+    department: Optional[str] = None
+    gender: Optional[str] = None
+
+
+class StructuredAnswer(BaseModel):
+    summary: str
+    where: Optional[WhereInfo] = None
+    how: Optional[HowInfo] = None
+    how_much: Optional[HowMuchInfo] = None
+    who: Optional[WhoInfo] = None
+    additional_info: Optional[str] = None
+    sources: list[dict] = []
+    raw_answer: Optional[str] = None
 
 
 class IndexStatus(BaseModel):
@@ -116,29 +144,75 @@ class IndexStatus(BaseModel):
     indexed: bool
 
 
-# --- System prompt ---
-SYSTEM_PROMPT = """Jesteś Koziołkiem Antkiem – inteligentnym asystentem Urzędu Miasta Lublin. Pomagasz mieszkańcom załatwiać sprawy urzędowe na podstawie danych z BIP (Biuletyn Informacji Publicznej).
-
-ZASADY:
-1. Odpowiadaj WYŁĄCZNIE na podstawie podanego kontekstu. NIE wymyślaj informacji.
-2. Jeśli w kontekście brak odpowiedzi → powiedz: "Nie znalazłem tej informacji w BIP Lublin."
-3. Podawaj KONKRETNE dane: adres, numer pokoju, telefon, godziny, wymagane dokumenty, opłaty, terminy.
-4. Rozróżniaj wydziały prawidłowo:
-   - "dowód osobisty" → Wydział Spraw Administracyjnych
-   - "dowód rejestracyjny", "rejestracja pojazdu" → Wydział Komunikacji
-   - "meldunek" → Wydział Spraw Administracyjnych
-5. Formatuj odpowiedź:
-   - Krótkie podsumowanie (1-2 zdania)
-   - Kroki procedury (lista numerowana)
-   - Wymagane dokumenty (lista)
-   - Adres i godziny
-   - Opłaty (jeśli podane)
-6. Na końcu podaj źródło URL.
-7. Odpowiadaj po polsku, zwięźle."""
+# --- Geocoding lookup ---
+KNOWN_LOCATIONS = {
+    "spokojna 2": {"lat": 51.2480, "lng": 22.5590},
+    "wieniawska 14": {"lat": 51.2503, "lng": 22.5615},
+    "czechowska 19": {"lat": 51.2465, "lng": 22.5540},
+    "filaretów 44": {"lat": 51.2280, "lng": 22.5430},
+    "kleeberga 12a": {"lat": 51.2195, "lng": 22.5950},
+    "leszczyńskiego 20": {"lat": 51.2525, "lng": 22.5445},
+    "okopowa 11": {"lat": 51.2490, "lng": 22.5555},
+    "królewska 3": {"lat": 51.2475, "lng": 22.5650},
+    "szkolna 36": {"lat": 51.2455, "lng": 22.5572},
+}
 
 
-def get_llm_response(question: str, context: str) -> str:
-    """Generate LLM response with RAG context."""
+def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
+    if not address:
+        return None, None
+    addr_lower = address.lower()
+    for key, coords in KNOWN_LOCATIONS.items():
+        if key in addr_lower:
+            return coords["lat"], coords["lng"]
+    return None, None
+
+
+# --- Structured extraction prompt ---
+EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem – inteligentnym asystentem Urzędu Miasta Lublin.
+
+Na podstawie KONTEKSTU odpowiedz na pytanie mieszkańca w formacie JSON. Wypełnij TYLKO pola, dla których masz dane w kontekście.
+
+Format odpowiedzi (JSON):
+{{
+  "summary": "Krótkie podsumowanie sprawy (1-2 zdania, prostym językiem)",
+  "where": {{
+    "address": "Pełny adres (ulica, numer, kod, miasto)",
+    "room": "Numer pokoju/piętro",
+    "phone": "Numery telefonów",
+    "hours": "Godziny przyjęć (pełne, np. 'pn 9:15-16:30, wt-pt 7:45-14:30')",
+    "department": "Nazwa wydziału/komórki organizacyjnej"
+  }},
+  "how": {{
+    "steps": ["Krok 1: ...", "Krok 2: ...", "Krok 3: ..."],
+    "required_documents": ["Dokument 1", "Dokument 2"],
+    "forms": ["Nazwa formularza/wniosku do wypełnienia"],
+    "submission_method": "Sposób złożenia (osobiście/online/pocztą)"
+  }},
+  "how_much": {{
+    "cost": "Koszt procedury (np. '85 zł' lub 'bezpłatne')",
+    "time_estimate": "Czas załatwienia sprawy",
+    "legal_basis": "Podstawa prawna (ustawa, rozporządzenie)"
+  }},
+  "who": {{
+    "name": "Imię i nazwisko osoby odpowiedzialnej (jeśli podane)",
+    "role": "Stanowisko/funkcja",
+    "department": "Wydział",
+    "gender": "M lub F (jeśli można wywnioskować z imienia)"
+  }},
+  "additional_info": "Dodatkowe ważne informacje, uwagi, wyjątki"
+}}
+
+WAŻNE:
+- Użyj TYLKO danych z kontekstu. NIE wymyślaj.
+- Jeśli nie masz danych na dane pole → ustaw null.
+- Rozróżniaj: "dowód osobisty" → Wydział Spraw Administracyjnych, "dowód rejestracyjny" → Wydział Komunikacji.
+- Wybierz usługę NAJBARDZIEJ pasującą do pytania (patrz na tytuł usługi w kontekście).
+- Odpowiedz WYŁĄCZNIE poprawnym JSON-em, bez dodatkowego tekstu."""
+
+
+def get_structured_response(question: str, context: str) -> dict:
+    """Get structured JSON response from LLM."""
     user_prompt = f"""KONTEKST Z BIP LUBLIN:
 ---
 {context}
@@ -146,50 +220,52 @@ def get_llm_response(question: str, context: str) -> str:
 
 PYTANIE MIESZKAŃCA: {question}
 
-Odpowiedz na podstawie kontekstu. Wybierz TYLKO fragmenty bezpośrednio dotyczące pytania (zwróć uwagę na tytuł usługi i wydział). Podaj konkretne informacje: adres, godziny, dokumenty, opłaty, procedurę, źródło URL."""
+Odpowiedz w formacie JSON zgodnym ze specyfikacją powyżej."""
 
     response = llm.create_chat_completion(
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": EXTRACTION_PROMPT},
             {"role": "user", "content": user_prompt},
         ],
-        temperature=0.1,
-        max_tokens=2000,
+        temperature=0.05,
+        max_tokens=2500,
+        response_format={"type": "json_object"},
     )
 
-    return response["choices"][0]["message"]["content"]
+    raw_text = response["choices"][0]["message"]["content"]
+
+    try:
+        return json.loads(raw_text)
+    except json.JSONDecodeError:
+        json_match = re.search(r'\{[\s\S]*\}', raw_text)
+        if json_match:
+            try:
+                return json.loads(json_match.group())
+            except json.JSONDecodeError:
+                pass
+        return {"summary": raw_text, "raw_fallback": True}
 
 
-# --- Hybrid retrieval with RRF ---
-def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[list[str], list[dict], dict]:
-    """
-    Hybrid retrieval: dense (ChromaDB) + sparse (BM25), fused with RRF.
-    Returns (documents, metadatas, debug_info).
-    """
-    # Dense search via ChromaDB
-    dense_results = collection.query(
-        query_texts=[question],
-        n_results=top_k,
-    )
+# --- Hybrid retrieval ---
+def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[list[str], list[dict]]:
+    """Hybrid retrieval: dense + BM25 + RRF fusion."""
+    dense_results = collection.query(query_texts=[question], n_results=top_k)
     dense_ids = dense_results["ids"][0]
     dense_docs = dense_results["documents"][0]
     dense_metas = dense_results["metadatas"][0]
-    dense_distances = dense_results["distances"][0]
 
-    # Build id->data lookup
     id_to_doc = {}
     id_to_meta = {}
     for i, did in enumerate(dense_ids):
         id_to_doc[did] = dense_docs[i]
         id_to_meta[did] = dense_metas[i]
 
-    # BM25 sparse search
     bm25_results_ids = []
     if bm25_index is not None:
         query_tokens = tokenize_pl(question)
         bm25_scores = bm25_index.get_scores(query_tokens)
-        top_bm25_indices = sorted(range(len(bm25_scores)), key=lambda i: bm25_scores[i], reverse=True)[:top_k]
-        for idx in top_bm25_indices:
+        top_indices = sorted(range(len(bm25_scores)), key=lambda i: bm25_scores[i], reverse=True)[:top_k]
+        for idx in top_indices:
             if bm25_scores[idx] > 0:
                 bid = bm25_ids[idx]
                 bm25_results_ids.append(bid)
@@ -197,54 +273,41 @@ def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[lis
                     id_to_doc[bid] = bm25_corpus[idx]
                     id_to_meta[bid] = bm25_metadatas[idx]
 
-    # RRF fusion
+    # RRF
     rrf_scores: dict[str, float] = {}
-
     for rank, did in enumerate(dense_ids):
         rrf_scores[did] = rrf_scores.get(did, 0) + 1.0 / (RRF_K + rank + 1)
-
     for rank, bid in enumerate(bm25_results_ids):
         rrf_scores[bid] = rrf_scores.get(bid, 0) + 1.0 / (RRF_K + rank + 1)
 
-    # Title-based boost
+    # Title boost
     question_lower = question.lower()
-    for did, score in list(rrf_scores.items()):
+    for did in rrf_scores:
         meta = id_to_meta.get(did, {})
         title = meta.get("title", "").lower()
         title_words = [w for w in title.split() if len(w) > 3]
         if title_words:
             matching = sum(1 for w in title_words if w in question_lower)
-            title_boost = (matching / len(title_words)) * 0.02
-            rrf_scores[did] = score + title_boost
+            rrf_scores[did] += (matching / len(title_words)) * 0.02
 
-    # Sort by RRF score (descending)
     sorted_ids = sorted(rrf_scores.keys(), key=lambda x: rrf_scores[x], reverse=True)
 
-    # Deduplicate by source_url + take top final_k
     final_docs = []
     final_metas = []
-    seen_content_hashes = set()
+    seen = set()
 
     for did in sorted_ids:
         if len(final_docs) >= final_k:
             break
         doc = id_to_doc.get(did, "")
-        content_hash = hash(doc[:200])
-        if content_hash in seen_content_hashes:
+        h = hash(doc[:200])
+        if h in seen:
             continue
-        seen_content_hashes.add(content_hash)
+        seen.add(h)
         final_docs.append(doc)
         final_metas.append(id_to_meta.get(did, {}))
 
-    debug_info = {
-        "dense_top3": dense_ids[:3],
-        "bm25_top3": bm25_results_ids[:3],
-        "rrf_top3": sorted_ids[:3],
-        "dense_count": len(dense_ids),
-        "bm25_count": len(bm25_results_ids),
-    }
-
-    return final_docs, final_metas, debug_info
+    return final_docs, final_metas
 
 
 # --- Endpoints ---
@@ -261,17 +324,13 @@ def health():
 
 @app.get("/status", response_model=IndexStatus)
 def status():
-    return IndexStatus(
-        total_documents=collection.count(),
-        indexed=collection.count() > 0,
-    )
+    return IndexStatus(total_documents=collection.count(), indexed=collection.count() > 0)
 
 
 @app.post("/index")
 def index_documents():
-    """Load documents.json, index into ChromaDB and build BM25."""
+    """Load and index documents into ChromaDB + BM25."""
     global collection
-
     if not os.path.exists(DOCUMENTS_FILE):
         raise HTTPException(404, f"Documents file not found: {DOCUMENTS_FILE}")
 
@@ -305,67 +364,72 @@ def index_documents():
             metadatas=[d["metadata"] for d in batch],
         )
 
-    # Build BM25 index
     build_bm25()
-
     return {"indexed": len(unique_docs), "bm25_docs": len(bm25_corpus), "status": "ok"}
 
 
-@app.post("/query", response_model=Answer)
+@app.post("/query")
 def query(q: Query):
-    """Answer a question using hybrid RAG (dense + BM25 + RRF)."""
+    """Structured RAG query - returns WHERE/HOW/HOW_MUCH/WHO sections."""
     if collection.count() == 0:
         raise HTTPException(400, "Index is empty. Call POST /index first.")
 
     top_k = q.top_k or TOP_K
+    documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
 
-    documents, metadatas, debug_info = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
+    context = "\n\n---\n\n".join(documents)
+    structured = get_structured_response(q.question, context)
 
-    context_parts = []
+    # Enrich with coordinates
+    where = structured.get("where")
+    if where and isinstance(where, dict):
+        address = where.get("address", "")
+        lat, lng = find_coordinates(address)
+        if lat:
+            where["lat"] = lat
+            where["lng"] = lng
+
+    # Determine gender for "who" avatar
+    who = structured.get("who")
+    if who and isinstance(who, dict) and not who.get("gender"):
+        name = who.get("name", "")
+        if name:
+            if name.split()[0][-1] == "a":
+                who["gender"] = "F"
+            else:
+                who["gender"] = "M"
+
+    # Build sources
     sources = []
     seen_urls = set()
-
-    for doc, meta in zip(documents, metadatas):
-        context_parts.append(doc)
+    for meta in metadatas:
         url = meta.get("source_url", "")
         if url and url not in seen_urls:
             seen_urls.add(url)
             sources.append({
                 "url": url,
                 "title": meta.get("title", ""),
-                "type": meta.get("type", ""),
                 "department": meta.get("department", ""),
             })
 
-    context = "\n\n---\n\n".join(context_parts)
-    answer = get_llm_response(q.question, context)
-
-    return Answer(answer=answer, sources=sources, retrieval_info=debug_info)
+    return {
+        **structured,
+        "sources": sources,
+    }
 
 
 @app.post("/search")
 def search(q: Query):
-    """Search without LLM - return relevant chunks with hybrid scoring."""
+    """Search without LLM - return relevant chunks."""
     if collection.count() == 0:
-        raise HTTPException(400, "Index is empty. Call POST /index first.")
-
+        raise HTTPException(400, "Index is empty.")
     top_k = q.top_k or TOP_K
-    documents, metadatas, debug_info = hybrid_search(q.question, top_k=top_k, final_k=top_k)
-
-    hits = []
-    for i, (doc, meta) in enumerate(zip(documents, metadatas)):
-        hits.append({
-            "content": doc[:500],
-            "metadata": meta,
-            "rank": i + 1,
-        })
-
-    return {"results": hits, "retrieval_info": debug_info}
+    documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=top_k)
+    return {"results": [{"content": d[:500], "metadata": m} for d, m in zip(documents, metadatas)]}
 
 
 @app.get("/locations")
 def get_locations():
-    """Return office locations for the map."""
     locations_file = os.path.join(DATA_DIR, "locations.json")
     if os.path.exists(locations_file):
         with open(locations_file) as f:
@@ -375,7 +439,6 @@ def get_locations():
 
 @app.on_event("startup")
 def startup_event():
-    """Build BM25 index on startup if documents exist."""
     if os.path.exists(DOCUMENTS_FILE):
         build_bm25()
         print(f"BM25 index built: {len(bm25_corpus)} documents")
