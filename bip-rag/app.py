@@ -134,6 +134,7 @@ class StructuredAnswer(BaseModel):
     how: Optional[HowInfo] = None
     how_much: Optional[HowMuchInfo] = None
     who: Optional[WhoInfo] = None
+    booking: Optional[bool] = None
     additional_info: Optional[str] = None
     sources: list[dict] = []
     raw_answer: Optional[str] = None
@@ -200,6 +201,7 @@ Format odpowiedzi (JSON):
     "department": "Wydział",
     "gender": "M lub F (jeśli można wywnioskować z imienia)"
   }},
+  "booking": true lub false,
   "additional_info": "Dodatkowe ważne informacje, uwagi, wyjątki"
 }}
 
@@ -208,6 +210,7 @@ WAŻNE:
 - Jeśli nie masz danych na dane pole → ustaw null.
 - Rozróżniaj: "dowód osobisty" → Wydział Spraw Administracyjnych, "dowód rejestracyjny" → Wydział Komunikacji.
 - Wybierz usługę NAJBARDZIEJ pasującą do pytania (patrz na tytuł usługi w kontekście).
+- Pole "booking": ustaw na true jeśli sprawa wymaga osobistej wizyty w urzędzie (złożenie dokumentów, odbiór, podpis). Ustaw false jeśli można załatwić online/pocztą lub jeśli to pytanie informacyjne.
 - Odpowiedz WYŁĄCZNIE poprawnym JSON-em, bez dodatkowego tekstu."""
 
 
@@ -398,6 +401,18 @@ def query(q: Query):
                 who["gender"] = "F"
             else:
                 who["gender"] = "M"
+
+    # Infer booking if LLM didn't set it - show booking when in-person visit required
+    if structured.get("booking") is None:
+        how = structured.get("how")
+        submission = ""
+        if how and isinstance(how, dict):
+            submission = (how.get("submission_method") or "").lower()
+        where_present = where and isinstance(where, dict) and where.get("address")
+        if where_present and ("osobiście" in submission or "osobist" in submission or not submission):
+            structured["booking"] = True
+        else:
+            structured["booking"] = False
 
     # Build sources
     sources = []

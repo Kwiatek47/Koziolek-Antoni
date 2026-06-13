@@ -42,6 +42,7 @@ interface StructuredResponse {
   how?: HowInfo;
   how_much?: HowMuchInfo;
   who?: WhoInfo;
+  booking?: boolean;
   additional_info?: string;
   sources?: Array<{ url: string; title: string; department?: string }>;
 }
@@ -187,6 +188,7 @@ function AssistantMessage({ msg }: { msg: Message }) {
         {s && (
           <div className="space-y-2.5">
             {s.where && hasData(s.where) && <WhereCard data={s.where} />}
+            {s.booking && <BookingCard department={s.where?.department} />}
             {s.how && hasData(s.how) && <HowCard data={s.how} />}
             {s.how_much && hasData(s.how_much) && <HowMuchCard data={s.how_much} />}
             {s.who && hasData(s.who) && <WhoCard data={s.who} />}
@@ -367,6 +369,52 @@ function InfoCard({ text }: { text: string }) {
       </div>
       <div className="card-body">
         <p className="text-sm text-lublin-text/80 leading-relaxed">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+/* --- BOOKING --- */
+function BookingCard({ department }: { department?: string }) {
+  const BOOKING_URL = "https://rezerwacja.lublin.eu/qmaticwebbooking/#/";
+
+  return (
+    <div className="card border-lublin-green/30 bg-gradient-to-br from-lublin-green-light to-white">
+      <div className="card-body">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl bg-lublin-green/10 flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-lublin-green">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+              <circle cx="12" cy="15" r="2" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-lublin-green text-[15px]">Umów wizytę online</p>
+            <p className="text-xs text-lublin-muted">
+              {department ? `${department} – ` : ""}Zarezerwuj termin bez kolejki
+            </p>
+          </div>
+        </div>
+        <a
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="booking-btn"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          Zarezerwuj termin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="ml-auto">
+            <path d="M7 17L17 7M17 7H7M17 7v10" />
+          </svg>
+        </a>
       </div>
     </div>
   );
