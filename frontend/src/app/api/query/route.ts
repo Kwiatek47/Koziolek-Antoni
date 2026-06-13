@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { buildContextualQuestion } from "@/lib/conversation";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
-const BACKEND_TIMEOUT_MS = 8000;
+const BACKEND_TIMEOUT_MS = 120000;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
