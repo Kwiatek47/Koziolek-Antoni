@@ -195,12 +195,12 @@ Zasady:
 - Odpowiedz TYLKO JSON"""
 - W sources podaj URL-e źródłowe z kontekstu jeśli dostępne
 - Kontekst może zawierać DWA typy dokumentów:
-  * type=usluga → procedura LOKALNA w Urzędzie Miasta Lublin (adres, godziny, wydział, opłaty lokalne)
-  * type=wiedza_bazowa → definicja/ustawa OGÓLNOPOLSKA (NIE podawaj adresów Lublina z wiedzy bazowej)
-- Gdy pytanie dotyczy definicji pojęcia (co to jest X) → odpowiadaj z wiedzy bazowej
-- Gdy pytanie dotyczy procedury (jak wyrobić X) → odpowiadaj z karty usługi
+  * type=usluga -> procedura LOKALNA w Urzędzie Miasta Lublin (adres, godziny, wydział, opłaty lokalne)
+  * type=wiedza_bazowa -> definicja/ustawa OGÓLNOPOLSKA (NIE podawaj adresów Lublina z wiedzy bazowej)
+- Gdy pytanie dotyczy definicji pojęcia (co to jest X) -> odpowiadaj z wiedzy bazowej
+- Gdy pytanie dotyczy procedury (jak wyrobić X) -> odpowiadaj z karty usługi
 - Podawaj legal_basis z metadanych legal_ref gdy dostępne
-- Jeśli informacji NIE MA w kontekście → null, NIE wymyślaj
+- Jeśli informacji NIE MA w kontekście -> null, NIE wymyślaj
 - Odpowiedz WYŁĄCZNIE JSON"""
 
 
