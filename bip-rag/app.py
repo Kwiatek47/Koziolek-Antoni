@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
-from openai import OpenAI
+from llama_cpp import Llama
 from rank_bm25 import BM25Okapi
 
 app = FastAPI(
@@ -36,12 +36,15 @@ app.add_middleware(
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 CHROMA_DIR = os.path.join(DATA_DIR, "chroma_db")
 DOCUMENTS_FILE = os.path.join(DATA_DIR, "documents.json")
+MODEL_PATH = os.getenv(
+    "MODEL_PATH",
+    os.path.join(os.path.dirname(__file__), "models", "Qwen2.5-3B-Instruct-Q4_K_M.gguf"),
+)
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sdadas/st-polish-paraphrase-from-distilroberta")
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 TOP_K = int(os.getenv("TOP_K", "15"))
 FINAL_K = int(os.getenv("FINAL_K", "6"))
+N_THREADS = int(os.getenv("N_THREADS", "8"))
 RRF_K = 60
 
 # --- Response Cache (in-memory LRU, top 50 questions → 0s response) ---
@@ -183,8 +186,13 @@ def build_bm25():
     bm25_index = BM25Okapi(tokenized)
 
 
-# --- LLM (OpenAI API) ---
-llm_client = OpenAI(api_key=OPENAI_API_KEY)
+# --- LLM ---
+llm = Llama(
+    model_path=MODEL_PATH,
+    n_ctx=4096,
+    n_threads=N_THREADS,
+    verbose=False,
+)
 
 
 # --- Pydantic models ---
@@ -300,8 +308,7 @@ PYTANIE MIESZKAŃCA: {question}
 
 Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
 
-    response = llm_client.chat.completions.create(
-        model=LLM_MODEL,
+    response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": EXTRACTION_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -310,7 +317,7 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
         max_tokens=1200,
     )
 
-    raw_text = response.choices[0].message.content
+    raw_text = response["choices"][0]["message"]["content"]
 
     try:
         data = json.loads(raw_text)
@@ -523,8 +530,7 @@ def get_simple_response(question: str, context: str) -> str:
     """Quick text response for simple informational questions."""
     user_prompt = f"""Kontekst:\n{context}\n\nPytanie: {question}\n\nOdpowiedz krótko (2-4 zdania):"""
 
-    response = llm_client.chat.completions.create(
-        model=LLM_MODEL,
+    response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": SIMPLE_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -532,7 +538,7 @@ def get_simple_response(question: str, context: str) -> str:
         temperature=0.1,
         max_tokens=300,
     )
-    return response.choices[0].message.content
+    return response["choices"][0]["message"]["content"]
 
 
 # --- Fill document response (step-by-step form guidance) ---
@@ -563,8 +569,7 @@ PYTANIE MIESZKAŃCA: {question}
 
 Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
 
-    response = llm_client.chat.completions.create(
-        model=LLM_MODEL,
+    response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": FILL_DOCUMENT_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -573,7 +578,7 @@ Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
         max_tokens=1500,
     )
 
-    raw_text = response.choices[0].message.content
+    raw_text = response["choices"][0]["message"]["content"]
 
     try:
         return json.loads(raw_text)
@@ -790,7 +795,7 @@ def health():
         "status": "ok",
         "documents": collection.count(),
         "bm25_ready": bm25_index is not None,
-        "model": LLM_MODEL,
+        "model": os.path.basename(MODEL_PATH),
         "cache": response_cache.stats,
     }
 
