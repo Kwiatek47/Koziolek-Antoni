@@ -25,8 +25,10 @@ def extract_pdf_text(pdf_path):
         result = "\n".join(text).strip()
         if result:
             return result
-    except Exception:
+    except ImportError:
         pass
+    except Exception as e:
+        print(f"    [pymupdf error] {os.path.basename(pdf_path)}: {e}")
 
     # Method 2: pdftotext (requires poppler-utils)
     try:
@@ -48,8 +50,10 @@ def extract_pdf_text(pdf_path):
             for page in reader.pages:
                 text.append(page.extract_text() or "")
             return "\n".join(text).strip()
-    except Exception:
+    except ImportError:
         pass
+    except Exception as e:
+        print(f"    [PyPDF2 error] {os.path.basename(pdf_path)}: {e}")
 
     return ""
 
@@ -330,17 +334,26 @@ def process_pdfs():
                     "service_title": svc.get("title", ""),
                 }
 
+    total_found = 0
+    total_extracted = 0
+    errors = []
+
     for pdf_dir in pdf_dirs:
         if not os.path.exists(pdf_dir):
+            print(f"    [!] PDF dir not found: {pdf_dir}")
             continue
-        for filename in os.listdir(pdf_dir):
-            if not filename.endswith('.pdf'):
-                continue
+        pdf_files = [f for f in os.listdir(pdf_dir) if f.lower().endswith('.pdf')]
+        print(f"    Found {len(pdf_files)} PDFs in {os.path.basename(pdf_dir)}/")
+        total_found += len(pdf_files)
+
+        for filename in pdf_files:
             filepath = os.path.join(pdf_dir, filename)
             text = extract_pdf_text(filepath)
             if not text or len(text) < 50:
+                errors.append(f"      SKIP (empty/too short): {filename} ({len(text) if text else 0} chars)")
                 continue
 
+            total_extracted += 1
             info = pdf_url_map.get(filename, {})
             metadata = {
                 "source_url": info.get("pdf_url", ""),
@@ -358,6 +371,13 @@ def process_pdfs():
                     "metadata": metadata,
                 })
 
+    if errors:
+        for e in errors[:5]:
+            print(e)
+        if len(errors) > 5:
+            print(f"      ... and {len(errors) - 5} more")
+
+    print(f"    Extracted text from {total_extracted}/{total_found} PDFs")
     return docs
 
 
@@ -377,6 +397,18 @@ def process_departments():
 
 def main():
     print("Preparing RAG dataset from BIP Lublin data...")
+    print(f"  Data dir: {os.path.abspath(DATA_DIR)}")
+
+    # PDF extractor diagnostics
+    try:
+        import fitz
+        print(f"  PDF extractor: PyMuPDF {fitz.version[0]} (fitz)")
+    except ImportError:
+        try:
+            import PyPDF2
+            print(f"  PDF extractor: PyPDF2 {PyPDF2.__version__} (fallback)")
+        except ImportError:
+            print("  [WARNING] No PDF library available! Install: pip install pymupdf")
 
     all_docs = []
 

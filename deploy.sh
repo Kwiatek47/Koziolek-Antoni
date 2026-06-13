@@ -1,128 +1,51 @@
 #!/bin/bash
+# Deploy script for Koziołek Antek
+# Usage: ssh user@10.8.44.10 'bash -s' < deploy.sh
+# Or copy to server and run: bash deploy.sh
+
 set -e
 
-echo "╔══════════════════════════════════════════════╗"
-echo "║  Koziołek Antek - Deploy Script v2          ║"
-echo "║  Hybrid RAG (Dense + BM25) + Qwen 2.5 7B   ║"
-echo "╚══════════════════════════════════════════════╝"
+echo "=== Koziołek Antek - Full Deploy ==="
 echo ""
 
-cd "$(dirname "$0")"
+cd ~/Kozio-ek-Antoni
 
-# 1. System deps
-echo "[1/5] System dependencies..."
-sudo apt-get update -qq
-sudo apt-get install -y -qq python3 python3-pip python3-venv poppler-utils curl 2>/dev/null || true
+echo "[1/6] Pulling latest from GitHub..."
+git pull origin main
 
-# Install Node.js 20+ via NodeSource
-if ! node --version 2>/dev/null | grep -qE "^v(2[0-9]|[3-9])"; then
-    echo "  Installing Node.js 20..."
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt-get install -y nodejs
-fi
-
-# 2. Download Qwen 2.5 7B GGUF model
-echo "[2/5] Downloading Qwen 2.5 7B model..."
+echo ""
+echo "[2/6] Installing Python dependencies (pymupdf)..."
 cd bip-rag
-python3 -m venv venv
 source venv/bin/activate
-pip install --quiet --upgrade pip
-pip install --quiet -r requirements.txt
+pip install pymupdf==1.24.0 --quiet
 
-mkdir -p models
-if [ ! -f models/qwen2.5-7b-instruct-q4_k_m.gguf ]; then
-    huggingface-cli download bartowski/Qwen2.5-3B-Instruct-GGUF Qwen2.5-3B-Instruct-Q4_K_M.gguf --local-dir models/
-fi
+echo ""
+echo "[3/6] Re-generating dataset (with PDF support)..."
+python prepare_dataset.py
 
-# 3. Prepare data
-echo "[3/5] Preparing RAG dataset..."
-if [ ! -f data/documents.json ]; then
-    python3 prepare_dataset.py
-    mkdir -p data
-    mv documents.json data/ 2>/dev/null || true
-fi
+echo ""
+echo "[4/6] Restarting backend + re-indexing..."
+sudo systemctl restart bip-backend
+echo "Waiting 15s for backend startup..."
+sleep 15
+curl -s -X POST http://localhost:8000/index | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'  Indexed: {d[\"indexed\"]} docs, BM25: {d[\"bm25_docs\"]}')"
 
-deactivate
-cd ..
-
-# 4. Frontend setup
-echo "[4/5] Building frontend..."
-cd frontend
-npm ci --quiet
+echo ""
+echo "[5/6] Building frontend..."
+cd ../frontend
+npm install --silent
 npm run build
-
-# Copy static assets for standalone mode
 cp -r .next/static .next/standalone/.next/
 cp -r public .next/standalone/
-cd ..
 
-# 5. Create systemd services
-echo "[5/5] Creating systemd services..."
-
-sudo tee /etc/systemd/system/bip-backend.service > /dev/null << 'SERVICE'
-[Unit]
-Description=Koziołek Antek - RAG Backend (Hybrid BM25 + Dense)
-After=network.target
-
-[Service]
-Type=simple
-User=user
-WorkingDirectory=/home/user/Kozio-ek-Antoni/bip-rag
-ExecStart=/home/user/Kozio-ek-Antoni/bip-rag/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000
-Restart=always
-RestartSec=5
-Environment=MODEL_PATH=/home/user/Kozio-ek-Antoni/bip-rag/models/Qwen2.5-3B-Instruct-Q4_K_M.gguf
-Environment=N_THREADS=16
-Environment=TOP_K=15
-Environment=FINAL_K=6
-
-[Install]
-WantedBy=multi-user.target
-SERVICE
-
-sudo tee /etc/systemd/system/bip-frontend.service > /dev/null << 'SERVICE'
-[Unit]
-Description=Koziołek Antek - Frontend
-After=network.target bip-backend.service
-
-[Service]
-Type=simple
-User=user
-WorkingDirectory=/home/user/Kozio-ek-Antoni/frontend/.next/standalone
-ExecStart=/usr/bin/node server.js
-Restart=always
-RestartSec=5
-Environment=PORT=3000
-Environment=HOSTNAME=0.0.0.0
-Environment=BACKEND_URL=http://localhost:8000
-
-[Install]
-WantedBy=multi-user.target
-SERVICE
-
-sudo systemctl daemon-reload
-sudo systemctl enable bip-backend bip-frontend
-sudo systemctl restart bip-backend
-sleep 10
+echo ""
+echo "[6/6] Restarting frontend..."
 sudo systemctl restart bip-frontend
 
 echo ""
-echo "╔══════════════════════════════════════════════╗"
-echo "║  DEPLOY COMPLETE!                           ║"
-echo "╠══════════════════════════════════════════════╣"
-echo "║  Frontend: http://$(hostname -I | awk '{print $1}'):3000       ║"
-echo "║  Backend:  http://$(hostname -I | awk '{print $1}'):8000       ║"
-echo "║  Model:    Qwen 2.5 7B Instruct Q4_K_M     ║"
-echo "║  Search:   Hybrid (Dense + BM25 + RRF)     ║"
-echo "╚══════════════════════════════════════════════╝"
+echo "=== Deploy complete! ==="
 echo ""
-echo "First-time indexing:"
-echo "  curl -X POST http://localhost:8000/index"
+echo "Health check:"
+curl -s http://localhost:8000/health | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'  Backend: {d[\"status\"]} | Docs: {d[\"documents\"]} | Cache: {d[\"cache\"][\"size\"]}/{d[\"cache\"][\"max_size\"]}')"
 echo ""
-echo "Test query:"
-echo "  curl -s -X POST http://localhost:8000/query \\"
-echo "    -H 'Content-Type: application/json' \\"
-echo "    -d '{\"question\": \"Jak wyrobić dowód osobisty?\"}' | python3 -m json.tool"
-echo ""
-echo "Check status:"
-echo "  sudo systemctl status bip-backend bip-frontend"
+echo "App: http://10.8.44.10:3000"
