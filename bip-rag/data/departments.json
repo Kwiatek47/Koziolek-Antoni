@@ -284,5 +284,324 @@
       "category": "struktura organizacyjna",
       "department": "Miejski Zespół do Spraw Orzekania o Niepełnosprawności"
     }
+  },
+  {
+    "id": "dept_Departament_Prezydenta",
+    "content": "# Departament Prezydenta\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Biuro - Centrum Współpracy Międzynarodowej\n- Biuro Bezpieczeństwa Informacji\n- Biuro Kadr\n- Biuro Miejskiego Rzecznika Konsumentów\n- Biuro Obsługi Prawnej\n- Biuro Rady Miasta\n- Kancelaria Prezydenta\n- Pion Ochrony Informacji Niejawnych\n- Samodzielne Stanowisko Pracy Rzecznik Prasowy Prezydenta\n- Urząd Stanu Cywilnego\n- Wieloosobowe Stanowisko Pracy do spraw rozwiązań systemowych – Ekspert Prezydenta\n- Wieloosobowe Stanowisko Pracy ds. audytu wewnętrznego\n- Wydział Bezpieczeństwa Mieszkańców i Zarządzania Kryzysowego\n- Wydział Kontroli i Nadzoru Właścicielskiego\n- Wydział Strategii i Obsługi Inwestorów\n- Wydział Sportu i Turystyki\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Prezydenta",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Prezydenta"
+    }
+  },
+  {
+    "id": "dept_Departament_Inwestycji_i_Rozwoju",
+    "content": "# Departament Inwestycji i Rozwoju\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Biuro Miejskiego Konserwatora Zabytków i Rewitalizacji\n- Wydział Architektury i Budownictwa\n- Wydział Funduszy Europejskich\n- Wydział Geodezji\n- Wydział Gospodarowania Mieniem i Energią\n- Wydział Ochrony Środowiska\n- Wydział Planowania\n- Wydział Zarządzania Ruchem Drogowym i Mobilnością\n- Wydział Zieleni i Gospodarki Komunalnej\n- Referat ds. Zamówień Publicznych\n- Wieloosobowe Stanowisko Pracy ds. strategicznych analiz inwestycyjnych i ekonomicznych\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Inwestycji i Rozwoju",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Inwestycji i Rozwoju"
+    }
+  },
+  {
+    "id": "dept_Departament_Spraw_Społecznych",
+    "content": "# Departament Spraw Społecznych\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Wydział ds. Osób Niepełnosprawnych\n- Wydział Inicjatyw i Programów Społecznych\n- Wydział Zdrowia i Profilaktyki\n- Wydział Świadczeń\n- Miejski Zespół do Spraw Orzekania o Niepełnosprawności\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Spraw Społecznych",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Spraw Społecznych"
+    }
+  },
+  {
+    "id": "dept_Departament_Kultury_i_Partycypacji",
+    "content": "# Departament Kultury i Partycypacji\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Biuro Partycypacji Społecznej\n- Biuro Polityki Młodzieżowej\n- Wydział Kultury\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Kultury i Partycypacji",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Kultury i Partycypacji"
+    }
+  },
+  {
+    "id": "dept_Departament_Oświaty_i_Wychowania",
+    "content": "# Departament Oświaty i Wychowania\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Wydział Oświaty i Wychowania\n- Samodzielne Stanowisko Pracy – Pełnomocnik Prezydenta Miasta Lublin ds. rozwoju miejskiego systemu doskonalenia zawodowego nauczycieli\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Oświaty i Wychowania",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Oświaty i Wychowania"
+    }
+  },
+  {
+    "id": "dept_Departament_Organizacji_i_Administracji",
+    "content": "# Departament Organizacji i Administracji\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Biuro Obsługi Kancelaryjnej\n- Biuro Obsługi Mieszkańców\n- Wieloosobowe Stanowisko Pracy ds. Bezpieczeństwa i Higieny Pracy\n- Wydział Informatyki i Telekomunikacji\n- Wydział Komunikacji\n- Wydział Organizacji Urzędu\n- Wydział Spraw Administracyjnych\n- Wydział Spraw Mieszkaniowych\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Organizacji i Administracji",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Organizacji i Administracji"
+    }
+  },
+  {
+    "id": "dept_Departament_Finansów",
+    "content": "# Departament Finansów\n\nJednostka nadrzędna w strukturze organizacyjnej Urzędu Miasta Lublin.\n\n## Podległe komórki organizacyjne:\n- Wydział Budżetu i Księgowości\n- Wydział Podatków\n- Wydział Egzekucji\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Departament Finansów",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Departament Finansów"
+    }
+  },
+  {
+    "id": "dept_Biuro_-_Centrum_Współpracy_Międzynarodow",
+    "content": "# Biuro - Centrum Współpracy Międzynarodowej\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro - Centrum Współpracy Międzynarodowej",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro - Centrum Współpracy Międzynarodowej"
+    }
+  },
+  {
+    "id": "dept_Biuro_Bezpieczeństwa_Informacji",
+    "content": "# Biuro Bezpieczeństwa Informacji\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Bezpieczeństwa Informacji",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Bezpieczeństwa Informacji"
+    }
+  },
+  {
+    "id": "dept_Biuro_Kadr",
+    "content": "# Biuro Kadr\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Kadr",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Kadr"
+    }
+  },
+  {
+    "id": "dept_Biuro_Miejskiego_Rzecznika_Konsumentów",
+    "content": "# Biuro Miejskiego Rzecznika Konsumentów\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Miejskiego Rzecznika Konsumentów",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Miejskiego Rzecznika Konsumentów"
+    }
+  },
+  {
+    "id": "dept_Biuro_Obsługi_Prawnej",
+    "content": "# Biuro Obsługi Prawnej\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Obsługi Prawnej",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Obsługi Prawnej"
+    }
+  },
+  {
+    "id": "dept_Pion_Ochrony_Informacji_Niejawnych",
+    "content": "# Pion Ochrony Informacji Niejawnych\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Pion Ochrony Informacji Niejawnych",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Pion Ochrony Informacji Niejawnych"
+    }
+  },
+  {
+    "id": "dept_Samodzielne_Stanowisko_Pracy_Rzecznik_Pr",
+    "content": "# Samodzielne Stanowisko Pracy Rzecznik Prasowy Prezydenta\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Samodzielne Stanowisko Pracy Rzecznik Prasowy Prezydenta",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Samodzielne Stanowisko Pracy Rzecznik Prasowy Prezydenta"
+    }
+  },
+  {
+    "id": "dept_Wieloosobowe_Stanowisko_Pracy_do_spraw_r",
+    "content": "# Wieloosobowe Stanowisko Pracy do spraw rozwiązań systemowych – Ekspert Prezydenta\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wieloosobowe Stanowisko Pracy do spraw rozwiązań systemowych – Ekspert Prezydenta",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wieloosobowe Stanowisko Pracy do spraw rozwiązań systemowych – Ekspert Prezydenta"
+    }
+  },
+  {
+    "id": "dept_Wieloosobowe_Stanowisko_Pracy_ds._audytu",
+    "content": "# Wieloosobowe Stanowisko Pracy ds. audytu wewnętrznego\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wieloosobowe Stanowisko Pracy ds. audytu wewnętrznego",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wieloosobowe Stanowisko Pracy ds. audytu wewnętrznego"
+    }
+  },
+  {
+    "id": "dept_Wydział_Kontroli_i_Nadzoru_Właścicielski",
+    "content": "# Wydział Kontroli i Nadzoru Właścicielskiego\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wydział Kontroli i Nadzoru Właścicielskiego",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wydział Kontroli i Nadzoru Właścicielskiego"
+    }
+  },
+  {
+    "id": "dept_Wydział_Strategii_i_Obsługi_Inwestorów",
+    "content": "# Wydział Strategii i Obsługi Inwestorów\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Prezydenta.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wydział Strategii i Obsługi Inwestorów",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wydział Strategii i Obsługi Inwestorów"
+    }
+  },
+  {
+    "id": "dept_Wydział_Funduszy_Europejskich",
+    "content": "# Wydział Funduszy Europejskich\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Inwestycji i Rozwoju.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wydział Funduszy Europejskich",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wydział Funduszy Europejskich"
+    }
+  },
+  {
+    "id": "dept_Referat_ds._Zamówień_Publicznych",
+    "content": "# Referat ds. Zamówień Publicznych\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Inwestycji i Rozwoju.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Referat ds. Zamówień Publicznych",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Referat ds. Zamówień Publicznych"
+    }
+  },
+  {
+    "id": "dept_Wieloosobowe_Stanowisko_Pracy_ds._strate",
+    "content": "# Wieloosobowe Stanowisko Pracy ds. strategicznych analiz inwestycyjnych i ekonomicznych\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Inwestycji i Rozwoju.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wieloosobowe Stanowisko Pracy ds. strategicznych analiz inwestycyjnych i ekonomicznych",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wieloosobowe Stanowisko Pracy ds. strategicznych analiz inwestycyjnych i ekonomicznych"
+    }
+  },
+  {
+    "id": "dept_Wydział_ds._Osób_Niepełnosprawnych",
+    "content": "# Wydział ds. Osób Niepełnosprawnych\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Spraw Społecznych.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wydział ds. Osób Niepełnosprawnych",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wydział ds. Osób Niepełnosprawnych"
+    }
+  },
+  {
+    "id": "dept_Biuro_Partycypacji_Społecznej",
+    "content": "# Biuro Partycypacji Społecznej\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Kultury i Partycypacji.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Partycypacji Społecznej",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Partycypacji Społecznej"
+    }
+  },
+  {
+    "id": "dept_Biuro_Polityki_Młodzieżowej",
+    "content": "# Biuro Polityki Młodzieżowej\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Kultury i Partycypacji.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Polityki Młodzieżowej",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Polityki Młodzieżowej"
+    }
+  },
+  {
+    "id": "dept_Samodzielne_Stanowisko_Pracy_–_Pełnomocn",
+    "content": "# Samodzielne Stanowisko Pracy – Pełnomocnik Prezydenta Miasta Lublin ds. rozwoju miejskiego systemu doskonalenia zawodowego nauczycieli\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Oświaty i Wychowania.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Samodzielne Stanowisko Pracy – Pełnomocnik Prezydenta Miasta Lublin ds. rozwoju miejskiego systemu doskonalenia zawodowego nauczycieli",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Samodzielne Stanowisko Pracy – Pełnomocnik Prezydenta Miasta Lublin ds. rozwoju miejskiego systemu doskonalenia zawodowego nauczycieli"
+    }
+  },
+  {
+    "id": "dept_Biuro_Obsługi_Kancelaryjnej",
+    "content": "# Biuro Obsługi Kancelaryjnej\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Organizacji i Administracji.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Obsługi Kancelaryjnej",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Obsługi Kancelaryjnej"
+    }
+  },
+  {
+    "id": "dept_Biuro_Obsługi_Mieszkańców",
+    "content": "# Biuro Obsługi Mieszkańców\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Organizacji i Administracji.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Biuro Obsługi Mieszkańców",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Biuro Obsługi Mieszkańców"
+    }
+  },
+  {
+    "id": "dept_Wieloosobowe_Stanowisko_Pracy_ds._Bezpie",
+    "content": "# Wieloosobowe Stanowisko Pracy ds. Bezpieczeństwa i Higieny Pracy\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Organizacji i Administracji.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wieloosobowe Stanowisko Pracy ds. Bezpieczeństwa i Higieny Pracy",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wieloosobowe Stanowisko Pracy ds. Bezpieczeństwa i Higieny Pracy"
+    }
+  },
+  {
+    "id": "dept_Wydział_Informatyki_i_Telekomunikacji",
+    "content": "# Wydział Informatyki i Telekomunikacji\n\nKomórka organizacyjna Urzędu Miasta Lublin, podlega: Departament Organizacji i Administracji.\n",
+    "metadata": {
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/struktura-organizacyjna/",
+      "title": "Wydział Informatyki i Telekomunikacji",
+      "type": "department_profile",
+      "category": "struktura organizacyjna",
+      "department": "Wydział Informatyki i Telekomunikacji"
+    }
   }
 ]
