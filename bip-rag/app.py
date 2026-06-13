@@ -22,10 +22,10 @@ app = FastAPI(
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 CHROMA_DIR = os.path.join(DATA_DIR, "chroma_db")
 DOCUMENTS_FILE = os.path.join(DATA_DIR, "documents.json")
-MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(os.path.dirname(__file__), "models", "Llama-3.2-3B-Instruct-Q4_K_M.gguf"))
+MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(os.path.dirname(__file__), "models", "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"))
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sdadas/st-polish-paraphrase-from-distilroberta")
-TOP_K = int(os.getenv("TOP_K", "8"))
+TOP_K = int(os.getenv("TOP_K", "10"))
 N_THREADS = int(os.getenv("N_THREADS", "8"))
 
 embedding_fn = SentenceTransformerEmbeddingFunction(
@@ -63,27 +63,30 @@ class IndexStatus(BaseModel):
     indexed: bool
 
 
-SYSTEM_PROMPT = """Jesteś pomocnym asystentem Urzędu Miasta Lublin. Odpowiadasz na pytania mieszkańców na podstawie danych z BIP (Biuletyn Informacji Publicznej).
+SYSTEM_PROMPT = """Jesteś Koziołkiem Antkiem – inteligentnym asystentem Urzędu Miasta Lublin. Pomagasz mieszkańcom załatwiać sprawy urzędowe na podstawie danych z BIP (Biuletyn Informacji Publicznej).
 
-Zasady:
-- Odpowiadaj TYLKO na podstawie podanego kontekstu
-- Jeśli nie masz informacji w kontekście, powiedz to wprost
-- Podawaj źródła (URL) przy odpowiedziach
-- Odpowiadaj po polsku
-- Bądź konkretny: podawaj numery telefonów, adresy, godziny, wymagane dokumenty
-- Jeśli pytanie dotyczy procedury/usługi, wymień kroki do załatwienia sprawy"""
+ZASADY:
+1. Odpowiadaj WYŁĄCZNIE na podstawie podanego kontekstu. Nie wymyślaj informacji.
+2. Jeśli w kontekście nie ma odpowiedzi, powiedz: "Nie znalazłem tej informacji w BIP."
+3. Podawaj konkretne dane: adres, pokój, telefon, godziny, wymagane dokumenty, opłaty.
+4. Rozróżniaj wydziały – "dowód osobisty" to Wydział Spraw Administracyjnych, "dowód rejestracyjny" to Wydział Komunikacji.
+5. Podaj źródło (URL) na końcu odpowiedzi.
+6. Odpowiadaj zwięźle, w punktach, po polsku.
+7. Jeśli w kontekście jest kilka usług pasujących do pytania, wybierz najbardziej trafną na podstawie tytułu usługi."""
 
 
 def get_llm_response(question: str, context: str) -> str:
     """Call local LLM with context for RAG response."""
-    user_prompt = f"""Kontekst z BIP Lublin:
+    user_prompt = f"""Poniżej znajdują się fragmenty z Biuletynu Informacji Publicznej Lublin, które mogą pomóc odpowiedzieć na pytanie.
+
+KONTEKST:
 ---
 {context}
 ---
 
-Pytanie: {question}
+PYTANIE: {question}
 
-Odpowiedz na podstawie powyższego kontekstu. Podaj źródła."""
+INSTRUKCJE: Na podstawie powyższego kontekstu odpowiedz na pytanie. Wybierz TYLKO fragmenty, które bezpośrednio dotyczą pytania (zwróć uwagę na tytuł usługi). Podaj: adres, godziny, wymagane dokumenty, opłaty, kroki procedury, URL źródłowy."""
 
     response = llm.create_chat_completion(
         messages=[
@@ -91,7 +94,7 @@ Odpowiedz na podstawie powyższego kontekstu. Podaj źródła."""
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.1,
-        max_tokens=1500,
+        max_tokens=2000,
     )
 
     return response["choices"][0]["message"]["content"]
@@ -166,12 +169,28 @@ def query(q: Query):
 
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
+    distances = results["distances"][0] if "distances" in results else [0] * len(documents)
+
+    # Simple re-ranking: boost chunks whose title closely matches the question
+    question_lower = q.question.lower()
+    scored = []
+    for doc, meta, dist in zip(documents, metadatas, distances):
+        title = meta.get("title", "").lower()
+        boost = 0
+        # Strong boost if title keywords are in the question
+        title_words = [w for w in title.split() if len(w) > 3]
+        matching_words = sum(1 for w in title_words if w in question_lower)
+        if title_words:
+            boost = matching_words / len(title_words)
+        scored.append((doc, meta, dist - boost * 0.5))
+
+    scored.sort(key=lambda x: x[2])
 
     context_parts = []
     sources = []
     seen_urls = set()
 
-    for doc, meta in zip(documents, metadatas):
+    for doc, meta, _ in scored[:6]:
         context_parts.append(doc)
         url = meta.get("source_url", "")
         if url and url not in seen_urls:

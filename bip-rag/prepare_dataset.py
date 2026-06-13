@@ -73,6 +73,11 @@ def process_uslugi():
         url = svc.get("url", "")
         title = svc.get("title", "")
         sections = svc.get("sections", {})
+        department = sections.get("Komórka organizacyjna załatwiająca sprawę", "")
+        card_number = sections.get("Numer karty informacyjnej", "")
+
+        # Prefix every chunk with title + department for better retrieval
+        prefix = f"Usługa: {title}\nWydział: {department}\nNumer karty: {card_number}\n\n"
 
         # Build a clean document from sections
         content_parts = [f"# {title}\n"]
@@ -86,15 +91,15 @@ def process_uslugi():
             "title": title,
             "type": "usluga",
             "category": sections.get("Kategoria sprawy", ""),
-            "department": sections.get("Komórka organizacyjna załatwiająca sprawę", ""),
-            "card_number": sections.get("Numer karty informacyjnej", ""),
+            "department": department,
+            "card_number": card_number,
         }
 
         chunks = chunk_text(full_content)
         for i, chunk in enumerate(chunks):
             docs.append({
-                "id": f"usluga_{svc.get('title', '').replace(' ', '_')[:50]}_{i}",
-                "content": chunk,
+                "id": f"usluga_{card_number}_{i}" if card_number else f"usluga_{svc.get('title', '').replace(' ', '_')[:50]}_{i}",
+                "content": prefix + chunk,
                 "metadata": metadata,
             })
 
