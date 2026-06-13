@@ -240,32 +240,45 @@ def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
 
 
 # --- Structured extraction prompt ---
-EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Odpowiadaj JSON-em.
+EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Odpowiadaj WYŁĄCZNIE JSON-em.
 
-Format:
-{"summary":"krótko o sprawie","where":{"address":"pełny adres z ulicą i nr","room":"pokój/piętro/stanowisko","phone":"numery tel","hours":"dokładne godziny dla każdego dnia","department":"wydział"},"how":{"steps":["konkretny krok 1","konkretny krok 2","konkretny krok 3"],"required_documents":["dokument1","dokument2"],"forms":["formularz"],"submission_method":"osobiście/online/ePUAP"},"how_much":{"cost":"kwota lub bezpłatne","time_estimate":"CZAS WYDANIA dokumentu (np. 30 dni), NIE czas wizyty","legal_basis":"pełna nazwa ustawy z Dz.U."},"who":null,"booking":true/false,"additional_info":"ważne uwagi, wyjątki"}
+Format odpowiedzi (wypełnij TYLKO pola dla których masz dane w kontekście, resztę ustaw na null):
+{
+  "summary": "1-2 zdania co to za sprawa",
+  "where": {
+    "address": "ul. [nazwa] [numer], Lublin",
+    "room": "pokój/piętro/stanowisko lub null",
+    "phone": "numer(y) telefonu z kontekstu lub null",
+    "hours": "godziny z kontekstu lub null",
+    "department": "nazwa wydziału z kontekstu"
+  },
+  "how": {
+    "steps": ["krok wyciągnięty z kontekstu"],
+    "required_documents": ["dokument z kontekstu"],
+    "forms": ["nazwa formularza z kontekstu"],
+    "submission_method": "osobiście/online/ePUAP"
+  },
+  "how_much": {
+    "cost": "kwota z kontekstu lub bezpłatne",
+    "time_estimate": "czas z kontekstu",
+    "legal_basis": "ustawa z kontekstu w formacie: Ustawa z dnia... (Dz.U. ...)"
+  },
+  "who": null,
+  "booking": true,
+  "additional_info": "uwagi z kontekstu lub null"
+}
 
-Zasady:
-- TYLKO dane z kontekstu, null jeśli brak danych
-- W "hours" podaj DOKŁADNE godziny z kontekstu (np. "pn 7:45-16:45, wt-pt 7:45-15:15")
-- W "phone" podaj WSZYSTKIE numery telefonów z kontekstu
-- W "address" podaj pełny adres z nazwą ulicy, numerem, stanowiskiem/piętrem
-- W "steps" podaj 3-5 KONKRETNYCH kroków (nie ogólniki). Wyciągnij je z sekcji "Sposób i miejsce składania"
-- W "required_documents" wymień WSZYSTKIE dokumenty z sekcji "Wymagane załączniki" i "Dokumenty do wglądu"
-- W "time_estimate" podaj czas WYDANIA DOKUMENTU (z "Termin załatwienia sprawy"), NIE czas wizyty w urzędzie
-- W "cost" podaj opłatę z sekcji "Wymagane opłaty"
-- "who" = null (nie wypełniaj chyba że pytanie dotyczy konkretnej osoby)
-- NIE wymyślaj URL-i ani danych których nie ma w kontekście
-- booking=true gdy wizyta osobista wymagana
-- W sources podaj URL-e zrodlowe z kontekstu jesli dostepne
-- Kontekst moze zawierac DWA typy dokumentow:
-  * type=usluga -> procedura LOKALNA w Urzedzie Miasta Lublin (adres, godziny, wydzial, oplaty lokalne)
-  * type=wiedza_bazowa -> definicja/ustawa OGOLNOPOLSKA (NIE podawaj adresow Lublina z wiedzy bazowej)
-- Gdy pytanie dotyczy definicji pojecia (co to jest X) -> odpowiadaj z wiedzy bazowej
-- Gdy pytanie dotyczy procedury (jak wyrobic X) -> odpowiadaj z karty uslugi
-- Podawaj legal_basis z metadanych legal_ref gdy dostepne
-- Jesli informacji NIE MA w kontekscie -> null, NIE wymyslaj
-- Odpowiedz WYLACZNIE JSON"""
+KRYTYCZNE ZASADY:
+1. KOPIUJ dosłownie z kontekstu - NIE parafrazuj, NIE tłumacz, NIE wymyślaj
+2. Adres MUSI zawierać "ul." lub "al." + nazwę ulicy + numer. Jeśli nie ma adresu w kontekście -> null
+3. Telefon MUSI zaczynać się od "81" lub "+48 81" (to Lublin). Jeśli nie ma telefonu -> null
+4. Godziny MUSZĄ być w formacie "pn-pt" lub "pn", "wt" itp. z cyframi godzin. Nie ma -> null
+5. required_documents: wymień KONKRETNE nazwy dokumentów z sekcji "Wymagane załączniki"/"Dokumenty do wglądu". Pusta lista [] jeśli brak
+6. forms: wymień KONKRETNE nazwy formularzy/wniosków z kontekstu. Pusta lista [] jeśli brak
+7. steps: wyciągnij z sekcji "Sposób i miejsce składania dokumentów". Pusta lista [] jeśli brak
+8. legal_basis: MUSI być po polsku w formacie "Ustawa z dnia... (Dz.U. rok poz. X)". Nie ma -> null
+9. NIGDY nie wymyślaj danych - lepiej null niż fałsz
+10. Odpowiedz WYŁĄCZNIE poprawnym JSON-em, zero tekstu przed/po"""
 
 
 def get_structured_response(question: str, context: str) -> dict:
@@ -277,7 +290,9 @@ def get_structured_response(question: str, context: str) -> dict:
 
 PYTANIE MIESZKAŃCA: {question}
 
-Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
+INSTRUKCJA: Wyciągnij dane z kontekstu powyżej. Pole "address" to ADRES FIZYCZNY (np. "ul. Spokojna 2, Lublin"), NIE sposób złożenia. Pole "submission_method" to sposób złożenia (osobiście/online). NIE mieszaj tych pól.
+
+Odpowiedz TYLKO poprawnym JSON-em:"""
 
     response = llm.create_chat_completion(
         messages=[
@@ -291,15 +306,80 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
     raw_text = response["choices"][0]["message"]["content"]
 
     try:
-        return json.loads(raw_text)
+        data = json.loads(raw_text)
     except json.JSONDecodeError:
         json_match = re.search(r'\{[\s\S]*\}', raw_text)
         if json_match:
             try:
-                return json.loads(json_match.group())
+                data = json.loads(json_match.group())
             except json.JSONDecodeError:
-                pass
-        return {"summary": raw_text, "raw_fallback": True}
+                return {"summary": raw_text, "raw_fallback": True}
+        else:
+            return {"summary": raw_text, "raw_fallback": True}
+
+    return sanitize_response(data)
+
+
+def sanitize_response(data: dict) -> dict:
+    """Post-process LLM output to remove hallucinated/invalid data."""
+
+    # Validate WHERE
+    where = data.get("where")
+    if where and isinstance(where, dict):
+        # Address must contain a street name pattern (ul./al./pl.) or known Lublin street
+        addr = where.get("address") or ""
+        if addr and not re.search(r"(ul\.|al\.|pl\.|Spokojna|Wieniawska|Czechowska|Filaretów|Kleeberga|Okopowa|Leszczyńskiego|Królewska|Szkolna|Peowiaków|Zana)", addr):
+            where["address"] = None
+
+        # Phone must be Lublin area (81) or null
+        phone = where.get("phone") or ""
+        if phone and not re.search(r"(81[\s\-]?\d|48[\s\-]?81|\+48[\s\-]?81)", phone):
+            where["phone"] = None
+
+        # Hours must have time digits (HH:MM pattern)
+        hours = where.get("hours") or ""
+        if hours and not re.search(r"\d{1,2}[:.]\d{2}", hours):
+            where["hours"] = None
+
+        # If where has no real data left, null it
+        real_values = [v for k, v in where.items() if v and v != "null" and k != "department"]
+        if not real_values and not where.get("department"):
+            data["where"] = None
+
+    # Validate HOW
+    how = data.get("how")
+    if how and isinstance(how, dict):
+        # Remove placeholder documents
+        PLACEHOLDER_PATTERNS = {"dokument1", "dokument2", "dokument 1", "dokument 2",
+                                "formularz1", "formularz 1", "wniosek1", "formularz",
+                                "wniosek", "dokument"}
+        docs = how.get("required_documents") or []
+        how["required_documents"] = [d for d in docs if d.lower().strip() not in PLACEHOLDER_PATTERNS and len(d) > 5]
+
+        forms = how.get("forms") or []
+        how["forms"] = [f for f in forms if f.lower().strip() not in PLACEHOLDER_PATTERNS and len(f) > 5]
+
+        # Remove generic/vague steps (too short = likely hallucinated)
+        steps = how.get("steps") or []
+        how["steps"] = [s for s in steps if len(s) > 15]
+
+    # Validate HOW_MUCH
+    how_much = data.get("how_much")
+    if how_much and isinstance(how_much, dict):
+        # Legal basis must not contain CJK characters
+        legal = how_much.get("legal_basis") or ""
+        if legal and re.search(r"[\u4e00-\u9fff\u3000-\u303f\u3040-\u309f\u30a0-\u30ff]", legal):
+            how_much["legal_basis"] = None
+        # Legal basis should reference Polish law format
+        elif legal and not re.search(r"(Dz\.?\s?U|ustaw|rozporządzeni|uchwał)", legal, re.IGNORECASE):
+            how_much["legal_basis"] = None
+
+    # Strip CJK from summary if present
+    summary = data.get("summary") or ""
+    if re.search(r"[\u4e00-\u9fff\u3000-\u303f]", summary):
+        data["summary"] = re.sub(r"[\u4e00-\u9fff\u3000-\u303f\u3040-\u309f\u30a0-\u30ff]+", "", summary).strip()
+
+    return data
 
 
 # --- Intent classification (rule-based, zero latency) ---
@@ -744,8 +824,29 @@ def query(q: Query):
     # Full structured response for procedural questions
     structured = get_structured_response(q.question, context)
 
-    # Enrich with coordinates
+    # Fallback: extract address from context if LLM missed it
     where = structured.get("where")
+    if not where or not isinstance(where, dict):
+        structured["where"] = {}
+        where = structured["where"]
+
+    if not where.get("address"):
+        # Try to find address in context chunks
+        for doc in documents[:3]:
+            addr_match = re.search(r"(?:ul\.|al\.|pl\.)\s*[\w\s]+\d+[\w]?(?:\s*,\s*\d{2}-\d{3})?\s*Lublin", doc)
+            if addr_match:
+                where["address"] = addr_match.group().strip()
+                break
+
+    if not where.get("department"):
+        # Extract department from first metadata
+        for meta in metadatas[:2]:
+            dept = meta.get("department", "")
+            if dept:
+                where["department"] = dept
+                break
+
+    # Enrich with coordinates
     if where and isinstance(where, dict):
         address = where.get("address", "")
         lat, lng = find_coordinates(address)
