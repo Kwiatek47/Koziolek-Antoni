@@ -31,7 +31,7 @@ pip install --quiet -r requirements.txt
 
 mkdir -p models
 if [ ! -f models/qwen2.5-7b-instruct-q4_k_m.gguf ]; then
-    huggingface-cli download bartowski/Qwen2.5-7B-Instruct-GGUF Qwen2.5-7B-Instruct-Q4_K_M.gguf --local-dir models/
+    huggingface-cli download bartowski/Qwen2.5-3B-Instruct-GGUF Qwen2.5-3B-Instruct-Q4_K_M.gguf --local-dir models/
 fi
 
 # 3. Prepare data
@@ -71,7 +71,7 @@ WorkingDirectory=/home/user/Kozio-ek-Antoni/bip-rag
 ExecStart=/home/user/Kozio-ek-Antoni/bip-rag/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000
 Restart=always
 RestartSec=5
-Environment=MODEL_PATH=/home/user/Kozio-ek-Antoni/bip-rag/models/Qwen2.5-7B-Instruct-Q4_K_M.gguf
+Environment=MODEL_PATH=/home/user/Kozio-ek-Antoni/bip-rag/models/Qwen2.5-3B-Instruct-Q4_K_M.gguf
 Environment=N_THREADS=16
 Environment=TOP_K=15
 Environment=FINAL_K=6

@@ -35,7 +35,7 @@ CHROMA_DIR = os.path.join(DATA_DIR, "chroma_db")
 DOCUMENTS_FILE = os.path.join(DATA_DIR, "documents.json")
 MODEL_PATH = os.getenv(
     "MODEL_PATH",
-    os.path.join(os.path.dirname(__file__), "models", "Qwen2.5-7B-Instruct-Q4_K_M.gguf"),
+    os.path.join(os.path.dirname(__file__), "models", "Qwen2.5-3B-Instruct-Q4_K_M.gguf"),
 )
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sdadas/st-polish-paraphrase-from-distilroberta")
