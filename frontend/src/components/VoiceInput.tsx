@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useSyncExternalStore } from "react";
 import { Mic, MicOff } from "lucide-react";
 import { Locale, SPEECH_LOCALES } from "@/i18n/translations";
 
@@ -11,27 +11,63 @@ interface VoiceInputProps {
   t: { listening: string; tapToSpeak: string; notSupported: string };
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+interface SpeechRecognitionEventLike {
+  results: {
+    0: {
+      0: {
+        transcript: string;
+      };
+    };
+  };
+}
+
+interface SpeechRecognitionLike {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+interface SpeechRecognitionWindow extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+}
+
+function subscribeToSpeechRecognition(): () => void {
+  return () => undefined;
+}
+
+function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | undefined {
+  if (typeof window === "undefined") return undefined;
+  const win = window as SpeechRecognitionWindow;
+  return win.SpeechRecognition || win.webkitSpeechRecognition;
+}
+
 export default function VoiceInput({ onTranscript, locale, disabled, t }: VoiceInputProps) {
   const [listening, setListening] = useState(false);
-  const [supported, setSupported] = useState(true);
-  const recognitionRef = useRef<any>(null);
+  const supported = useSyncExternalStore(
+    subscribeToSpeechRecognition,
+    () => Boolean(getSpeechRecognitionConstructor()),
+    () => false
+  );
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   useEffect(() => {
-    const win = window as any;
-    const SpeechRecognitionCtor = win.SpeechRecognition || win.webkitSpeechRecognition;
-
-    if (!SpeechRecognitionCtor) {
-      setSupported(false);
-      return;
-    }
+    const SpeechRecognitionCtor = getSpeechRecognitionConstructor();
+    if (!SpeechRecognitionCtor) return;
 
     const recognition = new SpeechRecognitionCtor();
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = SPEECH_LOCALES[locale];
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       if (transcript.trim()) {
         onTranscript(transcript.trim());

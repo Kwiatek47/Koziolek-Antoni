@@ -316,6 +316,47 @@
     50% { transform: scale(1.08); opacity: 0; }
   }
 
+  /* Assistant message actions */
+  .message-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 2px;
+  }
+
+  .message-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--color-lublin-border);
+    background: white;
+    color: var(--color-lublin-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .message-action-btn:hover {
+    border-color: var(--color-lublin-green);
+    color: var(--color-lublin-green);
+    background: var(--color-lublin-green-light);
+  }
+
+  .message-action-btn--speaking,
+  .message-action-btn--up {
+    border-color: color-mix(in srgb, var(--color-lublin-green) 45%, transparent);
+    background: var(--color-lublin-green-light);
+    color: var(--color-lublin-green);
+  }
+
+  .message-action-btn--down {
+    border-color: color-mix(in srgb, var(--color-lublin-red) 35%, transparent);
+    background: var(--color-lublin-red-light);
+    color: var(--color-lublin-red);
+  }
+
   /* Fill document card */
   .fill-field {
     padding: 10px 0;

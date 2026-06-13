@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
@@ -26,10 +26,15 @@ import {
   Lightbulb,
   AlertTriangle,
   Download,
+  ThumbsDown,
+  ThumbsUp,
+  Square,
+  Volume2,
 } from "lucide-react";
-import { Locale, translations } from "@/i18n/translations";
+import { Locale, SPEECH_LOCALES, translations } from "@/i18n/translations";
 import LangSwitcher from "@/components/LangSwitcher";
 import VoiceInput from "@/components/VoiceInput";
+import { type FeedbackVote, getQueryHistory, saveFeedbackEntry } from "@/lib/conversation";
 
 const MapEmbed = dynamic(() => import("@/components/MapEmbed"), { ssr: false });
 
@@ -88,18 +93,55 @@ interface StructuredResponse {
 }
 
 interface Message {
+  id: string;
   role: "user" | "assistant";
   content: string;
   structured?: StructuredResponse;
+  question?: string;
 }
 
 const SUGGESTION_ICONS = [FileText, MapPin, Banknote, Building2, User, ListChecks];
+
+function isLocale(value: string | null): value is Locale {
+  return value === "pl" || value === "en" || value === "ua";
+}
+
+function getStoredLocale(): Locale {
+  if (typeof window === "undefined") return "pl";
+  const saved = window.localStorage.getItem("koziolek-lang");
+  return isLocale(saved) ? saved : "pl";
+}
+
+function subscribeToLocaleStore(callback: () => void): () => void {
+  if (typeof window === "undefined") return () => undefined;
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function subscribeToBrowserFeature(): () => void {
+  return () => undefined;
+}
+
+function getSpeechSynthesisSupport(): boolean {
+  return typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+}
+
+function createMessageId(role: Message["role"]): string {
+  const randomId =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2);
+  return `${role}-${Date.now()}-${randomId}`;
+}
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [locale, setLocale] = useState<Locale>("pl");
+  const storedLocale = useSyncExternalStore<Locale>(subscribeToLocaleStore, getStoredLocale, () => "pl");
+  const [localeOverride, setLocaleOverride] = useState<Locale | null>(null);
+  const locale = localeOverride || storedLocale;
+  const [feedbackByMessageId, setFeedbackByMessageId] = useState<Record<string, FeedbackVote>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -109,15 +151,8 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("koziolek-lang") as Locale | null;
-    if (saved && (saved === "pl" || saved === "en" || saved === "ua")) {
-      setLocale(saved);
-    }
-  }, []);
-
   function handleLocaleChange(loc: Locale) {
-    setLocale(loc);
+    setLocaleOverride(loc);
     localStorage.setItem("koziolek-lang", loc);
   }
 
@@ -126,36 +161,64 @@ export default function Home() {
       const question = text || input.trim();
       if (!question || loading) return;
 
+      const history = getQueryHistory(messages);
+      const userMessage: Message = { id: createMessageId("user"), role: "user", content: question };
+
       setInput("");
-      setMessages((prev) => [...prev, { role: "user", content: question }]);
+      setMessages((prev) => [...prev, userMessage]);
       setLoading(true);
 
       try {
         const res = await fetch("/api/query", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, lang: locale }),
+          body: JSON.stringify({ question, lang: locale, history }),
         });
         const data = await res.json();
 
         setMessages((prev) => [
           ...prev,
           {
+            id: createMessageId("assistant"),
             role: "assistant",
             content: data.summary || data.answer || t.errors.noAnswer,
             structured: data,
+            question,
           },
         ]);
       } catch {
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", content: t.errors.connection },
+          { id: createMessageId("assistant"), role: "assistant", content: t.errors.connection, question },
         ]);
       }
       setLoading(false);
       inputRef.current?.focus();
     },
-    [input, loading, locale, t.errors]
+    [input, loading, locale, messages, t.errors]
+  );
+
+  const handleFeedback = useCallback(
+    (msg: Message, vote: FeedbackVote) => {
+      const entry = {
+        messageId: msg.id,
+        vote,
+        question: msg.question || "",
+        answer: msg.content,
+        lang: locale,
+        createdAt: new Date().toISOString(),
+      };
+
+      saveFeedbackEntry(window.localStorage, entry);
+      setFeedbackByMessageId((prev) => ({ ...prev, [msg.id]: vote }));
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry),
+      }).catch(() => undefined);
+    },
+    [locale]
   );
 
   const handleVoiceTranscript = useCallback(
@@ -197,7 +260,14 @@ export default function Home() {
                       <div className="chat-user">{msg.content}</div>
                     </div>
                   ) : (
-                    <AssistantMessage msg={msg} onFollowUp={send} t={t} />
+                    <AssistantMessage
+                      msg={msg}
+                      onFollowUp={send}
+                      onFeedback={handleFeedback}
+                      feedbackVote={feedbackByMessageId[msg.id]}
+                      locale={locale}
+                      t={t}
+                    />
                   )}
                 </div>
               ))}
@@ -240,7 +310,21 @@ export default function Home() {
 
 type T = (typeof translations)["pl"];
 
-function AssistantMessage({ msg, onFollowUp, t }: { msg: Message; onFollowUp: (t: string) => void; t: T }) {
+function AssistantMessage({
+  msg,
+  onFollowUp,
+  onFeedback,
+  feedbackVote,
+  locale,
+  t,
+}: {
+  msg: Message;
+  onFollowUp: (t: string) => void;
+  onFeedback: (msg: Message, vote: FeedbackVote) => void;
+  feedbackVote?: FeedbackVote;
+  locale: Locale;
+  t: T;
+}) {
   const s = msg.structured;
 
   return (
@@ -249,6 +333,29 @@ function AssistantMessage({ msg, onFollowUp, t }: { msg: Message; onFollowUp: (t
       <div className="flex-1 min-w-0 space-y-3">
         <div className="chat-ai">
           <p className="text-[15px] leading-[1.65] text-lublin-text/90">{msg.content}</p>
+        </div>
+        <div className="message-actions" aria-label={t.feedback.responseActions}>
+          <ReadAloudButton text={msg.content} locale={locale} t={t.tts} />
+          <button
+            type="button"
+            onClick={() => onFeedback(msg, "up")}
+            className={`message-action-btn ${feedbackVote === "up" ? "message-action-btn--up" : ""}`}
+            aria-label={t.feedback.helpful}
+            aria-pressed={feedbackVote === "up"}
+            title={t.feedback.helpful}
+          >
+            <ThumbsUp size={15} strokeWidth={2.4} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onFeedback(msg, "down")}
+            className={`message-action-btn ${feedbackVote === "down" ? "message-action-btn--down" : ""}`}
+            aria-label={t.feedback.notHelpful}
+            aria-pressed={feedbackVote === "down"}
+            title={t.feedback.notHelpful}
+          >
+            <ThumbsDown size={15} strokeWidth={2.4} />
+          </button>
         </div>
 
         {s && (
@@ -276,6 +383,55 @@ function AssistantMessage({ msg, onFollowUp, t }: { msg: Message; onFollowUp: (t
         )}
       </div>
     </div>
+  );
+}
+
+function ReadAloudButton({ text, locale, t }: { text: string; locale: Locale; t: T["tts"] }) {
+  const supported = useSyncExternalStore(subscribeToBrowserFeature, getSpeechSynthesisSupport, () => false);
+  const [speaking, setSpeaking] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (utteranceRef.current) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const toggleSpeech = useCallback(() => {
+    if (!supported) return;
+
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = SPEECH_LOCALES[locale];
+    utterance.rate = 0.95;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    utteranceRef.current = utterance;
+    setSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  }, [locale, speaking, supported, text]);
+
+  if (!supported) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={toggleSpeech}
+      className={`message-action-btn ${speaking ? "message-action-btn--speaking" : ""}`}
+      aria-label={speaking ? t.stop : t.speak}
+      aria-pressed={speaking}
+      title={speaking ? t.stop : t.speak}
+    >
+      {speaking ? <Square size={13} strokeWidth={2.5} /> : <Volume2 size={15} strokeWidth={2.4} />}
+    </button>
   );
 }
 
@@ -684,9 +840,12 @@ function LoadingIndicator({ t }: { t: T }) {
           <span className="text-[13px] text-lublin-muted">{t.loading}</span>
         </div>
         <div className="mt-3 flex justify-center">
-          <img
+          <Image
             src="/animacja/koziolek_biega.gif"
             alt="Koziołek szuka odpowiedzi"
+            width={96}
+            height={64}
+            unoptimized
             className="h-16 w-auto object-contain"
           />
         </div>

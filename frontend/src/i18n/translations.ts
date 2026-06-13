@@ -60,6 +60,15 @@ interface Translations {
     tapToSpeak: string;
     notSupported: string;
   };
+  tts: {
+    speak: string;
+    stop: string;
+  };
+  feedback: {
+    responseActions: string;
+    helpful: string;
+    notHelpful: string;
+  };
 }
 
 const pl: Translations = {
@@ -117,6 +126,15 @@ const pl: Translations = {
     listening: "Słucham...",
     tapToSpeak: "Naciśnij aby mówić",
     notSupported: "Twoja przeglądarka nie obsługuje rozpoznawania mowy.",
+  },
+  tts: {
+    speak: "Czytaj odpowiedź",
+    stop: "Zatrzymaj czytanie",
+  },
+  feedback: {
+    responseActions: "Akcje odpowiedzi",
+    helpful: "Pomocna odpowiedź",
+    notHelpful: "Niepomocna odpowiedź",
   },
 };
 
@@ -176,6 +194,15 @@ const en: Translations = {
     tapToSpeak: "Tap to speak",
     notSupported: "Your browser does not support speech recognition.",
   },
+  tts: {
+    speak: "Read answer aloud",
+    stop: "Stop reading",
+  },
+  feedback: {
+    responseActions: "Answer actions",
+    helpful: "Helpful answer",
+    notHelpful: "Not helpful",
+  },
 };
 
 const ua: Translations = {
@@ -233,6 +260,15 @@ const ua: Translations = {
     listening: "Слухаю...",
     tapToSpeak: "Натисніть, щоб говорити",
     notSupported: "Ваш браузер не підтримує розпізнавання мови.",
+  },
+  tts: {
+    speak: "Прочитати відповідь",
+    stop: "Зупинити читання",
+  },
+  feedback: {
+    responseActions: "Дії з відповіддю",
+    helpful: "Корисна відповідь",
+    notHelpful: "Некорисна відповідь",
   },
 };
 

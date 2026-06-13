@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type * as Leaflet from "leaflet";
+
+type LeafletApi = typeof Leaflet;
+type LeafletModule = LeafletApi & { default?: LeafletApi };
 
 interface Marker {
   lat: number;
@@ -14,11 +18,17 @@ interface MapEmbedProps {
   markers?: Marker[];
 }
 
+interface LocationItem {
+  lat: number;
+  lng: number;
+  name: string;
+  service_count: number;
+}
+
 export default function MapEmbed({ center, zoom = 14, markers }: MapEmbedProps) {
-  const [L, setL] = useState<any>(null);
+  const [L, setL] = useState<LeafletApi | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const idRef = useRef(`map-${Math.random().toString(36).slice(2)}`);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
 
   useEffect(() => {
     const existing = document.querySelector('link[href*="leaflet"]');
@@ -28,7 +38,10 @@ export default function MapEmbed({ center, zoom = 14, markers }: MapEmbedProps) 
       link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
       document.head.appendChild(link);
     }
-    import("leaflet").then((leaflet) => setL(leaflet.default));
+    import("leaflet").then((leaflet) => {
+      const leafletModule = leaflet as LeafletModule;
+      setL(leafletModule.default || leafletModule);
+    });
   }, []);
 
   useEffect(() => {
@@ -65,8 +78,8 @@ export default function MapEmbed({ center, zoom = 14, markers }: MapEmbedProps) 
       // Load all locations from API
       fetch("/api/locations")
         .then((r) => r.json())
-        .then((d) => {
-          (d.locations || []).forEach((loc: any) => {
+        .then((d: { locations?: LocationItem[] }) => {
+          (d.locations || []).forEach((loc) => {
             L.marker([loc.lat, loc.lng], { icon })
               .addTo(map)
               .bindPopup(`<strong>${loc.name}</strong><br><span style="font-size:12px;color:#666">${loc.service_count} usług</span>`);
