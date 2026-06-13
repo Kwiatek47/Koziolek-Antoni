@@ -130,15 +130,25 @@ def index_documents():
         )
 
     batch_size = 100
-    for i in range(0, len(docs), batch_size):
-        batch = docs[i:i + batch_size]
+    seen_ids = set()
+    unique_docs = []
+    for d in docs:
+        doc_id = d["id"]
+        while doc_id in seen_ids:
+            doc_id += "_"
+        seen_ids.add(doc_id)
+        d["id"] = doc_id
+        unique_docs.append(d)
+
+    for i in range(0, len(unique_docs), batch_size):
+        batch = unique_docs[i:i + batch_size]
         collection.add(
             ids=[d["id"] for d in batch],
             documents=[d["content"] for d in batch],
             metadatas=[d["metadata"] for d in batch],
         )
 
-    return {"indexed": len(docs), "status": "ok"}
+    return {"indexed": len(unique_docs), "status": "ok"}
 
 
 @app.post("/query", response_model=Answer)
