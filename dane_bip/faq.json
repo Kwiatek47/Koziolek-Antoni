@@ -101,7 +101,7 @@
     "id": "prawo_jazdy_zmiana_danych",
     "question": "Jak wymienić prawo jazdy po zmianie nazwiska?",
     "service_title": "Wymiana prawa jazdy z powodu zmiany danych",
-    "aliases": ["prawo jazdy po ślubie", "nowe dane w prawie jazdy", "wymienić prawko"],
+    "aliases": ["prawo jazdy po ślubie", "nowe dane w prawie jazdy", "wymienić prawko", "zdjęcie do prawa jazdy"],
     "category": "kierowcy"
   },
   {
@@ -192,7 +192,7 @@
     "id": "dodatek_mieszkaniowy",
     "question": "Jak złożyć wniosek o dodatek mieszkaniowy?",
     "service_title": "Dodatki mieszkaniowe",
-    "aliases": ["dopłata do czynszu", "dodatek do mieszkania", "pomoc w opłatach za mieszkanie"],
+    "aliases": ["dopłata do czynszu", "dodatek do mieszkania", "pomoc w opłatach za mieszkanie", "dochód do dodatku mieszkaniowego"],
     "category": "swiadczenia"
   },
   {

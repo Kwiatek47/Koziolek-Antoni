@@ -1,0 +1,114 @@
+{
+  "items": [
+    {
+      "id": "spokojna_2",
+      "title": "Dojazd, parking i dostępność: ul. Spokojna 2",
+      "location": "ul. Spokojna 2",
+      "address": "ul. Spokojna 2, Lublin",
+      "public_transport": [
+        "Najbliższe duże przystanki w centrum: Ogród Saski, Okopowa, Plac Litewski.",
+        "Dla przystanku Ogród Saski 01 ZDiTM pokazuje m.in. linie 4, 8, 13, 15, 20, 32 i 40; przed wyjściem sprawdź aktualny rozkład ZDiTM.",
+        "Dojście z przystanków w rejonie Ogrodu Saskiego/Okopowej do wejść przy ul. Spokojnej i Wieniawskiej jest piesze."
+      ],
+      "parking": "Przed budynkiem przy ul. Spokojnej 2 jest wyznaczone miejsce parkingowe dla osób z niepełnosprawnościami. Pod budynkiem na poziomie -1 znajdują się komercyjne miejsca parkingowe, gdzie również wyznaczone są miejsca dla osób z niepełnosprawnościami.",
+      "accessibility": "Wejścia główne od ul. Spokojnej i ul. Wieniawskiej są z poziomu chodnika i mają automatyczne drzwi. Budynek ma windy dostosowane dla osób z niepełnosprawnościami ruchu oraz toalety dla osób z niepełnosprawnościami.",
+      "notes": "W budynku działają m.in. Urząd Stanu Cywilnego i Wydział Spraw Administracyjnych. Wiele spraw dowodowych i meldunkowych ma godziny przyjęć inne niż ogólne godziny pracy urzędu.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "wieniawska_14",
+      "title": "Dojazd, parking i dostępność: ul. Wieniawska 14",
+      "location": "ul. Wieniawska 14",
+      "address": "ul. Wieniawska 14, Lublin",
+      "public_transport": [
+        "Najbliższe duże przystanki w centrum: Ogród Saski, Okopowa, Plac Litewski.",
+        "Dla przystanku Ogród Saski 01 ZDiTM pokazuje m.in. linie 4, 8, 13, 15, 20, 32 i 40; przed wyjściem sprawdź aktualny rozkład ZDiTM."
+      ],
+      "parking": "Przed budynkiem przy ul. Wieniawskiej 14 są wyznaczone dwa miejsca parkingowe dla osób z niepełnosprawnościami. Rejon centrum jest objęty Strefą Płatnego Parkowania w dni robocze od poniedziałku do piątku w godz. 8:00-18:00.",
+      "queue_system": "W Biurze Obsługi Mieszkańców jest system kolejkowy z informacją głosową.",
+      "accessibility": "Dostęp do wysokiego parteru zapewnia winda obok wejścia głównego. Budynek ma windy, toalety dla osób z niepełnosprawnościami na I i III piętrze, pętlę indukcyjną w BOM, powiększalniki, urządzenie lektorskie oraz tablet z tłumaczem online.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "czechowska_19a",
+      "title": "Dojazd, parking i dostępność: ul. Czechowska 19A",
+      "location": "ul. Czechowska 19A",
+      "address": "ul. Czechowska 19A, Lublin",
+      "public_transport": [
+        "Najbliższe przystanki ZDiTM: Czechowska 01 i Czechowska 02.",
+        "Dla przystanków Czechowska 01/02 ZDiTM pokazuje linie 12, 44 i 74; sprawdź aktualne godziny odjazdów przed wizytą."
+      ],
+      "parking": "Przed budynkiem przy ul. Czechowskiej 19A wyznaczone są cztery miejsca parkingowe dla osób z niepełnosprawnościami.",
+      "queue_system": "W budynku jest system kolejkowy z informacją głosową.",
+      "accessibility": "Wejścia główne są od ul. Czechowskiej z poziomu chodnika. Budynek ma windę dla osób z niepełnosprawnościami, toaletę dostępną na parterze oraz pętlę indukcyjną.",
+      "notes": "W budynku działa Wydział Komunikacji; sprawy pojazdów i praw jazdy mają szczególne godziny przyjęć.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "filaretow_44",
+      "title": "Dojazd, parking i dostępność: ul. Filaretów 44",
+      "location": "ul. Filaretów 44",
+      "address": "ul. Filaretów 44, Lublin",
+      "public_transport": "Sprawdź aktualny rozkład ZDiTM dla przystanków w rejonie ul. Filaretów; układ linii może się zmieniać.",
+      "parking": "Przy budynku jest wyznaczone miejsce parkingowe dla osób z niepełnosprawnościami na parkingu należącym do MOSiR Bystrzyca.",
+      "queue_system": "W BOM dostępna jest obsługa na parterze; szczegóły systemu kolejkowego sprawdź w aktualnych informacjach BOM.",
+      "accessibility": "Do budynku prowadzą schody i dwie pochylnie. Biuro Obsługi Mieszkańców jest na parterze, wejście do sali BOM ma automatyczne drzwi rozsuwne. W BOM jest pętla indukcyjna, powiększalnik i urządzenie lektorskie z kamerą.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "kleeberga_12a",
+      "title": "Dojazd, parking i dostępność: ul. Kleeberga 12A",
+      "location": "ul. Kleeberga 12A",
+      "address": "ul. Kleeberga 12A, Lublin",
+      "public_transport": "Sprawdź aktualny rozkład ZDiTM dla przystanków w rejonie ul. Kleeberga; układ linii może się zmieniać.",
+      "parking": "Parking oraz dwa wyznaczone miejsca dla osób z niepełnosprawnościami są z tyłu budynku.",
+      "accessibility": "BOM jest na I piętrze. Dostęp dla osób z niepełnosprawnościami jest możliwy od tyłu budynku po oznakowanych pochylniach. W BOM jest toaleta dostępna, powiększalnik, urządzenie lektorskie i pętla indukcyjna.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "dolna_3_maja_5",
+      "title": "Dojazd, parking i dostępność: ul. Dolna 3 Maja 5",
+      "location": "ul. Dolna 3 Maja 5",
+      "address": "ul. Dolna 3 Maja 5, Lublin",
+      "public_transport": "Najbliższy przystanek z listy ZDiTM: Dolna 3 Maja 01. Sprawdź aktualny rozkład ZDiTM przed wizytą.",
+      "parking": "Na parkingu przed budynkiem przy ul. Dolnej 3 Maja 5 brak wyznaczonych miejsc parkingowych dla osób z niepełnosprawnościami.",
+      "accessibility": "Wejście główne ma jedenaście stopni. Wejście boczne na parter jest dostępne dla osób z niepełnosprawnościami z poziomu terenu, z progiem do 2 cm. W budynku brak windy i brak toalety dla osób z niepełnosprawnościami.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "lokietka_1",
+      "title": "Dojazd, parking i dostępność: plac Łokietka 1 - Ratusz",
+      "location": "plac Łokietka 1",
+      "address": "plac Króla Władysława Łokietka 1, Lublin",
+      "public_transport": "Najbliższe przystanki w ścisłym centrum to m.in. Brama Krakowska i Plac Litewski; sprawdź aktualny rozkład ZDiTM.",
+      "parking": "Na parkingu przy budynku znajdują się dwa miejsca dla osób z niepełnosprawnościami.",
+      "accessibility": "Wejście główne jest od Placu Łokietka po schodach zewnętrznych, wejście od parkingu ma pochylnię. Parter jest dostępny wejściem tylnym, ale w budynku brak windy.",
+      "category": "location",
+      "source_url": "https://lublin.eu/deklaracja-dostepnosci/dostepnosc-architektoniczna/"
+    },
+    {
+      "id": "strefa_platnego_parkowania",
+      "title": "Strefa Płatnego Parkowania w Lublinie",
+      "location": "centrum Lublina",
+      "parking": "Strefa Płatnego Parkowania funkcjonuje w dni robocze od poniedziałku do piątku w godz. 8:00-18:00. Opłatę można uiścić przez parkomat, abonament, płatność mobilną albo umowę na zastrzeżone stanowisko.",
+      "notes": "Przy wizycie w urzędzie w centrum sprawdź, czy dana ulica jest w SPP i czy nie ma czasowych zmian organizacji ruchu.",
+      "category": "parking",
+      "source_url": "https://spp.lublin.pl/"
+    },
+    {
+      "id": "tlumacz_migowy",
+      "title": "Tłumacz języka migowego i wsparcie komunikacyjne",
+      "location": "Urząd Miasta Lublin",
+      "accessibility": "Z pomocy tłumacza języka migowego można skorzystać online ze strony Urzędu Miasta Lublin w godzinach pracy urzędu albo w trakcie wizyty w Punkcie Informacyjnym BOM przy ul. Wieniawskiej 14 przez tablet.",
+      "notes": "W budynkach z BOM dostępne są także wybrane urządzenia wspierające obsługę osób niewidomych i słabowidzących, zgodnie z opisem dostępności architektonicznej.",
+      "category": "accessibility",
+      "source_url": "https://lublin.eu/urzad-miasta-lublin/jak-zalatwic-sprawe/tlumacz-jezyka-migowego/"
+    }
+  ]
+}

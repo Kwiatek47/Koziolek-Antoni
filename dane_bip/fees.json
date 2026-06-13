@@ -1,0 +1,93 @@
+{
+  "source_url": "https://api.sejm.gov.pl/eli/acts/DU/2006/1635/text.html",
+  "source_name": "Ustawa z dnia 16 listopada 2006 r. o opłacie skarbowej",
+  "items": [
+    {
+      "id": "pelnomocnictwo",
+      "title": "Złożenie dokumentu stwierdzającego udzielenie pełnomocnictwa lub prokury",
+      "amount": "17 zł",
+      "aliases": [
+        "ile kosztuje pełnomocnictwo",
+        "opłata za pełnomocnictwo",
+        "pełnomocnictwo 17 zł",
+        "opłata skarbowa pełnomocnictwo",
+        "ile zapłacę za pełnomocnictwo w urzędzie"
+      ],
+      "when": "Gdy do sprawy urzędowej dołączasz pełnomocnictwo albo prokurę.",
+      "exemptions": "Opłata nie jest pobierana m.in. przy pełnomocnictwie udzielonym małżonkowi, wstępnemu, zstępnemu lub rodzeństwu, jeżeli zwolnienie wynika z ustawy.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część IV"
+    },
+    {
+      "id": "zaswiadczenie_pozostale",
+      "title": "Wydanie zaświadczenia",
+      "amount": "17 zł",
+      "when": "Dla typowych zaświadczeń wydawanych na wniosek, jeżeli karta usługi nie wskazuje innej stawki albo zwolnienia.",
+      "exemptions": "Niektóre zaświadczenia mają inną stawkę albo są zwolnione z opłaty; zawsze sprawdź kartę konkretnej usługi.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część II"
+    },
+    {
+      "id": "poswiadczenie_kopii",
+      "title": "Poświadczenie zgodności odpisu, wyciągu, wypisu lub kopii",
+      "amount": "5 zł od każdej pełnej albo zaczętej strony",
+      "when": "Gdy organ poświadcza zgodność kopii lub odpisu z oryginałem.",
+      "exemptions": "Sprawdź kartę usługi, bo część spraw może korzystać ze zwolnienia.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część II"
+    },
+    {
+      "id": "odpis_usc_skrocony",
+      "title": "Odpis skrócony aktu stanu cywilnego",
+      "amount": "22 zł",
+      "when": "Dotyczy odpisu skróconego aktu urodzenia, małżeństwa lub zgonu.",
+      "exemptions": "Niektóre odpisy wydawane w sprawach ustawowo zwolnionych są bez opłaty.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część II"
+    },
+    {
+      "id": "odpis_usc_zupelny",
+      "title": "Odpis zupełny aktu stanu cywilnego",
+      "amount": "33 zł",
+      "when": "Dotyczy odpisu zupełnego aktu urodzenia, małżeństwa lub zgonu.",
+      "exemptions": "Niektóre odpisy wydawane w sprawach ustawowo zwolnionych są bez opłaty.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część II"
+    },
+    {
+      "id": "zaswiadczenie_stan_cywilny",
+      "title": "Zaświadczenie o stanie cywilnym",
+      "amount": "38 zł",
+      "when": "Gdy wnioskodawca potrzebuje zaświadczenia o stanie cywilnym z USC.",
+      "exemptions": "Sprawdź kartę usługi, jeżeli zaświadczenie jest wymagane do sprawy objętej zwolnieniem.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część II"
+    },
+    {
+      "id": "slub_cywilny",
+      "title": "Sporządzenie aktu małżeństwa",
+      "amount": "84 zł",
+      "when": "Standardowa opłata skarbowa przy ślubie cywilnym.",
+      "exemptions": "Dodatkowe opłaty mogą dotyczyć ślubu poza lokalem USC, jeżeli karta usługi tak stanowi.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część I"
+    },
+    {
+      "id": "decyzja_warunki_zabudowy",
+      "title": "Decyzja o warunkach zabudowy",
+      "amount": "598 zł",
+      "when": "Dla decyzji o warunkach zabudowy, gdy nie zachodzi ustawowe zwolnienie.",
+      "exemptions": "Zwolnienia i wyjątki zależą od rodzaju inwestycji oraz statusu wnioskodawcy; sprawdź kartę usługi.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część I"
+    },
+    {
+      "id": "pozwolenie_budowa",
+      "title": "Pozwolenie na budowę",
+      "amount": "Stawka zależy od rodzaju i powierzchni obiektu",
+      "when": "Opłata jest liczona według stawek z załącznika do ustawy, jeżeli inwestycja nie korzysta ze zwolnienia.",
+      "exemptions": "Budownictwo mieszkaniowe często korzysta ze zwolnień wskazanych w ustawie i kartach usług.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część III"
+    },
+    {
+      "id": "zezwolenie",
+      "title": "Wydanie zezwolenia",
+      "amount": "Stawka zależy od rodzaju zezwolenia",
+      "when": "Dotyczy zezwoleń, koncesji i pozwoleń objętych ustawą o opłacie skarbowej.",
+      "exemptions": "Dla zezwoleń alkoholowych, transportowych i innych spraw szczególnych sprawdź konkretną kartę usługi.",
+      "legal_basis": "Załącznik do ustawy o opłacie skarbowej, część III"
+    }
+  ]
+}

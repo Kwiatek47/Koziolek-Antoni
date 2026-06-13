@@ -270,7 +270,7 @@ def generate_department_contact_records():
 
         for section_name in contact_sections:
             contact = extract_contact_from_text(sections.get(section_name, ""), department=department)
-            if not any(contact.get(k) for k in ("address", "phone", "hours")):
+            if not any(contact.get(k) for k in ("address", "phone")):
                 continue
             key = (
                 contact.get("department", ""),
@@ -319,6 +319,7 @@ def process_department_contacts():
         source_url = (rec.get("service_urls") or [""])[0]
         lines = [
             f"# Kontakt: {department}",
+            f"Szukaj też: telefon do {department}; adres {department}; godziny {department}; gdzie jest {department}; pokój {department}",
             "Typ informacji: dane kontaktowe wydziału z kart usług BIP",
             f"Wydział: {department}",
         ]
@@ -462,6 +463,11 @@ def process_fee_tables():
         title = item.get("title", "")
         lines = [
             f"# Opłata skarbowa: {title}",
+            "Szukaj też: " + "; ".join(item.get("aliases") or [
+                f"ile kosztuje {title}",
+                f"opłata za {title}",
+                f"opłata skarbowa {title}",
+            ]),
             "Typ informacji: tabela opłat",
             f"Czynność: {title}",
             f"Kwota: {item.get('amount', '')}",
@@ -583,13 +589,15 @@ def process_online_services():
 
     overview = [
         "# Co można załatwić online w Urzędzie Miasta Lublin",
+        "Szukaj też: co mogę załatwić przez ePUAP; sprawy przez internet; bez wychodzenia z domu; usługi online; wniosek online; pismo ogólne przez ePUAP",
         "Typ informacji: mapa usług online/ePUAP",
         f"Liczba kart usług z kanałem elektronicznym: {len(online_services)}",
         "Najczęstsze kanały: ePUAP, pismo ogólne do podmiotu publicznego, Profil Zaufany, e-dowód, podpis kwalifikowany, CEIDG, mObywatel.",
+        "Pełny spis usług online jest zapisany w osobnych chunkach typu online_service dla każdej karty BIP.",
         "",
         "Przykładowe usługi online:",
     ]
-    overview.extend(f"- {title}" for title in sorted(online_services)[:80])
+    overview.extend(f"- {title}" for title in sorted(online_services)[:25])
     docs.insert(0, {
         "id": "online_service_overview",
         "content": "\n".join(overview),

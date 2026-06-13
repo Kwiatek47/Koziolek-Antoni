@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-13T12:26:31.990804",
+  "timestamp": "2026-06-13T14:55:32.252131",
   "sections": {
     "ustawy": [
       {
@@ -49,6 +49,30 @@
         "status": "ok",
         "articles_fetched": 70,
         "articles_total": 70
+      },
+      {
+        "name": "Kodeks cywilny",
+        "status": "ok",
+        "articles_fetched": 9,
+        "articles_total": 9
+      },
+      {
+        "name": "Prawo budowlane",
+        "status": "ok",
+        "articles_fetched": 17,
+        "articles_total": 17
+      },
+      {
+        "name": "Ustawa o podatkach i opłatach lokalnych",
+        "status": "ok",
+        "articles_fetched": 8,
+        "articles_total": 8
+      },
+      {
+        "name": "Ustawa o dodatkach mieszkaniowych",
+        "status": "ok",
+        "articles_fetched": 9,
+        "articles_total": 9
       }
     ],
     "pojecia": [
@@ -144,9 +168,9 @@
       },
       {
         "term": "profil zaufany",
-        "status": "ok",
-        "source": "gov_pl",
-        "words": 244
+        "status": "skipped",
+        "source": "none",
+        "words": 0
       },
       {
         "term": "e-dowód",
@@ -236,8 +260,7 @@
     "e_uslugi": [
       {
         "name": "Profil Zaufany",
-        "status": "ok",
-        "words": 244
+        "status": "empty"
       },
       {
         "name": "ePUAP",

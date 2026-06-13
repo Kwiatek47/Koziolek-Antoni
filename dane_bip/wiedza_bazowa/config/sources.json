@@ -39,7 +39,11 @@
     {"short_name": "Ustawa o opłacie skarbowej", "search_title": "Ustawa o opłacie skarbowej", "articles": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47"]},
     {"short_name": "Ustawa o informatyzacji", "search_title": "informatyzacji działalności podmiotów realizujących zadania publiczne", "articles": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]},
     {"short_name": "Ustawa o aktach stanu cywilnego", "search_title": "Prawo o aktach stanu cywilnego", "articles": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"]},
-    {"short_name": "Ustawa o samorządzie gminnym", "search_title": "Ustawa o samorządzie gminnym", "articles": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70"]}
+    {"short_name": "Ustawa o samorządzie gminnym", "search_title": "Ustawa o samorządzie gminnym", "articles": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70"]},
+    {"short_name": "Kodeks cywilny", "search_title": "Kodeks cywilny", "articles": ["1","8","23","24","25","26","33","98","99"]},
+    {"short_name": "Prawo budowlane", "search_title": "Prawo budowlane", "articles": ["3","28","29","30","30a","31","32","33","34","35","36","37","40","41","54","55","57"]},
+    {"short_name": "Ustawa o podatkach i opłatach lokalnych", "search_title": "Ustawa o podatkach i opłatach lokalnych", "articles": ["1","2","3","4","5","6","7","20"]},
+    {"short_name": "Ustawa o dodatkach mieszkaniowych", "search_title": "Ustawa o dodatkach mieszkaniowych", "articles": ["1","2","3","4","5","6","7","8","9"]}
   ],
   "e_uslugi": [
     {"name": "Profil Zaufany", "url": "https://pz.gov.pl/"},

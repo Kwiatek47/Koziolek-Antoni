@@ -1,0 +1,118 @@
+{
+  "items": [
+    {
+      "id": "regular_hours",
+      "title": "Ogólne godziny pracy Urzędu Miasta Lublin",
+      "period": "poniedziałek-piątek",
+      "status": "czynne według harmonogramu komórek",
+      "details": [
+        "Praca związana z przyjmowaniem i obsługą klientów jest prowadzona jednozmianowo od poniedziałku do piątku w godz. 7.30-15.30.",
+        "Część obsługi pracuje dwuzmianowo w poniedziałki w godz. 7:30-17:00.",
+        "Szczegółowe godziny przyjęć poszczególnych komórek są w opisach usług."
+      ],
+      "resident_advice": "Przed wizytą sprawdź kartę konkretnej usługi i rozważ rezerwację wizyty.",
+      "category": "hours",
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin,1,18162,2.html"
+    },
+    {
+      "id": "usc_birth_hours",
+      "title": "Urząd Stanu Cywilnego: rejestracja urodzenia dziecka",
+      "period": "poniedziałek-piątek",
+      "status": "godziny szczególne",
+      "details": "Zgłoszenie urodzenia dziecka: poniedziałek, wtorek, środa, czwartek, piątek od 7.45 do 15.15.",
+      "resident_advice": "Dla rejestracji urodzenia sprawdź też kartę usługi, dokumenty i termin zgłoszenia.",
+      "category": "hours",
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin,1,18162,2.html"
+    },
+    {
+      "id": "usc_death_hours",
+      "title": "Urząd Stanu Cywilnego: sporządzenie aktu zgonu",
+      "period": "poniedziałek-sobota",
+      "status": "godziny szczególne",
+      "details": [
+        "Poniedziałek od 07.45 do 16.45.",
+        "Wtorek, środa, czwartek, piątek od 7.45 do 15.15.",
+        "Sobota od 8.00 do 14.00."
+      ],
+      "resident_advice": "Dla aktu zgonu sprawdź kartę usługi, bo terminy zgłoszenia są krótkie.",
+      "category": "hours",
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin,1,18162,2.html"
+    },
+    {
+      "id": "komunikacja_hours",
+      "title": "Wydział Komunikacji: prawa jazdy i rejestracja pojazdów",
+      "period": "poniedziałek-piątek",
+      "status": "godziny szczególne",
+      "details": [
+        "Prawo jazdy/uprawnienia oraz rejestracja i oznaczanie pojazdów: poniedziałek od 9.15 do 16.30.",
+        "Wtorek, środa, czwartek, piątek od 7.45 do 14.30."
+      ],
+      "resident_advice": "Sprawy komunikacyjne często wymagają kompletu dokumentów i opłat; sprawdź kartę usługi przed rezerwacją wizyty.",
+      "category": "hours",
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin,1,18162,2.html"
+    },
+    {
+      "id": "administracyjne_hours",
+      "title": "Wydział Spraw Administracyjnych: dowody osobiste, meldunek, CEIDG",
+      "period": "poniedziałek-piątek",
+      "status": "godziny szczególne",
+      "details": [
+        "Dowody osobiste oraz zameldowanie i wymeldowania: poniedziałek od 7.45 do 16.45; wtorek-piątek od 7.45 do 15.15.",
+        "Ewidencja działalności gospodarczej: poniedziałek od 8.00 do 16.30; wtorek-piątek od 8.00 do 15.00."
+      ],
+      "resident_advice": "Dowody i meldunki obsługuje Wydział Spraw Administracyjnych, nie Wydział Komunikacji.",
+      "category": "hours",
+      "source_url": "https://bip.lublin.eu/urzad-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin/godziny-pracy-i-przyjec-interesantow-urzedu-miasta-lublin,1,18162,2.html"
+    },
+    {
+      "id": "public_holidays_2026",
+      "title": "Dni ustawowo wolne od pracy w 2026 r.",
+      "period": "2026",
+      "status": "urząd zasadniczo zamknięty w dni ustawowo wolne",
+      "details": [
+        "1 stycznia 2026 - Nowy Rok",
+        "6 stycznia 2026 - Święto Trzech Króli",
+        "5 kwietnia 2026 - Wielkanoc",
+        "6 kwietnia 2026 - Poniedziałek Wielkanocny",
+        "1 maja 2026 - Święto Pracy",
+        "3 maja 2026 - Święto Narodowe Trzeciego Maja",
+        "4 czerwca 2026 - Boże Ciało",
+        "15 sierpnia 2026 - Wniebowzięcie Najświętszej Maryi Panny",
+        "1 listopada 2026 - Wszystkich Świętych",
+        "11 listopada 2026 - Narodowe Święto Niepodległości",
+        "25 grudnia 2026 - Boże Narodzenie",
+        "26 grudnia 2026 - drugi dzień Bożego Narodzenia"
+      ],
+      "resident_advice": "Przed wizytą wokół świąt sprawdź aktualne komunikaty BIP lub lublin.eu, bo urząd może publikować dodatkowe zmiany organizacji pracy.",
+      "category": "closures",
+      "source_url": "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19510040028"
+    },
+    {
+      "id": "high_traffic_dowody",
+      "title": "Okresy możliwego wzmożonego ruchu: dowody osobiste",
+      "period": "przed wakacjami, przed feriami, po długich weekendach",
+      "status": "heurystyka obsługowa, nie formalny komunikat",
+      "details": "Wzmożone zainteresowanie może pojawiać się przed wyjazdami, gdy mieszkańcy sprawdzają ważność dokumentów, oraz po dłuższych przerwach w pracy urzędu.",
+      "resident_advice": "Nie odkładaj wniosku o dowód na ostatnie dni przed wyjazdem; standardowy termin z karty usługi sprawdź w BIP.",
+      "category": "traffic"
+    },
+    {
+      "id": "high_traffic_students",
+      "title": "Okresy możliwego wzmożonego ruchu: meldunki studentów",
+      "period": "wrzesień-październik",
+      "status": "heurystyka obsługowa, nie formalny komunikat",
+      "details": "W rejonie początku roku akademickiego może rosnąć liczba pytań o meldunek czasowy i sprawy pobytowe.",
+      "resident_advice": "Jeżeli możesz, sprawdź możliwość złożenia dokumentów elektronicznie lub zarezerwuj wizytę wcześniej.",
+      "category": "traffic"
+    },
+    {
+      "id": "high_traffic_pojazdy",
+      "title": "Okresy możliwego wzmożonego ruchu: pojazdy i prawa jazdy",
+      "period": "po długich weekendach, koniec miesiąca, okres powrotów z urlopów",
+      "status": "heurystyka obsługowa, nie formalny komunikat",
+      "details": "W sprawach pojazdów kolejki mogą rosnąć po dniach wolnych oraz wtedy, gdy mieszkańcy kończą kompletowanie dokumentów po zakupie pojazdu.",
+      "resident_advice": "Sprawdź komplet dokumentów, opłaty i możliwość złożenia wniosku elektronicznie przed wizytą.",
+      "category": "traffic"
+    }
+  ]
+}
