@@ -219,6 +219,66 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
         return {"summary": raw_text, "raw_fallback": True}
 
 
+# --- Intent classification (rule-based, zero latency) ---
+PROCEDURE_PATTERNS = [
+    "jak wyrobić", "jak zrobić", "jak załatwić", "jak uzyskać", "jak złożyć",
+    "jak zameldować", "jak wymeldować", "jak zarejestrować", "jak wymienić",
+    "co potrzebuję", "jakie dokumenty", "co muszę", "procedura",
+    "chcę wyrobić", "chcę załatwić", "chcę złożyć", "chcę uzyskać",
+    "chcę zameldować", "chcę zarejestrować",
+    "jak mogę", "gdzie mogę załatwić",
+    "potrzebuję wyrobić", "muszę wyrobić", "muszę złożyć",
+]
+
+SIMPLE_PATTERNS = [
+    "kto jest", "kto pełni", "kto to",
+    "co to jest", "czym jest", "czym się zajmuje",
+    "gdzie jest", "gdzie znajduje się", "jaki adres", "jaki telefon",
+    "ile kosztuje", "ile trwa", "kiedy",
+    "czy mogę", "czy jest",
+    "jaki formularz", "jaki wniosek", "jaki druk",
+    "godziny otwarcia", "godziny pracy",
+]
+
+
+def classify_intent(question: str) -> str:
+    """Classify question as 'procedure' (full pipeline) or 'simple' (quick answer)."""
+    q = question.lower().strip()
+
+    for pattern in PROCEDURE_PATTERNS:
+        if pattern in q:
+            return "procedure"
+
+    for pattern in SIMPLE_PATTERNS:
+        if pattern in q:
+            return "simple"
+
+    # Default: if question is short (< 8 words), likely simple
+    if len(q.split()) < 6:
+        return "simple"
+
+    return "procedure"
+
+
+# --- Simple response (for info questions) ---
+SIMPLE_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiedz krótko i konkretnie (2-4 zdania) na pytanie mieszkańca. Użyj TYLKO danych z kontekstu. Jeśli nie wiesz - powiedz wprost."""
+
+
+def get_simple_response(question: str, context: str) -> str:
+    """Quick text response for simple informational questions."""
+    user_prompt = f"""Kontekst:\n{context}\n\nPytanie: {question}\n\nOdpowiedz krótko (2-4 zdania):"""
+
+    response = llm.create_chat_completion(
+        messages=[
+            {"role": "system", "content": SIMPLE_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.1,
+        max_tokens=300,
+    )
+    return response["choices"][0]["message"]["content"]
+
+
 # --- Hybrid retrieval ---
 def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[list[str], list[dict]]:
     """Hybrid retrieval: dense + BM25 + RRF fusion."""
@@ -424,14 +484,34 @@ def index_documents():
 
 @app.post("/query")
 def query(q: Query):
-    """Structured RAG query - returns WHERE/HOW/HOW_MUCH/WHO sections."""
+    """Structured RAG query - detects intent and adapts response format."""
     if collection.count() == 0:
         raise HTTPException(400, "Index is empty. Call POST /index first.")
 
     top_k = q.top_k or TOP_K
+    intent = classify_intent(q.question)
     documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
-
     context = "\n\n---\n\n".join(documents)
+
+    if intent == "simple":
+        # Quick text answer - no full structured pipeline
+        answer = get_simple_response(q.question, context)
+        sources = []
+        seen_urls = set()
+        for meta in metadatas:
+            url = meta.get("source_url", "")
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
+        suggestions = generate_suggestions(q.question, {}, metadatas)
+        return {
+            "intent": "simple",
+            "summary": answer,
+            "sources": sources[:2],
+            "suggestions": suggestions,
+        }
+
+    # Full structured response for procedural questions
     structured = get_structured_response(q.question, context)
 
     # Enrich with coordinates

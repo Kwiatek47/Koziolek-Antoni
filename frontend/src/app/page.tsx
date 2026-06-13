@@ -37,6 +37,7 @@ interface WhoInfo {
 }
 
 interface StructuredResponse {
+  intent?: string;
   summary: string;
   where?: WhereInfo;
   how?: HowInfo;
@@ -185,15 +186,15 @@ function AssistantMessage({ msg, onFollowUp }: { msg: Message; onFollowUp: (t: s
           <p className="text-[15px] leading-relaxed">{msg.content}</p>
         </div>
 
-        {/* Structured cards */}
+        {/* Structured cards - only for procedure intent */}
         {s && (
           <div className="space-y-2.5">
-            {s.where && hasData(s.where) && <WhereCard data={s.where} />}
-            {s.booking && <BookingCard department={s.where?.department} />}
-            {s.how && hasData(s.how) && <HowCard data={s.how} />}
-            {s.how_much && hasData(s.how_much) && <HowMuchCard data={s.how_much} />}
-            {s.who && hasData(s.who) && <WhoCard data={s.who} />}
-            {s.additional_info && <InfoCard text={s.additional_info} />}
+            {s.intent !== "simple" && s.where && hasData(s.where) && <WhereCard data={s.where} />}
+            {s.intent !== "simple" && s.booking && <BookingCard department={s.where?.department} />}
+            {s.intent !== "simple" && s.how && hasData(s.how) && <HowCard data={s.how} />}
+            {s.intent !== "simple" && s.how_much && hasData(s.how_much) && <HowMuchCard data={s.how_much} />}
+            {s.intent !== "simple" && s.who && hasData(s.who) && <WhoCard data={s.who} />}
+            {s.intent !== "simple" && s.additional_info && <InfoCard text={s.additional_info} />}
             {s.sources && s.sources.length > 0 && <SourcesBar sources={s.sources} />}
             {s.suggestions && s.suggestions.length > 0 && <SuggestionsBar suggestions={s.suggestions} onSelect={onFollowUp} />}
           </div>
