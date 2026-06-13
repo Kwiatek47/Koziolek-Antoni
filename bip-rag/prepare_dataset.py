@@ -268,6 +268,20 @@ def process_pdfs():
     return docs
 
 
+def process_departments():
+    """Load pre-generated department profile documents."""
+    dept_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "departments.json")
+    if not os.path.exists(dept_file):
+        # Try generating them
+        try:
+            from generate_departments import generate_department_docs
+            return generate_department_docs() or []
+        except Exception:
+            return []
+    with open(dept_file) as f:
+        return json.load(f)
+
+
 def main():
     print("Preparing RAG dataset from BIP Lublin data...")
 
@@ -276,6 +290,11 @@ def main():
     print("  Processing usługi...")
     all_docs.extend(process_uslugi())
     print(f"    -> {len(all_docs)} chunks")
+
+    print("  Processing department profiles...")
+    prev = len(all_docs)
+    all_docs.extend(process_departments())
+    print(f"    -> {len(all_docs) - prev} chunks")
 
     print("  Processing struktura organizacyjna...")
     prev = len(all_docs)
