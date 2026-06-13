@@ -404,6 +404,14 @@ SIMPLE_PATTERNS = [
     "czy mogę", "czy jest",
     "jaki formularz", "jaki wniosek", "jaki druk",
     "godziny otwarcia", "godziny pracy",
+    "skąd pobrać", "gdzie pobrać", "gdzie dostać formularz",
+    "skąd wziąć", "gdzie wziąć",
+    "jak dojechać", "jak dojść", "jakim autobusem",
+    "ile czasu", "ile trwa wydanie", "ile się czeka",
+    "czy mogę online", "czy mogę przez internet",
+    "czy jest bezpłatne", "czy jest darmowe",
+    "numer telefonu", "telefon do",
+    "adres", "gdzie mieści się",
 ]
 
 
