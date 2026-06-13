@@ -192,16 +192,15 @@ Zasady:
 - "who" = null (nie wypełniaj chyba że pytanie dotyczy konkretnej osoby)
 - NIE wymyślaj URL-i ani danych których nie ma w kontekście
 - booking=true gdy wizyta osobista wymagana
-- Odpowiedz TYLKO JSON"""
-- W sources podaj URL-e źródłowe z kontekstu jeśli dostępne
-- Kontekst może zawierać DWA typy dokumentów:
-  * type=usluga -> procedura LOKALNA w Urzędzie Miasta Lublin (adres, godziny, wydział, opłaty lokalne)
-  * type=wiedza_bazowa -> definicja/ustawa OGÓLNOPOLSKA (NIE podawaj adresów Lublina z wiedzy bazowej)
-- Gdy pytanie dotyczy definicji pojęcia (co to jest X) -> odpowiadaj z wiedzy bazowej
-- Gdy pytanie dotyczy procedury (jak wyrobić X) -> odpowiadaj z karty usługi
-- Podawaj legal_basis z metadanych legal_ref gdy dostępne
-- Jeśli informacji NIE MA w kontekście -> null, NIE wymyślaj
-- Odpowiedz WYŁĄCZNIE JSON"""
+- W sources podaj URL-e zrodlowe z kontekstu jesli dostepne
+- Kontekst moze zawierac DWA typy dokumentow:
+  * type=usluga -> procedura LOKALNA w Urzedzie Miasta Lublin (adres, godziny, wydzial, oplaty lokalne)
+  * type=wiedza_bazowa -> definicja/ustawa OGOLNOPOLSKA (NIE podawaj adresow Lublina z wiedzy bazowej)
+- Gdy pytanie dotyczy definicji pojecia (co to jest X) -> odpowiadaj z wiedzy bazowej
+- Gdy pytanie dotyczy procedury (jak wyrobic X) -> odpowiadaj z karty uslugi
+- Podawaj legal_basis z metadanych legal_ref gdy dostepne
+- Jesli informacji NIE MA w kontekscie -> null, NIE wymyslaj
+- Odpowiedz WYLACZNIE JSON"""
 
 
 def get_structured_response(question: str, context: str) -> dict:
