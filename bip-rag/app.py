@@ -240,45 +240,33 @@ def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
 
 
 # --- Structured extraction prompt ---
-EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Odpowiadaj WYŁĄCZNIE JSON-em.
+EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin.
 
-Format odpowiedzi (wypełnij TYLKO pola dla których masz dane w kontekście, resztę ustaw na null):
-{
-  "summary": "1-2 zdania co to za sprawa",
-  "where": {
-    "address": "ul. [nazwa] [numer], Lublin",
-    "room": "pokój/piętro/stanowisko lub null",
-    "phone": "numer(y) telefonu z kontekstu lub null",
-    "hours": "godziny z kontekstu lub null",
-    "department": "nazwa wydziału z kontekstu"
-  },
-  "how": {
-    "steps": ["krok wyciągnięty z kontekstu"],
-    "required_documents": ["dokument z kontekstu"],
-    "forms": ["nazwa formularza z kontekstu"],
-    "submission_method": "osobiście/online/ePUAP"
-  },
-  "how_much": {
-    "cost": "kwota z kontekstu lub bezpłatne",
-    "time_estimate": "czas z kontekstu",
-    "legal_basis": "ustawa z kontekstu w formacie: Ustawa z dnia... (Dz.U. ...)"
-  },
-  "who": null,
-  "booking": true,
-  "additional_info": "uwagi z kontekstu lub null"
-}
+ZADANIE: Na podstawie kontekstu z BIP Lublin odpowiedz JSON-em z tymi polami:
+- summary: 1-2 zdania opis sprawy
+- where.address: PEŁNY adres z kontekstu (np. "ul. Spokojna 2, 20-074 Lublin")
+- where.room: pokój/piętro/stanowisko z kontekstu
+- where.phone: numer telefonu z kontekstu (zaczyna się od 81)
+- where.hours: godziny przyjęć z kontekstu (np. "poniedziałek 7:45-16:45, wtorek-piątek 7:45-15:15")
+- where.department: nazwa wydziału
+- how.steps: lista kroków z sekcji "Sposób i miejsce składania"
+- how.required_documents: lista z sekcji "Wymagane załączniki" i "Dokumenty do wglądu"
+- how.forms: nazwy formularzy/wniosków z kontekstu
+- how.submission_method: sposób złożenia (osobiście/online/ePUAP)
+- how_much.cost: opłata z sekcji "Wymagane opłaty"
+- how_much.time_estimate: czas z sekcji "Termin załatwienia sprawy"
+- how_much.legal_basis: podstawa prawna z sekcji "Podstawa prawna"
+- booking: true jeśli wymagana wizyta osobista
+- additional_info: ważne uwagi
 
-KRYTYCZNE ZASADY:
-1. KOPIUJ dosłownie z kontekstu - NIE parafrazuj, NIE tłumacz, NIE wymyślaj
-2. Adres MUSI zawierać "ul." lub "al." + nazwę ulicy + numer. Jeśli nie ma adresu w kontekście -> null
-3. Telefon MUSI zaczynać się od "81" lub "+48 81" (to Lublin). Jeśli nie ma telefonu -> null
-4. Godziny MUSZĄ być w formacie "pn-pt" lub "pn", "wt" itp. z cyframi godzin. Nie ma -> null
-5. required_documents: wymień KONKRETNE nazwy dokumentów z sekcji "Wymagane załączniki"/"Dokumenty do wglądu". Pusta lista [] jeśli brak
-6. forms: wymień KONKRETNE nazwy formularzy/wniosków z kontekstu. Pusta lista [] jeśli brak
-7. steps: wyciągnij z sekcji "Sposób i miejsce składania dokumentów". Pusta lista [] jeśli brak
-8. legal_basis: MUSI być po polsku w formacie "Ustawa z dnia... (Dz.U. rok poz. X)". Nie ma -> null
-9. NIGDY nie wymyślaj danych - lepiej null niż fałsz
-10. Odpowiedz WYŁĄCZNIE poprawnym JSON-em, zero tekstu przed/po"""
+PRZYKŁAD prawidłowej odpowiedzi:
+{"summary":"Wydanie dowodu osobistego w Urzędzie Miasta Lublin.","where":{"address":"ul. Spokojna 2, 20-074 Lublin","room":"pokój nr 221 (II piętro)","phone":"81 466 3562","hours":"poniedziałek-piątek 7:45-15:15","department":"Wydział Spraw Administracyjnych"},"how":{"steps":["Wypełnij wniosek o wydanie dowodu osobistego","Przygotuj aktualne zdjęcie 35x45mm","Złóż wniosek osobiście w urzędzie","Odbierz dowód osobiście"],"required_documents":["wniosek o wydanie dowodu osobistego","kolorowe zdjęcie 35x45mm","dotychczasowy dowód osobisty"],"forms":["SA-075-01"],"submission_method":"osobiście"},"how_much":{"cost":"bezpłatne","time_estimate":"30 dni","legal_basis":"Ustawa z dnia 6 sierpnia 2010 r. o dowodach osobistych (Dz.U. 2022 poz. 671)"},"who":null,"booking":true,"additional_info":null}
+
+ZASADY:
+- Użyj WYŁĄCZNIE danych z kontekstu poniżej
+- Jeśli pole nie ma danych w kontekście -> ustaw null (nie [nazwa], nie placeholder)
+- Nie wymyślaj telefonów, adresów, dokumentów
+- Odpowiedz TYLKO JSON-em"""
 
 
 def get_structured_response(question: str, context: str) -> dict:
@@ -326,9 +314,11 @@ def sanitize_response(data: dict) -> dict:
     # Validate WHERE
     where = data.get("where")
     if where and isinstance(where, dict):
-        # Address must contain a street name pattern (ul./al./pl.) or known Lublin street
+        # Address must contain a real street name, not a template placeholder
         addr = where.get("address") or ""
-        if addr and not re.search(r"(ul\.|al\.|pl\.|Spokojna|Wieniawska|Czechowska|Filaretów|Kleeberga|Okopowa|Leszczyńskiego|Królewska|Szkolna|Peowiaków|Zana)", addr):
+        if addr and re.search(r"\[", addr):
+            where["address"] = None
+        elif addr and not re.search(r"(ul\.|al\.|pl\.|Spokojna|Wieniawska|Czechowska|Filaretów|Kleeberga|Okopowa|Leszczyńskiego|Królewska|Szkolna|Peowiaków|Zana)", addr):
             where["address"] = None
 
         # Phone must be Lublin area (81) or null
@@ -340,6 +330,11 @@ def sanitize_response(data: dict) -> dict:
         hours = where.get("hours") or ""
         if hours and not re.search(r"\d{1,2}[:.]\d{2}", hours):
             where["hours"] = None
+
+        # Room must not be a placeholder
+        room = where.get("room") or ""
+        if room and re.search(r"\[", room):
+            where["room"] = None
 
         # If where has no real data left, null it
         real_values = [v for k, v in where.items() if v and v != "null" and k != "department"]
