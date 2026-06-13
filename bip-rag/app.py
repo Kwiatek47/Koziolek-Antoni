@@ -261,7 +261,14 @@ def classify_intent(question: str) -> str:
 
 
 # --- Simple response (for info questions) ---
-SIMPLE_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiedz krótko i konkretnie (2-4 zdania) na pytanie mieszkańca. Użyj TYLKO danych z kontekstu. Jeśli nie wiesz - powiedz wprost."""
+SIMPLE_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiedz krótko (2-4 zdania) na pytanie mieszkańca.
+
+ZASADY:
+- Użyj WYŁĄCZNIE informacji z podanego kontekstu
+- NIE wymyślaj linków, adresów URL, numerów telefonów
+- NIE podawaj informacji których nie ma w kontekście
+- Jeśli kontekst nie zawiera odpowiedzi, powiedz: "Nie znalazłem tej informacji w BIP Lublin."
+- Odpowiadaj po polsku, konkretnie"""
 
 
 def get_simple_response(question: str, context: str) -> str:
@@ -372,9 +379,16 @@ def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[lis
 
 # --- Suggestion generation (no LLM, rule-based for speed) ---
 def generate_suggestions(question: str, structured: dict, metadatas: list[dict]) -> list[str]:
-    """Generate Perplexity-style follow-up questions based on response."""
+    """Generate Perplexity-style follow-up questions based on response. Includes topic context."""
     suggestions = []
     question_lower = question.lower()
+
+    # Extract topic from question for context-aware follow-ups
+    topic = ""
+    for meta in metadatas[:1]:
+        topic = meta.get("title", "")
+    if not topic:
+        topic = question
 
     where = structured.get("where")
     how = structured.get("how")
@@ -383,37 +397,31 @@ def generate_suggestions(question: str, structured: dict, metadatas: list[dict])
     if where and isinstance(where, dict):
         department = where.get("department", "")
 
-    # Context-aware suggestions
+    # Context-aware suggestions (include topic!)
     if how and isinstance(how, dict):
         docs = how.get("required_documents", [])
-        if docs:
-            suggestions.append(f"Gdzie mogę pobrać formularz wniosku?")
+        forms = how.get("forms", [])
+        if forms:
+            suggestions.append(f"Skąd pobrać formularz do: {topic}?")
+        elif docs:
+            suggestions.append(f"Jakie dokładnie dokumenty są potrzebne do: {topic}?")
         if how.get("submission_method") and "online" in (how.get("submission_method") or ""):
-            suggestions.append("Jak złożyć wniosek przez internet (ePUAP)?")
+            suggestions.append(f"Jak złożyć wniosek o {topic} przez internet?")
 
     if where and isinstance(where, dict) and where.get("address"):
-        suggestions.append(f"Jak dojechać do {department or 'urzędu'}?")
+        addr = where.get("address", "")
+        suggestions.append(f"Jak dojechać do {addr}?")
 
     if how_much and isinstance(how_much, dict):
         if how_much.get("cost") and "bezpłat" not in (how_much.get("cost") or "").lower():
             suggestions.append("Gdzie zapłacić opłatę skarbową?")
         if how_much.get("time_estimate"):
-            suggestions.append("Czy mogę przyspieszyć procedurę?")
+            suggestions.append(f"Czy mogę przyspieszyć {topic}?")
 
     if structured.get("booking"):
-        suggestions.append("Jakie terminy są dostępne na rezerwację?")
+        suggestions.append("Jak zarezerwować wizytę w urzędzie online?")
 
-    # Related services from retrieved metadata
-    seen_titles = set()
-    for meta in metadatas:
-        title = meta.get("title", "")
-        if title and title.lower() not in question_lower and title not in seen_titles:
-            seen_titles.add(title)
-            if len(suggestions) < 5:
-                suggestions.append(f"Jak załatwić: {title}?")
-            break
-
-    # Department-specific
+    # Department-specific related topics
     if department and "spraw administracyjnych" in department.lower():
         if "dowód" in question_lower and "meldunek" not in question_lower:
             suggestions.append("Jak zameldować się w Lublinie?")
@@ -545,12 +553,18 @@ def query(q: Query):
         else:
             structured["booking"] = False
 
-    # Build sources
+    # Build sources - filter to only relevant ones
     sources = []
     seen_urls = set()
+    question_words = set(w for w in q.question.lower().split() if len(w) > 3)
     for meta in metadatas:
         url = meta.get("source_url", "")
-        if url and url not in seen_urls:
+        title = meta.get("title", "").lower()
+        if not url or url in seen_urls:
+            continue
+        # Only include sources with title overlap to the question
+        has_overlap = any(w in title for w in question_words)
+        if has_overlap or len(sources) == 0:
             seen_urls.add(url)
             sources.append({
                 "url": url,
