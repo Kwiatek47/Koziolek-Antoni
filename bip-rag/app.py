@@ -147,15 +147,17 @@ class IndexStatus(BaseModel):
 
 # --- Geocoding lookup ---
 KNOWN_LOCATIONS = {
-    "spokojna 2": {"lat": 51.2480, "lng": 22.5590},
-    "wieniawska 14": {"lat": 51.2503, "lng": 22.5615},
-    "czechowska 19": {"lat": 51.2465, "lng": 22.5540},
-    "filaretów 44": {"lat": 51.2280, "lng": 22.5430},
-    "kleeberga 12a": {"lat": 51.2195, "lng": 22.5950},
-    "leszczyńskiego 20": {"lat": 51.2525, "lng": 22.5445},
-    "okopowa 11": {"lat": 51.2490, "lng": 22.5555},
-    "królewska 3": {"lat": 51.2475, "lng": 22.5650},
-    "szkolna 36": {"lat": 51.2455, "lng": 22.5572},
+    "spokojna 2": {"lat": 51.24968, "lng": 22.55295},
+    "wieniawska 14": {"lat": 51.24865, "lng": 22.55838},
+    "czechowska 19": {"lat": 51.24780, "lng": 22.55120},
+    "filaretów 44": {"lat": 51.22800, "lng": 22.54300},
+    "kleeberga 12a": {"lat": 51.21950, "lng": 22.59500},
+    "leszczyńskiego 20": {"lat": 51.24920, "lng": 22.54720},
+    "okopowa 11": {"lat": 51.24850, "lng": 22.55650},
+    "królewska 3": {"lat": 51.24620, "lng": 22.55730},
+    "szkolna 36": {"lat": 51.24550, "lng": 22.55720},
+    "peowiaków 13": {"lat": 51.24710, "lng": 22.55480},
+    "zana 38": {"lat": 51.23650, "lng": 22.54950},
 }
 
 
@@ -308,6 +310,60 @@ def hybrid_search(question: str, top_k: int = 15, final_k: int = 6) -> tuple[lis
     return final_docs, final_metas
 
 
+# --- Suggestion generation (no LLM, rule-based for speed) ---
+def generate_suggestions(question: str, structured: dict, metadatas: list[dict]) -> list[str]:
+    """Generate Perplexity-style follow-up questions based on response."""
+    suggestions = []
+    question_lower = question.lower()
+
+    where = structured.get("where")
+    how = structured.get("how")
+    how_much = structured.get("how_much")
+    department = ""
+    if where and isinstance(where, dict):
+        department = where.get("department", "")
+
+    # Context-aware suggestions
+    if how and isinstance(how, dict):
+        docs = how.get("required_documents", [])
+        if docs:
+            suggestions.append(f"Gdzie mogę pobrać formularz wniosku?")
+        if how.get("submission_method") and "online" in (how.get("submission_method") or ""):
+            suggestions.append("Jak złożyć wniosek przez internet (ePUAP)?")
+
+    if where and isinstance(where, dict) and where.get("address"):
+        suggestions.append(f"Jak dojechać do {department or 'urzędu'}?")
+
+    if how_much and isinstance(how_much, dict):
+        if how_much.get("cost") and "bezpłat" not in (how_much.get("cost") or "").lower():
+            suggestions.append("Gdzie zapłacić opłatę skarbową?")
+        if how_much.get("time_estimate"):
+            suggestions.append("Czy mogę przyspieszyć procedurę?")
+
+    if structured.get("booking"):
+        suggestions.append("Jakie terminy są dostępne na rezerwację?")
+
+    # Related services from retrieved metadata
+    seen_titles = set()
+    for meta in metadatas:
+        title = meta.get("title", "")
+        if title and title.lower() not in question_lower and title not in seen_titles:
+            seen_titles.add(title)
+            if len(suggestions) < 5:
+                suggestions.append(f"Jak załatwić: {title}?")
+            break
+
+    # Department-specific
+    if department and "spraw administracyjnych" in department.lower():
+        if "dowód" in question_lower and "meldunek" not in question_lower:
+            suggestions.append("Jak zameldować się w Lublinie?")
+    elif department and "komunikacji" in department.lower():
+        if "rejestrac" in question_lower:
+            suggestions.append("Ile kosztuje przerejestrowanie samochodu?")
+
+    return suggestions[:4]
+
+
 # --- Endpoints ---
 
 @app.get("/health")
@@ -422,9 +478,13 @@ def query(q: Query):
                 "department": meta.get("department", ""),
             })
 
+    # Generate follow-up suggestions based on response context
+    suggestions = generate_suggestions(q.question, structured, metadatas)
+
     return {
         **structured,
         "sources": sources,
+        "suggestions": suggestions,
     }
 
 

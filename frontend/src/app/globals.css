@@ -175,4 +175,29 @@
   .booking-btn:active {
     transform: translateY(0) scale(0.98);
   }
+
+  /* Follow-up suggestion buttons (Perplexity-style) */
+  .suggestion-follow-up {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--color-lublin-border);
+    background: white;
+    font-size: 13px;
+    color: var(--color-lublin-text);
+    text-align: left;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .suggestion-follow-up:hover {
+    border-color: var(--color-lublin-green);
+    background: var(--color-lublin-green-light);
+    color: var(--color-lublin-green);
+  }
+  .suggestion-follow-up:active {
+    transform: scale(0.98);
+  }
 }

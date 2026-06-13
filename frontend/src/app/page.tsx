@@ -45,6 +45,7 @@ interface StructuredResponse {
   booking?: boolean;
   additional_info?: string;
   sources?: Array<{ url: string; title: string; department?: string }>;
+  suggestions?: string[];
 }
 
 interface Message {
@@ -135,7 +136,7 @@ export default function Home() {
                       <div className="chat-user">{msg.content}</div>
                     </div>
                   ) : (
-                    <AssistantMessage msg={msg} />
+                    <AssistantMessage msg={msg} onFollowUp={send} />
                   )}
                 </div>
               ))}
@@ -172,7 +173,7 @@ export default function Home() {
 
 /* ============ STRUCTURED ANSWER ============ */
 
-function AssistantMessage({ msg }: { msg: Message }) {
+function AssistantMessage({ msg, onFollowUp }: { msg: Message; onFollowUp: (t: string) => void }) {
   const s = msg.structured;
 
   return (
@@ -194,6 +195,7 @@ function AssistantMessage({ msg }: { msg: Message }) {
             {s.who && hasData(s.who) && <WhoCard data={s.who} />}
             {s.additional_info && <InfoCard text={s.additional_info} />}
             {s.sources && s.sources.length > 0 && <SourcesBar sources={s.sources} />}
+            {s.suggestions && s.suggestions.length > 0 && <SuggestionsBar suggestions={s.suggestions} onSelect={onFollowUp} />}
           </div>
         )}
       </div>
@@ -434,6 +436,27 @@ function SourcesBar({ sources }: { sources: Array<{ url: string; title: string; 
         >
           ↗ {s.title?.slice(0, 30) || "BIP Lublin"}
         </a>
+      ))}
+    </div>
+  );
+}
+
+/* --- SUGGESTIONS (Perplexity-style) --- */
+function SuggestionsBar({ suggestions, onSelect }: { suggestions: string[]; onSelect: (t: string) => void }) {
+  return (
+    <div className="pt-2 space-y-1.5">
+      <p className="text-xs font-medium text-lublin-muted uppercase tracking-wide px-1">Powiązane pytania</p>
+      {suggestions.map((s, i) => (
+        <button
+          key={i}
+          onClick={() => onSelect(s)}
+          className="suggestion-follow-up"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-lublin-muted shrink-0">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+          <span>{s}</span>
+        </button>
       ))}
     </div>
   );
