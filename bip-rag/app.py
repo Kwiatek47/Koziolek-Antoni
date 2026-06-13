@@ -86,7 +86,7 @@ def build_bm25():
 # --- LLM ---
 llm = Llama(
     model_path=MODEL_PATH,
-    n_ctx=8192,
+    n_ctx=4096,
     n_threads=N_THREADS,
     verbose=False,
 )
@@ -170,48 +170,17 @@ def find_coordinates(address: str) -> tuple[Optional[float], Optional[float]]:
 
 
 # --- Structured extraction prompt ---
-EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem – inteligentnym asystentem Urzędu Miasta Lublin.
+EXTRACTION_PROMPT = """Jesteś Koziołkiem Antkiem – asystentem Urzędu Miasta Lublin. Odpowiadaj JSON-em.
 
-Na podstawie KONTEKSTU odpowiedz na pytanie mieszkańca w formacie JSON. Wypełnij TYLKO pola, dla których masz dane w kontekście.
+Format:
+{"summary":"krótko o sprawie","where":{"address":"adres","room":"pokój","phone":"tel","hours":"godziny","department":"wydział"},"how":{"steps":["krok1","krok2"],"required_documents":["dok1"],"forms":["formularz"],"submission_method":"osobiście/online"},"how_much":{"cost":"kwota lub bezpłatne","time_estimate":"czas","legal_basis":"ustawa"},"who":{"name":"imię","role":"stanowisko","department":"wydział","gender":"M/F"},"booking":true/false,"additional_info":"uwagi"}
 
-Format odpowiedzi (JSON):
-{{
-  "summary": "Krótkie podsumowanie sprawy (1-2 zdania, prostym językiem)",
-  "where": {{
-    "address": "Pełny adres (ulica, numer, kod, miasto)",
-    "room": "Numer pokoju/piętro",
-    "phone": "Numery telefonów",
-    "hours": "Godziny przyjęć (pełne, np. 'pn 9:15-16:30, wt-pt 7:45-14:30')",
-    "department": "Nazwa wydziału/komórki organizacyjnej"
-  }},
-  "how": {{
-    "steps": ["Krok 1: ...", "Krok 2: ...", "Krok 3: ..."],
-    "required_documents": ["Dokument 1", "Dokument 2"],
-    "forms": ["Nazwa formularza/wniosku do wypełnienia"],
-    "submission_method": "Sposób złożenia (osobiście/online/pocztą)"
-  }},
-  "how_much": {{
-    "cost": "Koszt procedury (np. '85 zł' lub 'bezpłatne')",
-    "time_estimate": "Czas załatwienia sprawy",
-    "legal_basis": "Podstawa prawna (ustawa, rozporządzenie)"
-  }},
-  "who": {{
-    "name": "Imię i nazwisko osoby odpowiedzialnej (jeśli podane)",
-    "role": "Stanowisko/funkcja",
-    "department": "Wydział",
-    "gender": "M lub F (jeśli można wywnioskować z imienia)"
-  }},
-  "booking": true lub false,
-  "additional_info": "Dodatkowe ważne informacje, uwagi, wyjątki"
-}}
-
-WAŻNE:
-- Użyj TYLKO danych z kontekstu. NIE wymyślaj.
-- Jeśli nie masz danych na dane pole → ustaw null.
-- Rozróżniaj: "dowód osobisty" → Wydział Spraw Administracyjnych, "dowód rejestracyjny" → Wydział Komunikacji.
-- Wybierz usługę NAJBARDZIEJ pasującą do pytania (patrz na tytuł usługi w kontekście).
-- Pole "booking": ustaw na true jeśli sprawa wymaga osobistej wizyty w urzędzie (złożenie dokumentów, odbiór, podpis). Ustaw false jeśli można załatwić online/pocztą lub jeśli to pytanie informacyjne.
-- Odpowiedz WYŁĄCZNIE poprawnym JSON-em, bez dodatkowego tekstu."""
+Zasady:
+- TYLKO dane z kontekstu, null jeśli brak
+- dowód osobisty = Wydział Spraw Administracyjnych (Spokojna 2)
+- dowód rejestracyjny/prawo jazdy = Wydział Komunikacji (Czechowska 19A)
+- booking=true gdy wizyta osobista wymagana
+- Odpowiedz WYŁĄCZNIE JSON"""
 
 
 def get_structured_response(question: str, context: str) -> dict:
@@ -223,7 +192,7 @@ def get_structured_response(question: str, context: str) -> dict:
 
 PYTANIE MIESZKAŃCA: {question}
 
-Odpowiedz w formacie JSON zgodnym ze specyfikacją powyżej."""
+Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
 
     response = llm.create_chat_completion(
         messages=[
@@ -231,8 +200,7 @@ Odpowiedz w formacie JSON zgodnym ze specyfikacją powyżej."""
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.05,
-        max_tokens=2500,
-        response_format={"type": "json_object"},
+        max_tokens=1200,
     )
 
     raw_text = response["choices"][0]["message"]["content"]
