@@ -1,0 +1,11 @@
+node_modules/
+.next/
+venv/
+__pycache__/
+*.pyc
+chroma_db/
+bip-lublin-full.tar.gz
+bip-lublin-rag.tar.gz
+dane_bip/pdf_uslugi/
+dane_bip/pdf/
+.env

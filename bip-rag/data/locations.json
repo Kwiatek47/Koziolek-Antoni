@@ -1,0 +1,345 @@
+{
+  "locations": [
+    {
+      "name": "Ratusz - Urząd Miasta Lublin (siedziba główna)",
+      "lat": 51.2481,
+      "lng": 22.5591,
+      "departments": [
+        "Kancelaria Prezydenta",
+        "Biuro Rady Miasta",
+        "Wydział Organizacji Urzędu"
+      ],
+      "services": [
+        {
+          "title": "Petycje do Prezydenta Miasta Lublin",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/petycje-do-prezydenta-miasta-lublin,6,22916,2.html",
+          "card_number": "KP-006"
+        },
+        {
+          "title": "Petycje do Rady Miasta Lublin",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/petycje-do-rady-miasta-lublin,11,22914,2.html",
+          "card_number": "BRM-006"
+        },
+        {
+          "title": "Ponowne wykorzystywanie informacji sektora publicznego",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/ponowne-wykorzystywanie-informacji-sektora-publicznego,4,22916,2.html",
+          "card_number": "KP-004"
+        },
+        {
+          "title": "Przyznanie Honorowego Patronatu Prezydenta Miasta Lublin",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/przyznanie-honorowego-patronatu-prezydenta-miasta-lublin,2,22916,2.html",
+          "card_number": "KP-001"
+        },
+        {
+          "title": "Rozpatrywanie skarg",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/rozpatrywanie-skarg,1,22914,2.html",
+          "card_number": "BRM-005"
+        }
+      ],
+      "service_count": 14
+    },
+    {
+      "name": "Urząd Miasta Lublin - Wieniawska",
+      "lat": 51.2465,
+      "lng": 22.554,
+      "departments": [
+        "Wydział Komunikacji",
+        "Wydział Spraw Administracyjnych"
+      ],
+      "services": [
+        {
+          "title": "Bonifikata od opłat rocznych z tytułu użytkowania wieczystego nieruchomości przeznaczonych lub wykorzystywanych na cele mieszkaniowe",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/bonifikata-od-oplat-rocznych-z-tytulu-uzytkowania-wieczystego-nieruchomosci-gminy-lublinskarbu-panstwa-przeznaczonych-lub-wykorzystywanych-na-cele-mieszkaniowe,2,22946,2.html",
+          "card_number": "GME-013"
+        },
+        {
+          "title": "Decyzja w sprawie opłaty planistycznej - na wniosek",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/decyzja-w-sprawie-oplaty-planistycznej-na-wniosek,8,22979,2.html",
+          "card_number": "PL-001"
+        },
+        {
+          "title": "Dodatki mieszkaniowe",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dodatki-mieszkaniowe,30,29003,2.html",
+          "card_number": "WS-009"
+        },
+        {
+          "title": "Dokonanie potrącenia zobowiązania podatkowego z wzajemnej, bezspornej i wymagalnej wierzytelności podatnika wobec gminy z tytułu podatków stanowiących dochód budżetu gminy",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dokonanie-potracenia-zobowiazania-podatkowego-z-wzajemnej-bezspornej-i-wymagalnej-wierzytelnosci-podatnika-wobec-gminy-z-tytulu-podatkow-stanowiacych-dochod-budzetu-gminy,2,22989,2.html",
+          "card_number": "PE-020"
+        },
+        {
+          "title": "Dzierżawa",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dzierzawanajem-nieruchomosci,1,22943,2.html",
+          "card_number": "GM-019"
+        }
+      ],
+      "service_count": 187
+    },
+    {
+      "name": "Urząd Miasta Lublin - Peowiaków",
+      "lat": 51.251,
+      "lng": 22.564,
+      "departments": [
+        "Wydział Spraw Mieszkaniowych",
+        "Wydział Geodezji"
+      ],
+      "services": [
+        {
+          "title": "Aktywizacja zawodowa repatriantów",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/aktywizacja-zawodowa-repatriantow,3,23013,2.html",
+          "card_number": "WSM-037"
+        },
+        {
+          "title": "Najem lokali w Towarzystwie Budownictwa Społecznego \"NOWY DOM\"",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/skierowania-do-najmu-lokali-w-towarzystwie-budownictwa-spolecznego-nowy-dom,7,23006,2.html",
+          "card_number": "WSM-005"
+        },
+        {
+          "title": "Najem lokalu do remontu z mieszkaniowego zasobu miasta",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/najem-lokalu-do-remontu-z-mieszkaniowego-zasobu-miasta,2,23006,2.html",
+          "card_number": "WSM-031"
+        },
+        {
+          "title": "Najem lokalu po śmierci najemcy - dotyczy osób, które pozostały w lokalu po śmierci najemcy, jeżeli są jego powinowatymi w linii prostej lub osobami, dla których najemca był wstępnym i stanowił rodzinę zastępczą",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/najem-lokalu-po-smierci-najemcy-dotyczy-osob-ktore-pozostaly-w-lokalu-po-smierci-najemcy-jezeli-sa-jego-powinowatymi-w-linii-prostej-lub-osobami-dla-ktorych-najemca-byl-wstepnym-i-stanowil-rodzine-zastepcza,4,23007,2.html",
+          "card_number": "WSM-030"
+        },
+        {
+          "title": "Najem lokalu stanowiącego pracownię twórcy",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/typowanie-kandydata-do-zawarcia-umowy-najmu-lokalu-stanowiacego-pracownie-tworcy,2,23007,2.html",
+          "card_number": "WSM-008"
+        }
+      ],
+      "service_count": 25
+    },
+    {
+      "name": "Urząd Miasta Lublin - Czechowska",
+      "lat": 51.248,
+      "lng": 22.551,
+      "departments": [
+        "Wydział Ochrony Środowiska"
+      ],
+      "services": [
+        {
+          "title": "Badania lekarskie i psychologiczne kierowców i osób bez uprawnień do kierowania pojazdami",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/badania-lekarskie-i-psychologiczne-kierowcow-ubiegajacych-sie-o-przywrocenie-cofnietego-uprawnienia-sprawcow-wypadku-drogowego-oraz-kierowcow-wobec-ktorych-istnieja-zastrzezenia-co-do-stanu-zdrowia,15,22956,2.html",
+          "card_number": "KM-008"
+        },
+        {
+          "title": "Czasowe wycofanie",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/czasowe-wycofanie-pojazdow-z-ruchu-dot-samochodow-ciezarowych-o-masie-calkowitej-powyzej-3-5-t-i-autobusow-,3,22963,2.html",
+          "card_number": "KM-039"
+        },
+        {
+          "title": "Dopisanie, wykreślenie współwłaściciela",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dopisanie-wykreslenie-wspolwlasciciela,3,22962,2.html",
+          "card_number": "KM-036"
+        },
+        {
+          "title": "Karta kwalifikacji kierowcy",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/karta-kwalifikacji-kierowcy,29,22956,2.html",
+          "card_number": "KM-083"
+        },
+        {
+          "title": "Kurs reedukacyjny w zakresie problematyki przeciwalkoholowej i przeciwdziałania narkomanii",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/kurs-reedukacyjny-w-zakresie-problematyki-przeciwalkoholowej-i-przeciwdzialania-narkomanii,27,22956,2.html",
+          "card_number": "KM-075"
+        }
+      ],
+      "service_count": 54
+    },
+    {
+      "name": "Urząd Miasta Lublin - Dolna 3 Maja",
+      "lat": 51.2473,
+      "lng": 22.5566,
+      "departments": [
+        "Wydział Świadczeń"
+      ],
+      "services": [
+        {
+          "title": "Praktyki w Urzędzie Miasta Lublin",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/praktyki-w-urzedzie-miasta-lublin,5,22977,2.html",
+          "card_number": "OR-008"
+        },
+        {
+          "title": "Staż w Urzędzie Miasta Lublin",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/staz-w-urzedzie-miasta-lublin,4,22977,2.html",
+          "card_number": "OR-007"
+        }
+      ],
+      "service_count": 2
+    },
+    {
+      "name": "Urząd Miasta Lublin - Filaretów",
+      "lat": 51.232,
+      "lng": 22.529,
+      "departments": [
+        "Wydział Komunikacji - oddział"
+      ],
+      "services": [
+        {
+          "title": "Bonifikata od opłat rocznych z tytułu użytkowania wieczystego nieruchomości przeznaczonych lub wykorzystywanych na cele mieszkaniowe",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/bonifikata-od-oplat-rocznych-z-tytulu-uzytkowania-wieczystego-nieruchomosci-gminy-lublinskarbu-panstwa-przeznaczonych-lub-wykorzystywanych-na-cele-mieszkaniowe,2,22946,2.html",
+          "card_number": "GME-013"
+        },
+        {
+          "title": "Dodatki mieszkaniowe",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dodatki-mieszkaniowe,30,29003,2.html",
+          "card_number": "WS-009"
+        },
+        {
+          "title": "Dokonanie potrącenia zobowiązania podatkowego z wzajemnej, bezspornej i wymagalnej wierzytelności podatnika wobec gminy z tytułu podatków stanowiących dochód budżetu gminy",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dokonanie-potracenia-zobowiazania-podatkowego-z-wzajemnej-bezspornej-i-wymagalnej-wierzytelnosci-podatnika-wobec-gminy-z-tytulu-podatkow-stanowiacych-dochod-budzetu-gminy,2,22989,2.html",
+          "card_number": "PE-020"
+        },
+        {
+          "title": "Dzierżawa",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dzierzawanajem-nieruchomosci,1,22943,2.html",
+          "card_number": "GM-019"
+        },
+        {
+          "title": "Gleboznawcza klasyfikacja gruntów",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/zmiana-klasyfikacji-gruntow,1,22936,2.html",
+          "card_number": "GD-021"
+        }
+      ],
+      "service_count": 171
+    },
+    {
+      "name": "Urząd Miasta Lublin - Kleeberga",
+      "lat": 51.26,
+      "lng": 22.534,
+      "departments": [
+        "Wydział Budżetu i Księgowości"
+      ],
+      "services": [
+        {
+          "title": "Bonifikata od opłat rocznych z tytułu użytkowania wieczystego nieruchomości przeznaczonych lub wykorzystywanych na cele mieszkaniowe",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/bonifikata-od-oplat-rocznych-z-tytulu-uzytkowania-wieczystego-nieruchomosci-gminy-lublinskarbu-panstwa-przeznaczonych-lub-wykorzystywanych-na-cele-mieszkaniowe,2,22946,2.html",
+          "card_number": "GME-013"
+        },
+        {
+          "title": "Dodatki mieszkaniowe",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dodatki-mieszkaniowe,30,29003,2.html",
+          "card_number": "WS-009"
+        },
+        {
+          "title": "Dokonanie potrącenia zobowiązania podatkowego z wzajemnej, bezspornej i wymagalnej wierzytelności podatnika wobec gminy z tytułu podatków stanowiących dochód budżetu gminy",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dokonanie-potracenia-zobowiazania-podatkowego-z-wzajemnej-bezspornej-i-wymagalnej-wierzytelnosci-podatnika-wobec-gminy-z-tytulu-podatkow-stanowiacych-dochod-budzetu-gminy,2,22989,2.html",
+          "card_number": "PE-020"
+        },
+        {
+          "title": "Dzierżawa",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dzierzawanajem-nieruchomosci,1,22943,2.html",
+          "card_number": "GM-019"
+        },
+        {
+          "title": "Gleboznawcza klasyfikacja gruntów",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/zmiana-klasyfikacji-gruntow,1,22936,2.html",
+          "card_number": "GD-021"
+        }
+      ],
+      "service_count": 157
+    },
+    {
+      "name": "Urząd Miasta Lublin - Krochmalna",
+      "lat": 51.244,
+      "lng": 22.571,
+      "departments": [
+        "Wydział Architektury i Budownictwa"
+      ],
+      "services": [
+        {
+          "title": "Uzupełnienie dokumentów",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/uzupelnienie-dokumentow,26,27623,2.html",
+          "card_number": "ZR-007"
+        },
+        {
+          "title": "Wniosek o wydanie identyfikatora uprawniającego do wjazdu w strefę objętą zakazem ruchu na obszarze Starego Miasta",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/wniosek-o-wydanie-zezwolenia-uprawniajacego-do-wjazdu-na-stare-miasto,11,27623,2.html",
+          "card_number": "ZR-002"
+        },
+        {
+          "title": "Wniosek o wydanie zezwolenia na przejazd pojazdu nienormatywnego",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/wniosek-o-wydanie-zezwolenia-na-przejazd-pojazdu-nienormatywnego,20,27623,2.html",
+          "card_number": "ZR-003"
+        },
+        {
+          "title": "Wniosek o wydanie zezwolenia uprawniającego do wjazdu w strefę objętą zakazem ruchu na terenie ul. Krakowskie Przedmieście od Placu Łokietka do ul. Kapucyńskiej",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/wniosek-o-wydanie-zezwolenia-uprawniajacego-do-wjazdu-w-strefe-objeta-zakazem-ruchu-na-terenie-ul-krakowskie-przedmiescie-od-placu-lokietka-do-ul-kapucynskiej,25,27623,2.html",
+          "card_number": "ZR-006"
+        },
+        {
+          "title": "Wniosek o wykorzystanie dróg w sposób szczególny",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/wniosek-o-wykorzystanie-drog-w-sposob-szczegolny,3,27623,2.html",
+          "card_number": "ZR-001"
+        }
+      ],
+      "service_count": 6
+    },
+    {
+      "name": "Urząd Stanu Cywilnego",
+      "lat": 51.2495,
+      "lng": 22.547,
+      "departments": [
+        "Urząd Stanu Cywilnego"
+      ],
+      "service_count": 0
+    },
+    {
+      "name": "Urząd Miasta Lublin - Narutowicza",
+      "lat": 51.2502,
+      "lng": 22.5605,
+      "departments": [
+        "Wydział Oświaty i Wychowania"
+      ],
+      "service_count": 0
+    },
+    {
+      "name": "Biuro Obsługi Mieszkańców",
+      "lat": 51.249,
+      "lng": 22.562,
+      "departments": [
+        "Biuro Obsługi Mieszkańców"
+      ],
+      "service_count": 0
+    },
+    {
+      "name": "Urząd Miasta Lublin - Spokojna",
+      "lat": 51.2456,
+      "lng": 22.553,
+      "departments": [
+        "Wydział Podatków"
+      ],
+      "services": [
+        {
+          "title": "Dotacja dla podmiotów niepublicznych prowadzących żłobek lub klub dziecięcy",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/dotacja-dla-podmiotow-niepublicznych-prowadzacych-zlobek-lub-klub-dzieciecy,1,23020,2.html",
+          "card_number": "WZP-019"
+        },
+        {
+          "title": "Nadanie dziecku nazwiska przysługującego dzieciom z aktualnego małżeństwa matki",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/nadanie-dziecku-nazwiska-przyslugujacego-dzieciom-z-aktualnego-malzenstwa-matkiojca,3,22919,2.html",
+          "card_number": "USC-005"
+        },
+        {
+          "title": "Nadanie numeru PESEL osobie obowiązanej do posiadania numeru PESEL na podstawie odrębnych przepisów",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/nadanie-numeru-pesel-osobie-obowiazanej-do-posiadania-numeru-pesel-na-podstawie-odrebnych-przepisow,1,22995,2.html",
+          "card_number": "SA-077"
+        },
+        {
+          "title": "Odpis aktu urodzenia, małżeństwa, zgonu",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/odpis-aktu-urodzenia-malzenstwa-zgonu,3,22922,2.html",
+          "card_number": "USC-001"
+        },
+        {
+          "title": "Odtworzenie aktu krajowego",
+          "url": "https://bip.lublin.eu/e-urzad/opisy-uslug/wyszukiwarka-uslug/odtworzenie-aktu-krajowego,4,22922,2.html",
+          "card_number": "USC-006"
+        }
+      ],
+      "service_count": 69
+    }
+  ],
+  "total_services": 399
+}

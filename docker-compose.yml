@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./bip-rag
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./bip-rag/data:/app/data
+    environment:
+      - LLM_BASE_URL=http://host.docker.internal:11434/v1
+      - LLM_MODEL=llama3.1:8b
+      - LLM_API_KEY=ollama
+      - EMBEDDING_MODEL=sdadas/st-polish-paraphrase-from-distilroberta
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
