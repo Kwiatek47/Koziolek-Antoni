@@ -8,6 +8,7 @@ import os
 import re
 import time
 import hashlib
+import logging
 import threading
 from collections import OrderedDict
 from typing import Optional
@@ -47,6 +48,9 @@ TOP_K = int(os.getenv("TOP_K", "15"))
 FINAL_K = int(os.getenv("FINAL_K", "6"))
 N_THREADS = int(os.getenv("N_THREADS", "8"))
 RRF_K = 60
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+log = logging.getLogger("bip-rag")
 
 # --- Response Cache (in-memory LRU, top 50 questions → 0s response) ---
 CACHE_MAX_SIZE = int(os.getenv("CACHE_MAX_SIZE", "50"))
@@ -359,7 +363,13 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
     max_output = 1000
     context = _fit_context(context, EXTRACTION_PROMPT, question, user_template, max_output)
     user_prompt = user_template.format(context=context, question=question)
+    prompt_tokens = _count_tokens(EXTRACTION_PROMPT + user_prompt)
+    log.info(
+        "structured prompt: ctx_tokens=%d prompt_tokens=%d n_ctx=%d max_output=%d",
+        _count_tokens(context), prompt_tokens, llm.n_ctx(), max_output,
+    )
 
+    t_llm = time.time()
     response = llm.create_chat_completion(
         messages=[
             {"role": "system", "content": EXTRACTION_PROMPT},
@@ -367,6 +377,11 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
         ],
         temperature=0.05,
         max_tokens=max_output,
+    )
+    log.info(
+        "structured llm done in %.1fs finish=%s",
+        time.time() - t_llm,
+        response["choices"][0].get("finish_reason"),
     )
 
     raw_text = response["choices"][0]["message"]["content"]
@@ -979,9 +994,14 @@ def query(q: Query):
         }
 
     try:
+        t0 = time.time()
         top_k = q.top_k or TOP_K
         intent = classify_intent(q.question)
+        log.info("query start: %r intent=%s", q.question[:80], intent)
+
+        t_search = time.time()
         documents, metadatas = hybrid_search(q.question, top_k=top_k, final_k=FINAL_K)
+        log.info("retrieval done in %.2fs chunks=%d", time.time() - t_search, len(documents))
 
         context_parts = []
         for doc, meta in zip(documents, metadatas):
@@ -1122,6 +1142,7 @@ def query(q: Query):
         }
         if not structured.get("raw_fallback"):
             response_cache.put(q.question, result)
+        log.info("query done in %.1fs intent=%s cached=false", time.time() - t0, intent)
         return result
     finally:
         llm_lock.release()
