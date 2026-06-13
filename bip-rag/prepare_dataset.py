@@ -13,7 +13,22 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "dane_bip")
 OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "data", "documents.json")
 
 def extract_pdf_text(pdf_path):
-    """Extract text from PDF using pdftotext or python fallback."""
+    """Extract text from PDF using pymupdf (best), pdftotext, or PyPDF2 fallback."""
+    # Method 1: PyMuPDF (fitz) - no system deps, best quality
+    try:
+        import fitz  # pymupdf
+        doc = fitz.open(pdf_path)
+        text = []
+        for page in doc:
+            text.append(page.get_text())
+        doc.close()
+        result = "\n".join(text).strip()
+        if result:
+            return result
+    except Exception:
+        pass
+
+    # Method 2: pdftotext (requires poppler-utils)
     try:
         result = subprocess.run(
             ['pdftotext', '-layout', pdf_path, '-'],
@@ -24,6 +39,7 @@ def extract_pdf_text(pdf_path):
     except (FileNotFoundError, subprocess.TimeoutExpired):
         pass
 
+    # Method 3: PyPDF2 (pure Python fallback)
     try:
         import PyPDF2
         with open(pdf_path, 'rb') as f:

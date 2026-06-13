@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
@@ -22,7 +22,14 @@ import {
   Send,
   Sparkles,
   ArrowRight,
+  PenLine,
+  Lightbulb,
+  AlertTriangle,
+  Download,
 } from "lucide-react";
+import { Locale, translations } from "@/i18n/translations";
+import LangSwitcher from "@/components/LangSwitcher";
+import VoiceInput from "@/components/VoiceInput";
 
 const MapEmbed = dynamic(() => import("@/components/MapEmbed"), { ssr: false });
 
@@ -67,6 +74,17 @@ interface StructuredResponse {
   additional_info?: string;
   sources?: Array<{ url: string; title: string; department?: string }>;
   suggestions?: string[];
+  document_name?: string;
+  fields?: Array<{
+    name: string;
+    description: string;
+    example?: string;
+    tips?: string;
+  }>;
+  general_tips?: string[];
+  common_mistakes?: string[];
+  where_to_get?: string;
+  where_to_submit?: string;
 }
 
 interface Message {
@@ -75,59 +93,78 @@ interface Message {
   structured?: StructuredResponse;
 }
 
-const SUGGESTIONS = [
-  { text: "Jak wyrobić dowód osobisty?", icon: FileText },
-  { text: "Gdzie zarejestrować samochód?", icon: MapPin },
-  { text: "Ile kosztuje ślub cywilny?", icon: Banknote },
-  { text: "Pozwolenie na budowę", icon: Building2 },
-  { text: "Kto jest prezydentem Lublina?", icon: User },
-  { text: "Meldunek czasowy – procedura", icon: ListChecks },
-];
+const SUGGESTION_ICONS = [FileText, MapPin, Banknote, Building2, User, ListChecks];
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [locale, setLocale] = useState<Locale>("pl");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const t = translations[locale];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  async function send(text?: string) {
-    const question = text || input.trim();
-    if (!question || loading) return;
-
-    setInput("");
-    setMessages((prev) => [...prev, { role: "user", content: question }]);
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
-      });
-      const data = await res.json();
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: data.summary || data.answer || "Nie udało się uzyskać odpowiedzi.",
-          structured: data,
-        },
-      ]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Błąd połączenia z serwerem. Spróbuj ponownie." },
-      ]);
+  useEffect(() => {
+    const saved = localStorage.getItem("koziolek-lang") as Locale | null;
+    if (saved && (saved === "pl" || saved === "en" || saved === "ua")) {
+      setLocale(saved);
     }
-    setLoading(false);
-    inputRef.current?.focus();
+  }, []);
+
+  function handleLocaleChange(loc: Locale) {
+    setLocale(loc);
+    localStorage.setItem("koziolek-lang", loc);
   }
+
+  const send = useCallback(
+    async (text?: string) => {
+      const question = text || input.trim();
+      if (!question || loading) return;
+
+      setInput("");
+      setMessages((prev) => [...prev, { role: "user", content: question }]);
+      setLoading(true);
+
+      try {
+        const res = await fetch("/api/query", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, lang: locale }),
+        });
+        const data = await res.json();
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: data.summary || data.answer || t.errors.noAnswer,
+            structured: data,
+          },
+        ]);
+      } catch {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: t.errors.connection },
+        ]);
+      }
+      setLoading(false);
+      inputRef.current?.focus();
+    },
+    [input, loading, locale, t.errors]
+  );
+
+  const handleVoiceTranscript = useCallback(
+    (transcript: string) => {
+      setInput(transcript);
+      send(transcript);
+    },
+    [send]
+  );
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-lublin-surface">
@@ -139,9 +176,10 @@ export default function Home() {
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-[15px] font-semibold leading-tight text-lublin-text tracking-[-0.01em]">Koziołek Antek</h1>
-            <p className="text-[12px] text-lublin-muted leading-tight mt-0.5">Asystent Urzędu Miasta Lublin</p>
+            <h1 className="text-[15px] font-semibold leading-tight text-lublin-text tracking-[-0.01em]">{t.header.title}</h1>
+            <p className="text-[12px] text-lublin-muted leading-tight mt-0.5">{t.header.subtitle}</p>
           </div>
+          <LangSwitcher locale={locale} onChange={handleLocaleChange} />
         </div>
       </header>
 
@@ -149,7 +187,7 @@ export default function Home() {
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-[680px] mx-auto px-4 py-6">
           {messages.length === 0 ? (
-            <Welcome onSuggestion={send} />
+            <Welcome onSuggestion={send} t={t} />
           ) : (
             <div className="space-y-5">
               {messages.map((msg, i) => (
@@ -159,11 +197,11 @@ export default function Home() {
                       <div className="chat-user">{msg.content}</div>
                     </div>
                   ) : (
-                    <AssistantMessage msg={msg} onFollowUp={send} />
+                    <AssistantMessage msg={msg} onFollowUp={send} t={t} />
                   )}
                 </div>
               ))}
-              {loading && <LoadingIndicator />}
+              {loading && <LoadingIndicator t={t} />}
               <div ref={messagesEndRef} />
             </div>
           )}
@@ -179,9 +217,15 @@ export default function Home() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
-            placeholder="Zapytaj o sprawę urzędową..."
+            placeholder={t.input.placeholder}
             className="input-bar"
             disabled={loading}
+          />
+          <VoiceInput
+            onTranscript={handleVoiceTranscript}
+            locale={locale}
+            disabled={loading}
+            t={t.voice}
           />
           <button onClick={() => send()} disabled={loading || !input.trim()} className="send-btn">
             <Send size={18} strokeWidth={2.5} />
@@ -194,7 +238,9 @@ export default function Home() {
 
 /* ============ STRUCTURED ANSWER ============ */
 
-function AssistantMessage({ msg, onFollowUp }: { msg: Message; onFollowUp: (t: string) => void }) {
+type T = (typeof translations)["pl"];
+
+function AssistantMessage({ msg, onFollowUp, t }: { msg: Message; onFollowUp: (t: string) => void; t: T }) {
   const s = msg.structured;
 
   return (
@@ -207,14 +253,25 @@ function AssistantMessage({ msg, onFollowUp }: { msg: Message; onFollowUp: (t: s
 
         {s && (
           <div className="space-y-2.5 pl-0.5">
-            {s.intent !== "simple" && s.where && hasData(s.where) && <WhereCard data={s.where} />}
-            {s.intent !== "simple" && s.booking && <BookingCard department={s.where?.department} />}
-            {s.intent !== "simple" && s.how && hasData(s.how) && <HowCard data={s.how} />}
-            {s.intent !== "simple" && s.how_much && hasData(s.how_much) && <HowMuchCard data={s.how_much} />}
-            {s.intent !== "simple" && s.who && hasData(s.who) && <WhoCard data={s.who} />}
-            {s.intent !== "simple" && s.additional_info && <InfoCard text={s.additional_info} />}
+            {s.intent === "fill_document" && s.fields && s.fields.length > 0 && (
+              <FillDocumentCard
+                documentName={s.document_name}
+                fields={s.fields}
+                generalTips={s.general_tips}
+                commonMistakes={s.common_mistakes}
+                whereToGet={s.where_to_get}
+                whereToSubmit={s.where_to_submit}
+                t={t}
+              />
+            )}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.where && hasData(s.where) && <WhereCard data={s.where} t={t} />}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.booking && <BookingCard department={s.where?.department} t={t} />}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.how && hasData(s.how) && <HowCard data={s.how} t={t} />}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.how_much && hasData(s.how_much) && <HowMuchCard data={s.how_much} t={t} />}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.who && hasData(s.who) && <WhoCard data={s.who} t={t} />}
+            {s.intent !== "simple" && s.intent !== "fill_document" && s.additional_info && <InfoCard text={s.additional_info} />}
             {s.sources && s.sources.length > 0 && <SourcesBar sources={s.sources} />}
-            {s.suggestions && s.suggestions.length > 0 && <SuggestionsBar suggestions={s.suggestions} onSelect={onFollowUp} />}
+            {s.suggestions && s.suggestions.length > 0 && <SuggestionsBar suggestions={s.suggestions} onSelect={onFollowUp} t={t} />}
           </div>
         )}
       </div>
@@ -229,12 +286,12 @@ function hasData(obj: object): boolean {
 }
 
 /* --- WHERE --- */
-function WhereCard({ data }: { data: WhereInfo }) {
+function WhereCard({ data, t }: { data: WhereInfo; t: T }) {
   return (
     <div className="card">
       <div className="card-label">
         <MapPin size={14} strokeWidth={2.5} />
-        <span>Gdzie załatwić</span>
+        <span>{t.cards.where}</span>
       </div>
       <div className="p-4">
         {data.department && (
@@ -271,12 +328,12 @@ function WhereCard({ data }: { data: WhereInfo }) {
 }
 
 /* --- HOW --- */
-function HowCard({ data }: { data: HowInfo }) {
+function HowCard({ data, t }: { data: HowInfo; t: T }) {
   return (
     <div className="card">
       <div className="card-label">
         <ListChecks size={14} strokeWidth={2.5} />
-        <span>Jak załatwić</span>
+        <span>{t.cards.how}</span>
       </div>
       <div className="p-4 space-y-4">
         {data.steps && data.steps.length > 0 && (
@@ -293,7 +350,7 @@ function HowCard({ data }: { data: HowInfo }) {
         )}
         {data.required_documents && data.required_documents.length > 0 && (
           <div>
-            <p className="section-label">Wymagane dokumenty</p>
+            <p className="section-label">{t.cards.requiredDocs}</p>
             <ul className="space-y-1.5">
               {data.required_documents.map((doc, i) => (
                 <li key={i} className="flex items-start gap-2.5 text-[14px]">
@@ -306,7 +363,7 @@ function HowCard({ data }: { data: HowInfo }) {
         )}
         {data.forms && data.forms.length > 0 && (
           <div>
-            <p className="section-label">Formularze</p>
+            <p className="section-label">{t.cards.forms}</p>
             <div className="space-y-1.5">
               {data.forms.map((form, i) => (
                 <div key={i} className="flex items-center gap-2.5 text-[14px] bg-lublin-surface rounded-lg px-3 py-2">
@@ -320,7 +377,7 @@ function HowCard({ data }: { data: HowInfo }) {
         {data.submission_method && (
           <div className="flex items-center gap-2.5 text-[13px] bg-lublin-surface rounded-lg px-3 py-2.5">
             <ArrowUpRight size={13} className="text-lublin-muted shrink-0" />
-            <span className="text-lublin-muted">Sposób złożenia:</span>
+            <span className="text-lublin-muted">{t.cards.submissionMethod}</span>
             <span className="font-medium text-lublin-text">{data.submission_method}</span>
           </div>
         )}
@@ -330,12 +387,12 @@ function HowCard({ data }: { data: HowInfo }) {
 }
 
 /* --- HOW MUCH --- */
-function HowMuchCard({ data }: { data: HowMuchInfo }) {
+function HowMuchCard({ data, t }: { data: HowMuchInfo; t: T }) {
   return (
     <div className="card">
       <div className="card-label">
         <Banknote size={14} strokeWidth={2.5} />
-        <span>Koszt i czas</span>
+        <span>{t.cards.howMuch}</span>
       </div>
       <div className="p-4">
         <div className="grid grid-cols-2 gap-2.5">
@@ -343,7 +400,7 @@ function HowMuchCard({ data }: { data: HowMuchInfo }) {
             <div className="stat-block">
               <div className="flex items-center gap-1.5 mb-1">
                 <Banknote size={13} className="text-lublin-muted" />
-                <span className="text-[11px] font-medium text-lublin-muted uppercase tracking-wide">Koszt</span>
+                <span className="text-[11px] font-medium text-lublin-muted uppercase tracking-wide">{t.cards.cost}</span>
               </div>
               <p className="text-[16px] font-bold text-lublin-text leading-tight">{data.cost}</p>
             </div>
@@ -352,7 +409,7 @@ function HowMuchCard({ data }: { data: HowMuchInfo }) {
             <div className="stat-block">
               <div className="flex items-center gap-1.5 mb-1">
                 <Timer size={13} className="text-lublin-muted" />
-                <span className="text-[11px] font-medium text-lublin-muted uppercase tracking-wide">Czas</span>
+                <span className="text-[11px] font-medium text-lublin-muted uppercase tracking-wide">{t.cards.time}</span>
               </div>
               <p className="text-[16px] font-bold text-lublin-text leading-tight">{data.time_estimate}</p>
             </div>
@@ -370,7 +427,7 @@ function HowMuchCard({ data }: { data: HowMuchInfo }) {
 }
 
 /* --- WHO --- */
-function WhoCard({ data }: { data: WhoInfo }) {
+function WhoCard({ data, t }: { data: WhoInfo; t: T }) {
   const name = data.name && data.name !== "null" ? data.name : null;
   const role = data.role && data.role !== "null" ? data.role : null;
   const dept = data.department && data.department !== "null" ? data.department : null;
@@ -381,7 +438,7 @@ function WhoCard({ data }: { data: WhoInfo }) {
     <div className="card">
       <div className="card-label">
         <User size={14} strokeWidth={2.5} />
-        <span>Osoba odpowiedzialna</span>
+        <span>{t.cards.who}</span>
       </div>
       <div className="p-4">
         <div className="flex items-center gap-3">
@@ -404,6 +461,133 @@ function WhoCard({ data }: { data: WhoInfo }) {
   );
 }
 
+/* --- FILL DOCUMENT --- */
+function FillDocumentCard({
+  documentName,
+  fields,
+  generalTips,
+  commonMistakes,
+  whereToGet,
+  whereToSubmit,
+  t,
+}: {
+  documentName?: string;
+  fields: Array<{ name: string; description: string; example?: string; tips?: string }>;
+  generalTips?: string[];
+  commonMistakes?: string[];
+  whereToGet?: string;
+  whereToSubmit?: string;
+  t: T;
+}) {
+  return (
+    <div className="space-y-2.5">
+      {/* Main fields card */}
+      <div className="card">
+        <div className="card-label">
+          <PenLine size={14} strokeWidth={2.5} />
+          <span>{t.cards.fillDocument}</span>
+        </div>
+        {documentName && (
+          <div className="px-4 pt-3">
+            <p className="font-semibold text-[15px] text-lublin-text">{documentName}</p>
+          </div>
+        )}
+        <div className="p-4 space-y-3">
+          {fields.map((field, i) => (
+            <div key={i} className="fill-field">
+              <div className="fill-field-header">
+                <span className="fill-field-number">{i + 1}</span>
+                <span className="font-medium text-[14px] text-lublin-text">{field.name}</span>
+              </div>
+              <div className="pl-8 space-y-1.5">
+                <p className="text-[13px] text-lublin-text/80 leading-relaxed">{field.description}</p>
+                {field.example && (
+                  <div className="fill-example">
+                    <span className="text-[11px] font-medium text-lublin-muted uppercase tracking-wide">{t.cards.example}:</span>
+                    <span className="text-[13px] text-lublin-green font-medium ml-2">{field.example}</span>
+                  </div>
+                )}
+                {field.tips && (
+                  <div className="flex items-start gap-1.5">
+                    <Lightbulb size={12} className="text-amber-500 shrink-0 mt-0.5" />
+                    <span className="text-[12px] text-amber-700/80 italic">{field.tips}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* General tips */}
+      {generalTips && generalTips.length > 0 && (
+        <div className="card border-emerald-200/60 bg-emerald-50/20">
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Lightbulb size={14} className="text-lublin-green" />
+              <span className="text-[11px] font-semibold text-lublin-green uppercase tracking-wide">{t.cards.generalTips}</span>
+            </div>
+            <ul className="space-y-2">
+              {generalTips.map((tip, i) => (
+                <li key={i} className="flex items-start gap-2.5 text-[13px]">
+                  <CheckCircle2 size={14} className="text-lublin-green shrink-0 mt-0.5" />
+                  <span className="text-lublin-text/80">{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Common mistakes */}
+      {commonMistakes && commonMistakes.length > 0 && (
+        <div className="card border-red-200/60 bg-red-50/20">
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle size={14} className="text-red-500" />
+              <span className="text-[11px] font-semibold text-red-600 uppercase tracking-wide">{t.cards.commonMistakes}</span>
+            </div>
+            <ul className="space-y-2">
+              {commonMistakes.map((mistake, i) => (
+                <li key={i} className="flex items-start gap-2.5 text-[13px]">
+                  <span className="text-red-400 shrink-0 mt-0.5">&times;</span>
+                  <span className="text-lublin-text/80">{mistake}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Where to get/submit */}
+      {(whereToGet || whereToSubmit) && (
+        <div className="card">
+          <div className="p-4 space-y-2.5">
+            {whereToGet && (
+              <div className="flex items-start gap-2.5 text-[13px]">
+                <Download size={13} className="text-lublin-muted shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-lublin-muted font-medium">{t.cards.whereToGet}: </span>
+                  <span className="text-lublin-text/85">{whereToGet}</span>
+                </div>
+              </div>
+            )}
+            {whereToSubmit && (
+              <div className="flex items-start gap-2.5 text-[13px]">
+                <ArrowUpRight size={13} className="text-lublin-muted shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-lublin-muted font-medium">{t.cards.whereToSubmit}: </span>
+                  <span className="text-lublin-text/85">{whereToSubmit}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* --- ADDITIONAL INFO --- */
 function InfoCard({ text }: { text: string }) {
   return (
@@ -419,7 +603,7 @@ function InfoCard({ text }: { text: string }) {
 }
 
 /* --- BOOKING --- */
-function BookingCard({ department }: { department?: string }) {
+function BookingCard({ department, t }: { department?: string; t: T }) {
   const BOOKING_URL = "https://rezerwacja.lublin.eu/qmaticwebbooking/#/";
 
   return (
@@ -434,9 +618,9 @@ function BookingCard({ department }: { department?: string }) {
           <CalendarCheck size={20} className="text-lublin-green" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[14px] text-lublin-green">Umów wizytę online</p>
+          <p className="font-semibold text-[14px] text-lublin-green">{t.cards.booking}</p>
           <p className="text-[12px] text-lublin-muted mt-0.5">
-            {department ? `${department} – ` : ""}Zarezerwuj termin bez kolejki
+            {department ? `${department} – ` : ""}{t.cards.bookingDesc}
           </p>
         </div>
         <ArrowUpRight size={16} className="text-lublin-green/60 group-hover:text-lublin-green transition-colors shrink-0" />
@@ -466,10 +650,10 @@ function SourcesBar({ sources }: { sources: Array<{ url: string; title: string; 
 }
 
 /* --- SUGGESTIONS (Perplexity-style) --- */
-function SuggestionsBar({ suggestions, onSelect }: { suggestions: string[]; onSelect: (t: string) => void }) {
+function SuggestionsBar({ suggestions, onSelect, t }: { suggestions: string[]; onSelect: (t: string) => void; t: T }) {
   return (
     <div className="pt-2 space-y-1.5">
-      <p className="section-label px-1 !mb-1">Powiązane pytania</p>
+      <p className="section-label px-1 !mb-1">{t.cards.relatedQuestions}</p>
       {suggestions.map((s, i) => (
         <button
           key={i}
@@ -486,7 +670,7 @@ function SuggestionsBar({ suggestions, onSelect }: { suggestions: string[]; onSe
 }
 
 /* --- LOADING --- */
-function LoadingIndicator() {
+function LoadingIndicator({ t }: { t: T }) {
   return (
     <div className="flex gap-3 items-start">
       <Image src="/logo.png" alt="" width={32} height={32} className="rounded-lg shrink-0 mt-0.5 ring-1 ring-lublin-border" />
@@ -497,7 +681,7 @@ function LoadingIndicator() {
             <div className="w-1.5 h-1.5 bg-lublin-green/70 rounded-full animate-bounce [animation-delay:0.15s]" />
             <div className="w-1.5 h-1.5 bg-lublin-green/70 rounded-full animate-bounce [animation-delay:0.3s]" />
           </div>
-          <span className="text-[13px] text-lublin-muted">Szukam odpowiedzi...</span>
+          <span className="text-[13px] text-lublin-muted">{t.loading}</span>
         </div>
         <div className="mt-3 flex justify-center">
           <img
@@ -512,7 +696,7 @@ function LoadingIndicator() {
 }
 
 /* --- WELCOME --- */
-function Welcome({ onSuggestion }: { onSuggestion: (t: string) => void }) {
+function Welcome({ onSuggestion, t }: { onSuggestion: (t: string) => void; t: T }) {
   return (
     <div className="flex flex-col items-center pt-12 pb-4">
       <div className="relative mb-6">
@@ -523,22 +707,25 @@ function Welcome({ onSuggestion }: { onSuggestion: (t: string) => void }) {
       </div>
 
       <h2 className="text-[22px] font-bold text-lublin-text tracking-[-0.02em] mb-1">
-        Asystent Urzędu Miasta
+        {t.welcome.title}
       </h2>
       <p className="text-[15px] text-lublin-muted text-center max-w-[340px] leading-relaxed mb-8">
-        Pomogę Ci załatwić sprawę urzędową w&nbsp;Lublinie. Powiem gdzie iść, co zabrać i&nbsp;ile to zajmie.
+        {t.welcome.description}
       </p>
 
       <div className="w-full max-w-md space-y-2">
-        <p className="text-[11px] font-medium text-lublin-muted/70 uppercase tracking-widest px-1 mb-2">Popularne pytania</p>
+        <p className="text-[11px] font-medium text-lublin-muted/70 uppercase tracking-widest px-1 mb-2">{t.welcome.popular}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {SUGGESTIONS.map(({ text, icon: Icon }) => (
-            <button key={text} onClick={() => onSuggestion(text)} className="welcome-suggestion group">
-              <Icon size={15} className="text-lublin-muted/70 group-hover:text-lublin-green shrink-0 transition-colors" />
-              <span className="flex-1 text-left">{text}</span>
-              <ChevronRight size={14} className="text-lublin-muted/30 group-hover:text-lublin-green/60 transition-colors" />
-            </button>
-          ))}
+          {t.suggestions.map(({ text }, idx) => {
+            const Icon = SUGGESTION_ICONS[idx] || FileText;
+            return (
+              <button key={text} onClick={() => onSuggestion(text)} className="welcome-suggestion group">
+                <Icon size={15} className="text-lublin-muted/70 group-hover:text-lublin-green shrink-0 transition-colors" />
+                <span className="flex-1 text-left">{text}</span>
+                <ChevronRight size={14} className="text-lublin-muted/30 group-hover:text-lublin-green/60 transition-colors" />
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

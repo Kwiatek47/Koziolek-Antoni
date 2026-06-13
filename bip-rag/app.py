@@ -6,6 +6,9 @@ Hybrid Retrieval (Dense + BM25 + RRF) with structured response extraction.
 import json
 import os
 import re
+import time
+import hashlib
+from collections import OrderedDict
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
@@ -43,6 +46,68 @@ TOP_K = int(os.getenv("TOP_K", "15"))
 FINAL_K = int(os.getenv("FINAL_K", "6"))
 N_THREADS = int(os.getenv("N_THREADS", "8"))
 RRF_K = 60
+
+# --- Response Cache (in-memory LRU, top 50 questions → 0s response) ---
+CACHE_MAX_SIZE = int(os.getenv("CACHE_MAX_SIZE", "50"))
+CACHE_TTL_SECONDS = int(os.getenv("CACHE_TTL", str(24 * 3600)))  # 24h default
+
+
+class ResponseCache:
+    """LRU cache with TTL for query responses. Normalizes questions for fuzzy matching."""
+
+    def __init__(self, max_size: int = 50, ttl: int = 86400):
+        self.max_size = max_size
+        self.ttl = ttl
+        self._cache: OrderedDict[str, tuple[float, dict]] = OrderedDict()
+        self._hits = 0
+        self._misses = 0
+
+    @staticmethod
+    def _normalize(question: str) -> str:
+        q = question.lower().strip()
+        q = re.sub(r"[^\w\s]", "", q)
+        q = re.sub(r"\s+", " ", q)
+        return q
+
+    def _key(self, question: str) -> str:
+        normalized = self._normalize(question)
+        return hashlib.md5(normalized.encode()).hexdigest()
+
+    def get(self, question: str) -> Optional[dict]:
+        key = self._key(question)
+        if key in self._cache:
+            ts, response = self._cache[key]
+            if time.time() - ts < self.ttl:
+                self._cache.move_to_end(key)
+                self._hits += 1
+                return response
+            else:
+                del self._cache[key]
+        self._misses += 1
+        return None
+
+    def put(self, question: str, response: dict):
+        key = self._key(question)
+        self._cache[key] = (time.time(), response)
+        self._cache.move_to_end(key)
+        if len(self._cache) > self.max_size:
+            self._cache.popitem(last=False)
+
+    def invalidate(self):
+        self._cache.clear()
+
+    @property
+    def stats(self) -> dict:
+        return {
+            "size": len(self._cache),
+            "max_size": self.max_size,
+            "hits": self._hits,
+            "misses": self._misses,
+            "hit_rate": f"{(self._hits / max(self._hits + self._misses, 1)) * 100:.1f}%",
+        }
+
+
+response_cache = ResponseCache(max_size=CACHE_MAX_SIZE, ttl=CACHE_TTL_SECONDS)
 
 # --- Embedding & ChromaDB ---
 embedding_fn = SentenceTransformerEmbeddingFunction(
@@ -238,6 +303,23 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
 
 
 # --- Intent classification (rule-based, zero latency) ---
+FILL_DOCUMENT_PATTERNS = [
+    "jak wypełnić", "jak wypelnic", "jak uzupełnić", "jak uzupelnic",
+    "jak wpisać", "jak wpisac", "co wpisać", "co wpisac",
+    "jak napisać wniosek", "jak napisac wniosek",
+    "jak wypełnić formularz", "jak wypełnić wniosek", "jak wypełnić druk",
+    "jak wypełnić podanie", "jak wypełnić zgłoszenie", "jak wypełnić deklarację",
+    "co wpisać w rubryce", "co wpisać w polu", "co wpisać w formularzu",
+    "pomóż wypełnić", "pomoz wypelnic", "pomoc z wypełnieniem",
+    "instrukcja wypełniania", "instrukcja wypelniania",
+    "wzór wypełnienia", "wzor wypelnienia", "przykład wypełnienia",
+    "jakie dane wpisać", "jakie dane podać w formularzu",
+    "jak prawidłowo wypełnić", "jak poprawnie wypełnić",
+    "co wpisać w wniosku", "co w rubryce", "które pola wypełnić",
+    "fill out", "how to fill", "how do i fill",
+    "як заповнити", "як заповніті",
+]
+
 PROCEDURE_PATTERNS = [
     "jak wyrobić", "jak zrobić", "jak załatwić", "jak uzyskać", "jak złożyć",
     "jak zameldować", "jak wymeldować", "jak zarejestrować", "jak wymienić",
@@ -260,8 +342,12 @@ SIMPLE_PATTERNS = [
 
 
 def classify_intent(question: str) -> str:
-    """Classify question as 'procedure' (full pipeline) or 'simple' (quick answer)."""
+    """Classify question as 'fill_document', 'procedure', or 'simple'."""
     q = question.lower().strip()
+
+    for pattern in FILL_DOCUMENT_PATTERNS:
+        if pattern in q:
+            return "fill_document"
 
     for pattern in PROCEDURE_PATTERNS:
         if pattern in q:
@@ -271,7 +357,6 @@ def classify_intent(question: str) -> str:
         if pattern in q:
             return "simple"
 
-    # Default: if question is short (< 8 words), likely simple
     if len(q.split()) < 6:
         return "simple"
 
@@ -304,6 +389,57 @@ def get_simple_response(question: str, context: str) -> str:
         max_tokens=300,
     )
     return response["choices"][0]["message"]["content"]
+
+
+# --- Fill document response (step-by-step form guidance) ---
+FILL_DOCUMENT_PROMPT = """Jesteś Koziołkiem Antkiem - asystentem Urzędu Miasta Lublin. Pomagasz wypełniać formularze i wnioski urzędowe.
+
+Odpowiedz JSON-em w formacie:
+{"summary":"krótki opis dokumentu i jego przeznaczenia","document_name":"pełna nazwa formularza/wniosku","fields":[{"name":"nazwa pola","description":"co dokładnie wpisać","example":"przykładowa wartość","tips":"dodatkowe wskazówki/uwagi"}],"general_tips":["ogólna wskazówka 1","ogólna wskazówka 2"],"common_mistakes":["częsty błąd 1","częsty błąd 2"],"where_to_get":"skąd pobrać formularz (link/miejsce)","where_to_submit":"gdzie i jak złożyć wypełniony dokument"}
+
+Zasady:
+- Podaj KAŻDE pole formularza osobno z opisem co wpisać
+- W "example" podaj REALISTYCZNY przykład (np. "Jan Kowalski", "ul. Lipowa 5/3, 20-001 Lublin")
+- W "tips" podaj typowe pułapki i wskazówki (np. "wpisz DRUKOWANYMI LITERAMI", "data w formacie DD.MM.RRRR")
+- W "common_mistakes" opisz najczęstsze błędy przy wypełnianiu tego dokumentu
+- Jeśli formularz ma warianty/sekcje opcjonalne, wyjaśnij kiedy je wypełnić
+- Bazuj WYŁĄCZNIE na kontekście - nie wymyślaj pól których nie znasz
+- Jeśli kontekst nie opisuje pól formularza szczegółowo, podaj ogólne wskazówki wypełniania na podstawie typu dokumentu
+- Odpowiedz WYŁĄCZNIE JSON"""
+
+
+def get_fill_document_response(question: str, context: str) -> dict:
+    """Get structured form-filling guidance from LLM."""
+    user_prompt = f"""KONTEKST Z BIP LUBLIN (formularze i procedury):
+---
+{context}
+---
+
+PYTANIE MIESZKAŃCA: {question}
+
+Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
+
+    response = llm.create_chat_completion(
+        messages=[
+            {"role": "system", "content": FILL_DOCUMENT_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.1,
+        max_tokens=1500,
+    )
+
+    raw_text = response["choices"][0]["message"]["content"]
+
+    try:
+        return json.loads(raw_text)
+    except json.JSONDecodeError:
+        json_match = re.search(r'\{[\s\S]*\}', raw_text)
+        if json_match:
+            try:
+                return json.loads(json_match.group())
+            except json.JSONDecodeError:
+                pass
+        return {"summary": raw_text, "raw_fallback": True}
 
 
 # --- Hybrid retrieval ---
@@ -459,7 +595,21 @@ def health():
         "documents": collection.count(),
         "bm25_ready": bm25_index is not None,
         "model": os.path.basename(MODEL_PATH),
+        "cache": response_cache.stats,
     }
+
+
+@app.get("/cache")
+def cache_stats():
+    """Cache statistics and management."""
+    return response_cache.stats
+
+
+@app.delete("/cache")
+def cache_clear():
+    """Clear the response cache."""
+    response_cache.invalidate()
+    return {"status": "cleared"}
 
 
 @app.get("/status", response_model=IndexStatus)
@@ -508,6 +658,7 @@ def index_documents():
         )
 
     build_bm25()
+    response_cache.invalidate()
     return {"indexed": len(unique_docs), "bm25_docs": len(bm25_corpus), "status": "ok"}
 
 
@@ -516,6 +667,11 @@ def query(q: Query):
     """Structured RAG query - detects intent and adapts response format."""
     if collection.count() == 0:
         raise HTTPException(400, "Index is empty. Call POST /index first.")
+
+    # Check cache first (0s response for repeated questions)
+    cached = response_cache.get(q.question)
+    if cached is not None:
+        return {**cached, "cached": True}
 
     top_k = q.top_k or TOP_K
     intent = classify_intent(q.question)
@@ -546,12 +702,44 @@ def query(q: Query):
                 seen_urls.add(url)
                 sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
         suggestions = generate_suggestions(q.question, {}, metadatas)
-        return {
+        result = {
             "intent": "simple",
             "summary": answer,
             "sources": sources[:2],
             "suggestions": suggestions,
         }
+        response_cache.put(q.question, result)
+        return result
+
+    if intent == "fill_document":
+        # Form-filling guidance pipeline
+        fill_data = get_fill_document_response(q.question, context)
+        sources = []
+        seen_urls = set()
+        for meta in metadatas:
+            url = meta.get("source_url", "")
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                sources.append({"url": url, "title": meta.get("title", ""), "department": meta.get("department", "")})
+        suggestions = [
+            f"Gdzie złożyć {fill_data.get('document_name', 'ten wniosek')}?",
+            f"Jakie dokumenty dołączyć do {fill_data.get('document_name', 'wniosku')}?",
+            f"Ile kosztuje złożenie {fill_data.get('document_name', 'wniosku')}?",
+        ]
+        result = {
+            "intent": "fill_document",
+            "summary": fill_data.get("summary", ""),
+            "document_name": fill_data.get("document_name", ""),
+            "fields": fill_data.get("fields", []),
+            "general_tips": fill_data.get("general_tips", []),
+            "common_mistakes": fill_data.get("common_mistakes", []),
+            "where_to_get": fill_data.get("where_to_get"),
+            "where_to_submit": fill_data.get("where_to_submit"),
+            "sources": sources[:3],
+            "suggestions": suggestions,
+        }
+        response_cache.put(q.question, result)
+        return result
 
     # Full structured response for procedural questions
     structured = get_structured_response(q.question, context)
@@ -609,11 +797,13 @@ def query(q: Query):
     # Generate follow-up suggestions based on response context
     suggestions = generate_suggestions(q.question, structured, metadatas)
 
-    return {
+    result = {
         **structured,
         "sources": sources,
         "suggestions": suggestions,
     }
+    response_cache.put(q.question, result)
+    return result
 
 
 @app.post("/search")
