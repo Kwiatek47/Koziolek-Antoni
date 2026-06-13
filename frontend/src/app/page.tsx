@@ -499,6 +499,13 @@ function LoadingIndicator() {
           </div>
           <span className="text-[13px] text-lublin-muted">Szukam odpowiedzi...</span>
         </div>
+        <div className="mt-3 flex justify-center">
+          <img
+            src="/animacja/koziolek_biega.gif"
+            alt="Koziołek szuka odpowiedzi"
+            className="h-16 w-auto object-contain"
+          />
+        </div>
       </div>
     </div>
   );
