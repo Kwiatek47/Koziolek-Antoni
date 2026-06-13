@@ -186,8 +186,8 @@ export default function Home() {
           {
             id: createMessageId("assistant"),
             role: "assistant",
-            content: data.summary || data.answer || t.errors.noAnswer,
-            structured: data,
+            content: data.raw_fallback ? "Przepraszam, mam problem z przetworzeniem odpowiedzi. Spróbuj zadać pytanie inaczej." : (data.summary || data.answer || t.errors.noAnswer),
+            structured: data.raw_fallback ? undefined : data,
             question,
             responseTimeMs: elapsed,
           },

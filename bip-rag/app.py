@@ -331,9 +331,27 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
             try:
                 data = json.loads(json_match.group())
             except json.JSONDecodeError:
-                return {"summary": raw_text, "raw_fallback": True}
+                # Try to fix common JSON issues
+                fixed = json_match.group()
+                fixed = re.sub(r',\s*}', '}', fixed)  # trailing commas
+                fixed = re.sub(r',\s*]', ']', fixed)  # trailing commas in arrays
+                try:
+                    data = json.loads(fixed)
+                except json.JSONDecodeError:
+                    return {"summary": raw_text[:500], "raw_fallback": True}
         else:
-            return {"summary": raw_text, "raw_fallback": True}
+            return {"summary": raw_text[:500], "raw_fallback": True}
+
+    # Fix nested how_much inside how (common LLM mistake)
+    how = data.get("how")
+    if how and isinstance(how, dict) and "how_much" in how:
+        data["how_much"] = how.pop("how_much")
+    if how and isinstance(how, dict) and "cost" in how:
+        data["how_much"] = {
+            "cost": how.pop("cost", None),
+            "time_estimate": how.pop("time_estimate", None),
+            "legal_basis": how.pop("legal_basis", None),
+        }
 
     return sanitize_response(data)
 
