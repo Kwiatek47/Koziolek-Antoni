@@ -139,6 +139,31 @@ def process_uslugi():
             "card_number": card_number,
         }
 
+        # Create a compact summary chunk with all key info in one place
+        key_sections = [
+            ("Sposób i miejsce składania dokumentów", "GDZIE I JAK ZŁOŻYĆ"),
+            ("Wymagane załączniki", "WYMAGANE DOKUMENTY"),
+            ("Wymagane wnioski", "FORMULARZE"),
+            ("Dokumenty do wglądu", "DOKUMENTY DO WGLĄDU"),
+            ("Wymagane opłaty", "OPŁATY"),
+            ("Termin załatwienia sprawy", "CZAS ZAŁATWIENIA"),
+            ("Podstawa prawna", "PODSTAWA PRAWNA"),
+        ]
+        summary_parts = [f"# {title}", f"Wydział: {department}", f"Karta: {card_number}", ""]
+        for sec_key, label in key_sections:
+            val = sections.get(sec_key, "")
+            if val:
+                summary_parts.append(f"{label}: {val[:400]}")
+        compact_summary = "\n".join(summary_parts)
+
+        # Always add the compact summary as first chunk (no splitting)
+        docs.append({
+            "id": f"usluga_{card_number}_summary" if card_number else f"usluga_{title.replace(' ', '_')[:50]}_summary",
+            "content": prefix + compact_summary,
+            "metadata": metadata,
+        })
+
+        # Then add detailed chunks for full content
         chunks = chunk_text(full_content)
         for i, chunk in enumerate(chunks):
             docs.append({

@@ -223,7 +223,9 @@ function AssistantMessage({ msg, onFollowUp }: { msg: Message; onFollowUp: (t: s
 }
 
 function hasData(obj: object): boolean {
-  return Object.values(obj).some((v) => v !== null && v !== undefined && v !== "" && !(Array.isArray(v) && v.length === 0));
+  return Object.values(obj).some(
+    (v) => v !== null && v !== undefined && v !== "" && v !== "null" && !(Array.isArray(v) && v.length === 0)
+  );
 }
 
 /* --- WHERE --- */
@@ -369,6 +371,12 @@ function HowMuchCard({ data }: { data: HowMuchInfo }) {
 
 /* --- WHO --- */
 function WhoCard({ data }: { data: WhoInfo }) {
+  const name = data.name && data.name !== "null" ? data.name : null;
+  const role = data.role && data.role !== "null" ? data.role : null;
+  const dept = data.department && data.department !== "null" ? data.department : null;
+
+  if (!name && !role && !dept) return null;
+
   return (
     <div className="card">
       <div className="card-label">
@@ -381,12 +389,12 @@ function WhoCard({ data }: { data: WhoInfo }) {
             <User size={18} className="text-lublin-green" />
           </div>
           <div className="min-w-0">
-            {data.name && <p className="font-semibold text-[14px] text-lublin-text truncate">{data.name}</p>}
-            {data.role && <p className="text-[13px] text-lublin-muted truncate">{data.role}</p>}
-            {data.department && (
+            {name && <p className="font-semibold text-[14px] text-lublin-text truncate">{name}</p>}
+            {role && <p className="text-[13px] text-lublin-muted truncate">{role}</p>}
+            {dept && (
               <div className="flex items-center gap-1.5 mt-0.5">
                 <Building2 size={11} className="text-lublin-muted" />
-                <p className="text-[12px] text-lublin-muted truncate">{data.department}</p>
+                <p className="text-[12px] text-lublin-muted truncate">{dept}</p>
               </div>
             )}
           </div>
