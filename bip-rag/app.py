@@ -470,19 +470,19 @@ def status():
 @app.post("/index")
 def index_documents():
     """Load and index documents into ChromaDB + BM25."""
-    global collection, chroma_client
+    global collection
     if not os.path.exists(DOCUMENTS_FILE):
         raise HTTPException(404, f"Documents file not found: {DOCUMENTS_FILE}")
 
     with open(DOCUMENTS_FILE) as f:
         docs = json.load(f)
 
-    import shutil
-    if os.path.exists(CHROMA_DIR):
-        shutil.rmtree(CHROMA_DIR)
-
-    chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
-    collection = chroma_client.get_or_create_collection(
+    # Clear existing data by getting fresh collection
+    try:
+        chroma_client.delete_collection("bip_lublin")
+    except Exception:
+        pass
+    collection = chroma_client.create_collection(
         name="bip_lublin",
         embedding_function=embedding_fn,
         metadata={"hnsw:space": "cosine"},
@@ -501,7 +501,7 @@ def index_documents():
 
     for i in range(0, len(unique_docs), batch_size):
         batch = unique_docs[i:i + batch_size]
-        collection.add(
+        collection.upsert(
             ids=[d["id"] for d in batch],
             documents=[d["content"] for d in batch],
             metadatas=[d["metadata"] for d in batch],
