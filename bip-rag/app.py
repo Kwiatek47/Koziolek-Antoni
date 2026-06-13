@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
-from llama_cpp import Llama
+from openai import OpenAI
 from rank_bm25 import BM25Okapi
 
 app = FastAPI(
@@ -36,15 +36,12 @@ app.add_middleware(
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 CHROMA_DIR = os.path.join(DATA_DIR, "chroma_db")
 DOCUMENTS_FILE = os.path.join(DATA_DIR, "documents.json")
-MODEL_PATH = os.getenv(
-    "MODEL_PATH",
-    os.path.join(os.path.dirname(__file__), "models", "Qwen2.5-3B-Instruct-Q4_K_M.gguf"),
-)
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sdadas/st-polish-paraphrase-from-distilroberta")
+LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 TOP_K = int(os.getenv("TOP_K", "15"))
 FINAL_K = int(os.getenv("FINAL_K", "6"))
-N_THREADS = int(os.getenv("N_THREADS", "8"))
 RRF_K = 60
 
 # --- Response Cache (in-memory LRU, top 50 questions → 0s response) ---
@@ -131,11 +128,46 @@ bm25_index: Optional[BM25Okapi] = None
 
 PL_NORMALIZE = str.maketrans("óąęćśźżłń", "oaecszzln")
 
+PL_STOPWORDS = frozenset({
+    "czy", "jak", "ale", "nie", "tak", "ten", "tam", "jest", "sie", "dla",
+    "pod", "nad", "przy", "przed", "przez", "bez", "ktory", "ktora", "ktore",
+    "tego", "tej", "tych", "jego", "jej", "ich", "nas", "was", "nim", "niej",
+    "moge", "moze", "mozna", "moga", "chce", "chca", "mam", "maja",
+    "musi", "musze", "musie", "trzeb", "powin", "nalezy",
+    "bede", "bedzi", "bylo", "byla", "byly", "jest", "jeste",
+    "bardzo", "tylko", "tez", "jeszcze", "juz", "bardz",
+    "gdzie", "kiedy", "dlacze", "czemu", "doklad",
+    "prosze", "dziekuje", "witam", "hej", "czesc",
+})
+
+QUERY_SYNONYMS = {
+    "wyrob": "wydan",
+    "zrobi": "wydan",
+    "zrobc": "wydan",
+    "zalat": "wydan",
+    "odbie": "wydan",
+    "wymen": "wymia",
+    "przyr": "rejes",
+    "zarej": "rejes",
+    "zamel": "meldu",
+    "wymel": "meldu",
+    "przem": "meldu",
+}
+
 
 def tokenize_pl(text: str) -> list[str]:
     text = text.lower().translate(PL_NORMALIZE)
     text = re.sub(r"[^\w\s]", " ", text)
-    return [t[:5] for t in text.split() if len(t) > 2]
+    return [t[:5] for t in text.split() if len(t) > 2 and t[:5] not in PL_STOPWORDS]
+
+
+def expand_query_tokens(tokens: list[str]) -> set[str]:
+    """Expand query tokens with known synonyms for better matching."""
+    expanded = set(tokens)
+    for t in tokens:
+        if t in QUERY_SYNONYMS:
+            expanded.add(QUERY_SYNONYMS[t])
+    return expanded
 
 
 def build_bm25():
@@ -151,13 +183,8 @@ def build_bm25():
     bm25_index = BM25Okapi(tokenized)
 
 
-# --- LLM ---
-llm = Llama(
-    model_path=MODEL_PATH,
-    n_ctx=4096,
-    n_threads=N_THREADS,
-    verbose=False,
-)
+# --- LLM (OpenAI API) ---
+llm_client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 # --- Pydantic models ---
@@ -273,7 +300,8 @@ PYTANIE MIESZKAŃCA: {question}
 
 Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
 
-    response = llm.create_chat_completion(
+    response = llm_client.chat.completions.create(
+        model=LLM_MODEL,
         messages=[
             {"role": "system", "content": EXTRACTION_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -282,7 +310,7 @@ Odpowiedz TYLKO poprawnym JSON-em, bez tekstu przed/po."""
         max_tokens=1200,
     )
 
-    raw_text = response["choices"][0]["message"]["content"]
+    raw_text = response.choices[0].message.content
 
     try:
         data = json.loads(raw_text)
@@ -495,7 +523,8 @@ def get_simple_response(question: str, context: str) -> str:
     """Quick text response for simple informational questions."""
     user_prompt = f"""Kontekst:\n{context}\n\nPytanie: {question}\n\nOdpowiedz krótko (2-4 zdania):"""
 
-    response = llm.create_chat_completion(
+    response = llm_client.chat.completions.create(
+        model=LLM_MODEL,
         messages=[
             {"role": "system", "content": SIMPLE_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -503,7 +532,7 @@ def get_simple_response(question: str, context: str) -> str:
         temperature=0.1,
         max_tokens=300,
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 # --- Fill document response (step-by-step form guidance) ---
@@ -534,7 +563,8 @@ PYTANIE MIESZKAŃCA: {question}
 
 Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
 
-    response = llm.create_chat_completion(
+    response = llm_client.chat.completions.create(
+        model=LLM_MODEL,
         messages=[
             {"role": "system", "content": FILL_DOCUMENT_PROMPT},
             {"role": "user", "content": user_prompt},
@@ -543,7 +573,7 @@ Odpowiedz TYLKO poprawnym JSON-em z instrukcją wypełniania formularza."""
         max_tokens=1500,
     )
 
-    raw_text = response["choices"][0]["message"]["content"]
+    raw_text = response.choices[0].message.content
 
     try:
         return json.loads(raw_text)
@@ -592,7 +622,7 @@ def hybrid_search(question: str, top_k: int = 30, final_k: int = 6) -> tuple[lis
         rrf_scores[bid] = rrf_scores.get(bid, 0) + 1.0 / (RRF_K + rank + 1)
 
     # Token-based title re-ranking (prefix stemming for Polish)
-    query_tokens_set = set(tokenize_pl(question))
+    query_tokens_set = expand_query_tokens(tokenize_pl(question))
 
     for did in list(rrf_scores.keys()):
         meta = id_to_meta.get(did, {})
@@ -609,6 +639,57 @@ def hybrid_search(question: str, top_k: int = 30, final_k: int = 6) -> tuple[lis
             syn_tokens = set(tokenize_pl(synonym_line))
             syn_overlap = query_tokens_set & syn_tokens
             rrf_scores[did] += (len(syn_overlap) / max(len(query_tokens_set), 1)) * 0.08
+
+    # Location-aware boost: if query mentions a street name, boost chunks containing it
+    KNOWN_STREETS = {
+        "kleeberga": "kleeberga", "wieniawska": "wieniawska", "filaretów": "filaretow",
+        "filaretow": "filaretow", "czechowska": "czechowska", "szaserów": "szaserow",
+        "szaserow": "szaserow", "spokojna": "spokojna", "okopowa": "okopowa",
+        "leszczyńskiego": "leszczynskiego", "leszczynskiego": "leszczynskiego",
+        "królewska": "krolewska", "krolewska": "krolewska", "szkolna": "szkolna",
+        "peowiaków": "peowiakow", "peowiakow": "peowiakow", "zana": "zana",
+        "nowy świat": "nowy swiat", "nowy swiat": "nowy swiat",
+        "zemborzycka": "zemborzycka", "krochmalnej": "krochmalnej", "krochmaln": "krochmaln",
+    }
+    question_normalized = question.lower().translate(PL_NORMALIZE)
+    matched_streets = [normalized for street, normalized in KNOWN_STREETS.items()
+                       if street in question_normalized]
+    if matched_streets:
+        content_tokens = query_tokens_set - {t[:5] for t in matched_streets[0].split()}
+        for did in list(rrf_scores.keys()):
+            doc = id_to_doc.get(did, "").lower().translate(PL_NORMALIZE)
+            for street in matched_streets:
+                if street in doc:
+                    rrf_scores[did] += 0.12
+                    doc_tokens = set(tokenize_pl(id_to_meta.get(did, {}).get("title", "")))
+                    if content_tokens & doc_tokens:
+                        rrf_scores[did] += 0.08
+                    break
+
+        # Location rescue: scan full BM25 corpus for chunks matching both street + topic
+        if bm25_index is not None and content_tokens:
+            for i, bid in enumerate(bm25_ids):
+                if bid in rrf_scores:
+                    continue
+                doc_lower = bm25_corpus[i].lower().translate(PL_NORMALIZE)
+                has_street = any(s in doc_lower for s in matched_streets)
+                if not has_street:
+                    continue
+                doc_token_set = set(tokenize_pl(bm25_metadatas[i].get("title", "")))
+                title_overlap = content_tokens & doc_token_set
+                if title_overlap:
+                    score = 0.18 + 0.03 * len(title_overlap)
+                    rrf_scores[bid] = score
+                    id_to_doc[bid] = bm25_corpus[i]
+                    id_to_meta[bid] = bm25_metadatas[i]
+                else:
+                    doc_tokens_full = set(tokenize_pl(bm25_corpus[i][:500]))
+                    body_overlap = content_tokens & doc_tokens_full
+                    if len(body_overlap) >= 2:
+                        score = 0.14 + 0.02 * len(body_overlap)
+                        rrf_scores[bid] = score
+                        id_to_doc[bid] = bm25_corpus[i]
+                        id_to_meta[bid] = bm25_metadatas[i]
 
     # Knowledge base boost for definition queries
     question_lower = question.lower()
@@ -709,7 +790,7 @@ def health():
         "status": "ok",
         "documents": collection.count(),
         "bm25_ready": bm25_index is not None,
-        "model": os.path.basename(MODEL_PATH),
+        "model": LLM_MODEL,
         "cache": response_cache.stats,
     }
 
