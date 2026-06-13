@@ -2,43 +2,41 @@
 set -e
 
 echo "╔══════════════════════════════════════════════╗"
-echo "║  Asystent Miasta Lublin - Deploy Script     ║"
+echo "║  Koziołek Antek - Deploy Script v2          ║"
+echo "║  Hybrid RAG (Dense + BM25) + Qwen 2.5 7B   ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
 
 cd "$(dirname "$0")"
 
 # 1. System deps
-echo "[1/6] System dependencies..."
+echo "[1/5] System dependencies..."
 sudo apt-get update -qq
-sudo apt-get install -y -qq python3 python3-pip python3-venv poppler-utils curl nodejs npm docker.io docker-compose-v2 2>/dev/null || true
+sudo apt-get install -y -qq python3 python3-pip python3-venv poppler-utils curl 2>/dev/null || true
 
-# 2. Install Ollama
-if ! command -v ollama &> /dev/null; then
-    echo "[2/6] Installing Ollama..."
-    curl -fsSL https://ollama.ai/install.sh | sh
-    systemctl enable ollama 2>/dev/null || true
-    systemctl start ollama 2>/dev/null || true
-else
-    echo "[2/6] Ollama already installed"
+# Install Node.js 20+ via NodeSource
+if ! node --version 2>/dev/null | grep -qE "^v(2[0-9]|[3-9])"; then
+    echo "  Installing Node.js 20..."
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt-get install -y nodejs
 fi
 
-# 3. Pull model
-echo "[3/6] Pulling LLM model..."
-sleep 2
-ollama pull llama3.1:8b
-
-# 4. Backend setup
-echo "[4/6] Setting up backend..."
+# 2. Download Qwen 2.5 7B GGUF model
+echo "[2/5] Downloading Qwen 2.5 7B model..."
 cd bip-rag
 python3 -m venv venv
 source venv/bin/activate
 pip install --quiet --upgrade pip
 pip install --quiet -r requirements.txt
 
-# Prepare data if not done
+mkdir -p models
+if [ ! -f models/qwen2.5-7b-instruct-q4_k_m.gguf ]; then
+    huggingface-cli download Qwen/Qwen2.5-7B-Instruct-GGUF qwen2.5-7b-instruct-q4_k_m.gguf --local-dir models/
+fi
+
+# 3. Prepare data
+echo "[3/5] Preparing RAG dataset..."
 if [ ! -f data/documents.json ]; then
-    echo "  Preparing RAG dataset..."
     python3 prepare_dataset.py
     mkdir -p data
     mv documents.json data/ 2>/dev/null || true
@@ -47,19 +45,23 @@ fi
 deactivate
 cd ..
 
-# 5. Frontend setup
-echo "[5/6] Setting up frontend..."
+# 4. Frontend setup
+echo "[4/5] Building frontend..."
 cd frontend
 npm ci --quiet
 npm run build
+
+# Copy static assets for standalone mode
+cp -r .next/static .next/standalone/.next/
+cp -r public .next/standalone/
 cd ..
 
-# 6. Create systemd services
-echo "[6/6] Creating services..."
+# 5. Create systemd services
+echo "[5/5] Creating systemd services..."
 
 sudo tee /etc/systemd/system/bip-backend.service > /dev/null << 'SERVICE'
 [Unit]
-Description=BIP Lublin RAG Backend
+Description=Koziołek Antek - RAG Backend (Hybrid BM25 + Dense)
 After=network.target
 
 [Service]
@@ -69,8 +71,10 @@ WorkingDirectory=/home/user/Kozio-ek-Antoni/bip-rag
 ExecStart=/home/user/Kozio-ek-Antoni/bip-rag/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000
 Restart=always
 RestartSec=5
-Environment=MODEL_PATH=/home/user/Kozio-ek-Antoni/bip-rag/models/Llama-3.2-3B-Instruct-Q4_K_M.gguf
-Environment=N_THREADS=8
+Environment=MODEL_PATH=/home/user/Kozio-ek-Antoni/bip-rag/models/qwen2.5-7b-instruct-q4_k_m.gguf
+Environment=N_THREADS=16
+Environment=TOP_K=15
+Environment=FINAL_K=6
 
 [Install]
 WantedBy=multi-user.target
@@ -78,17 +82,18 @@ SERVICE
 
 sudo tee /etc/systemd/system/bip-frontend.service > /dev/null << 'SERVICE'
 [Unit]
-Description=BIP Lublin Frontend
+Description=Koziołek Antek - Frontend
 After=network.target bip-backend.service
 
 [Service]
 Type=simple
 User=user
-WorkingDirectory=/home/user/frontend
-ExecStart=/usr/bin/node /home/user/frontend/.next/standalone/server.js
+WorkingDirectory=/home/user/Kozio-ek-Antoni/frontend/.next/standalone
+ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=5
 Environment=PORT=3000
+Environment=HOSTNAME=0.0.0.0
 Environment=BACKEND_URL=http://localhost:8000
 
 [Install]
@@ -97,20 +102,27 @@ SERVICE
 
 sudo systemctl daemon-reload
 sudo systemctl enable bip-backend bip-frontend
-sudo systemctl start bip-backend
-sleep 3
-sudo systemctl start bip-frontend
+sudo systemctl restart bip-backend
+sleep 10
+sudo systemctl restart bip-frontend
 
 echo ""
 echo "╔══════════════════════════════════════════════╗"
 echo "║  DEPLOY COMPLETE!                           ║"
 echo "╠══════════════════════════════════════════════╣"
-echo "║  Frontend: http://$(hostname -I | awk '{print $1}'):3000  ║"
-echo "║  Backend:  http://$(hostname -I | awk '{print $1}'):8000  ║"
+echo "║  Frontend: http://$(hostname -I | awk '{print $1}'):3000       ║"
+echo "║  Backend:  http://$(hostname -I | awk '{print $1}'):8000       ║"
+echo "║  Model:    Qwen 2.5 7B Instruct Q4_K_M     ║"
+echo "║  Search:   Hybrid (Dense + BM25 + RRF)     ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
-echo "First-time indexing (run once):"
+echo "First-time indexing:"
 echo "  curl -X POST http://localhost:8000/index"
+echo ""
+echo "Test query:"
+echo "  curl -s -X POST http://localhost:8000/query \\"
+echo "    -H 'Content-Type: application/json' \\"
+echo "    -d '{\"question\": \"Jak wyrobić dowód osobisty?\"}' | python3 -m json.tool"
 echo ""
 echo "Check status:"
 echo "  sudo systemctl status bip-backend bip-frontend"
