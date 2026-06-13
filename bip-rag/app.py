@@ -470,18 +470,18 @@ def status():
 @app.post("/index")
 def index_documents():
     """Load and index documents into ChromaDB + BM25."""
-    global collection
+    global collection, chroma_client
     if not os.path.exists(DOCUMENTS_FILE):
         raise HTTPException(404, f"Documents file not found: {DOCUMENTS_FILE}")
 
     with open(DOCUMENTS_FILE) as f:
         docs = json.load(f)
 
-    # Always recreate collection from scratch
-    try:
-        chroma_client.delete_collection("bip_lublin")
-    except Exception:
-        pass
+    import shutil
+    if os.path.exists(CHROMA_DIR):
+        shutil.rmtree(CHROMA_DIR)
+
+    chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
     collection = chroma_client.get_or_create_collection(
         name="bip_lublin",
         embedding_function=embedding_fn,
