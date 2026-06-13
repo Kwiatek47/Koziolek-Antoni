@@ -980,6 +980,15 @@ def startup_event():
         build_bm25()
         print(f"BM25 index built: {len(bm25_corpus)} documents")
 
+    # Pre-fill cache with hand-crafted top answers
+    warmup_file = os.path.join(DATA_DIR, "cache_warmup.json")
+    if os.path.exists(warmup_file):
+        with open(warmup_file) as f:
+            warmup_data = json.load(f)
+        for item in warmup_data:
+            response_cache.put(item["question"], item["response"])
+        print(f"Cache pre-warmed: {len(warmup_data)} questions loaded")
+
 
 if __name__ == "__main__":
     import uvicorn
