@@ -477,13 +477,16 @@ def index_documents():
     with open(DOCUMENTS_FILE) as f:
         docs = json.load(f)
 
-    if collection.count() > 0:
+    # Always recreate collection from scratch
+    try:
         chroma_client.delete_collection("bip_lublin")
-        collection = chroma_client.get_or_create_collection(
-            name="bip_lublin",
-            embedding_function=embedding_fn,
-            metadata={"hnsw:space": "cosine"},
-        )
+    except Exception:
+        pass
+    collection = chroma_client.get_or_create_collection(
+        name="bip_lublin",
+        embedding_function=embedding_fn,
+        metadata={"hnsw:space": "cosine"},
+    )
 
     batch_size = 100
     seen_ids = set()
